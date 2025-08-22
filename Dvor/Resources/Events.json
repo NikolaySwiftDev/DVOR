@@ -1,0 +1,219 @@
+[
+  {
+    "date": "2025-08-01",
+    "time": "19:00",
+    "name": "Вечерний футбол",
+    "format": "7х7",
+    "location": "Спорткомплекс Олимп",
+    "address": "г. Москва, ул. Спортивная, 15",
+    "namePlace": "Поле №3",
+    "iconName": "soccerball",
+    "price": 2500,
+    "peopleCount": 14,
+    "ownerName": "Алексей Иванов",
+    "ownerImage": "person.crop.square",
+    "detail": {
+      "users": [
+        {
+          "image": null,
+          "age": 28,
+          "followers": 15,
+          "following": 10,
+          "club": "Спартак",
+          "avatarImage": null,
+          "name": "Михаил",
+          "surname": "Петров",
+          "email": "m.petrov@example.com",
+          "dateBirthday": "1995-03-12",
+          "mobile": "+79161234567",
+          "gender": "Муж",
+          "progress": 0.7,
+          "position": "Forward",
+          "hasTicket": true,
+          "isChecked": true,
+          "stats": {
+            "plays": 12,
+            "level": 52.3,
+            "mvpCount": 3,
+            "mvpNominations": 5,
+            "attendance": "10/12"
+          }
+        },
+        {
+          "image": null,
+          "age": 25,
+          "followers": 8,
+          "following": 12,
+          "club": "Локомотив",
+          "avatarImage": null,
+          "name": "Денис",
+          "surname": "Сидоров",
+          "email": "d.sidorov@example.com",
+          "dateBirthday": "1998-07-24",
+          "mobile": "+79167654321",
+          "gender": "Муж",
+          "progress": 0.6,
+          "position": "Midfielder",
+          "hasTicket": true,
+          "isChecked": false,
+          "stats": {
+            "plays": 8,
+            "level": 45.1,
+            "mvpCount": 1,
+            "mvpNominations": 2,
+            "attendance": "7/8"
+          }
+        }
+      ],
+      "org": {
+        "image": null,
+        "name": "Спортклуб Олимп",
+        "infoOrg": "Организуем игры 5 лет"
+      }
+    }
+  },
+  {
+    "date": "2025-08-03",
+    "time": "20:30",
+    "name": "Турнир корпораций",
+    "format": "6х6",
+    "location": "Арена Москва",
+    "address": "г. Москва, Ленинский пр-т, 32",
+    "namePlace": "Зал В",
+    "iconName": "trophy",
+    "price": 4000,
+    "peopleCount": 24,
+    "ownerName": "КорпЛига",
+    "ownerImage": "building.2",
+    "detail": {
+      "users": [
+        {
+          "image": null,
+          "age": 30,
+          "followers": 20,
+          "following": 15,
+          "club": "Зенит",
+          "avatarImage": null,
+          "name": "Артем",
+          "surname": "Волков",
+          "email": "a.volkov@example.com",
+          "dateBirthday": "1993-05-18",
+          "mobile": "+79165557788",
+          "gender": "Муж",
+          "progress": 0.8,
+          "position": "Defender",
+          "hasTicket": true,
+          "isChecked": true,
+          "stats": {
+            "plays": 15,
+            "level": 58.7,
+            "mvpCount": 5,
+            "mvpNominations": 7,
+            "attendance": "14/15"
+          }
+        }
+      ],
+      "org": {
+        "image": null,
+        "name": "Корпоративная лига",
+        "infoOrg": "Для сотрудников компаний"
+      }
+    }
+  },
+  {
+    "date": "2025-08-05",
+    "time": "12:00",
+    "name": "Детская тренировка",
+    "format": "Оффлайн",
+    "location": "Академия Футбола",
+    "address": "г. Москва, ул. Молодёжная, 5",
+    "namePlace": "Поле U12",
+    "iconName": "figure.soccer",
+    "price": 0,
+    "peopleCount": 16,
+    "ownerName": "Тренер Смирнов",
+    "ownerImage": "person.fill",
+    "detail": {
+      "users": [
+        {
+          "image": null,
+          "age": 12,
+          "followers": 5,
+          "following": 3,
+          "club": "Академия Футбола",
+          "avatarImage": null,
+          "name": "Иван",
+          "surname": "Кузнецов",
+          "email": "i.kuznetsov@example.com",
+          "dateBirthday": "2011-09-03",
+          "mobile": "+79161112233",
+          "gender": "Муж",
+          "progress": 0.5,
+          "position": "Goalkeeper",
+          "hasTicket": true,
+          "isChecked": false,
+          "stats": {
+            "plays": 6,
+            "level": 32.4,
+            "mvpCount": 0,
+            "mvpNominations": 1,
+            "attendance": "5/6"
+          }
+        }
+      ],
+      "org": {
+        "image": null,
+        "name": "Футбольная академия",
+        "infoOrg": "Тренерский стаж 10 лет"
+      }
+    }
+  },
+  {
+    "date": "2025-08-07",
+    "time": "21:00",
+    "name": "Ночная лига",
+    "format": "5х5",
+    "location": "Футбол Хаус",
+    "address": "г. Москва, ул. Вечерняя, 18",
+    "namePlace": "Корт №2",
+    "iconName": "moon.stars",
+    "price": 3500,
+    "peopleCount": 10,
+    "ownerName": "Ночная лига",
+    "ownerImage": "moon",
+    "detail": {
+      "users": [
+        {
+          "image": null,
+          "age": 27,
+          "followers": 25,
+          "following": 18,
+          "club": "ЦСКА",
+          "avatarImage": null,
+          "name": "Сергей",
+          "surname": "Новиков",
+          "email": "s.novikov@example.com",
+          "dateBirthday": "1998-11-15",
+          "mobile": "+79169998877",
+          "gender": "Муж",
+          "progress": 0.9,
+          "position": "Striker",
+          "hasTicket": true,
+          "isChecked": true,
+          "stats": {
+            "plays": 20,
+            "level": 65.2,
+            "mvpCount": 8,
+            "mvpNominations": 12,
+            "attendance": "18/20"
+          }
+        }
+      ],
+      "org": {
+        "image": null,
+        "name": "Ночной футбол",
+        "infoOrg": "Игры после 21:00"
+      }
+    }
+  }
+]
