@@ -33,6 +33,8 @@ final class NotificationViewController: BaseRegistrationViewController {
 
 //MARK: - Regist Protocol
 extension NotificationViewController: RegistProtocol {
+    func updateTFText(_ code: String) {}
+    
     func showError(_ message: String) {
         print("Error ---", message)
         onNext?()

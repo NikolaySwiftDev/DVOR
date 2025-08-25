@@ -9,6 +9,7 @@ protocol RegistProtocol: AnyObject {
     func hideLoading()
     
     func updateAvatarImage(_ image: UIImage)
+    func updateTFText(_ code: String)
 }
 
 protocol RegistPresenterProtocol: AnyObject {
@@ -69,6 +70,7 @@ final class RegistPresenter: RegistPresenterProtocol {
         if mock {
             print("Request with phone \(phone)")
             view?.showLoading()
+            view?.updateTFText(code)
         } else {
 //            firebase?.sendVerificationCode(phoneNumber: phone, completion: { [weak self] result in
 //                 guard let self = self else { return }

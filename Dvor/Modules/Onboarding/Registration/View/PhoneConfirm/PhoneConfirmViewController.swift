@@ -112,7 +112,7 @@ final class PhoneConfirmViewController: BaseRegistrationViewController {
         configureEnadle(isValid)
         code = text
         
-        text.count == 0 ?  codeField.updateBorderColor(.clear) : codeField.updateBorderColor()
+        text.count == 0 ? codeField.updateBorderColor(.clear) : codeField.updateBorderColor()
     }
 
     //MARK: -Next Button Action
@@ -133,12 +133,20 @@ final class PhoneConfirmViewController: BaseRegistrationViewController {
 
     //MARK: - Regist Protocol
 extension PhoneConfirmViewController:  RegistProtocol {
+    func updateTFText(_ code: String) {
+        self.code = code
+        codeField.textField.text = code
+        
+        checkValidCode()
+    }
+    
     func updateAvatarImage(_ image: UIImage) {}
     
     func showError(_ message: String) {
         print("Error --- ", message)
         code = ""
         codeField.textField.text = ""
+        checkValidCode()
     }
     
     func showSuccess() {
