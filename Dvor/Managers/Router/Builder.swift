@@ -4,6 +4,7 @@ import UIKit
 
 protocol BuilderProtocol: AnyObject {
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController
+    func createRegistrationCoordinator(router: RouterMainProtocol)
     func createAuthVC(router: RouterMainProtocol) -> UIViewController
     func createDetailVC(router: RouterMainProtocol, model: EventModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
@@ -44,6 +45,33 @@ class Builder: BuilderProtocol {
         view.presenter = presenter
 
         return view
+    }
+    
+    func createRegistrationCoordinator(router: RouterMainProtocol) {
+        let userDefaults = UserDefaultsManager()
+//        let firebase = FirebaseManager()
+        let photoManager = PhotoManager()
+        let notifManager = NotificationManager()
+        
+        let presenter = RegistPresenter(
+            router: router,
+//            firebase: firebase,
+            userDefaults: userDefaults,
+            photoManager: photoManager,
+            notifManager: notifManager
+        )
+        
+        var registrationCoordinator: RegistrationCoordinator?
+
+        registrationCoordinator = RegistrationCoordinator(
+            presenter: presenter
+        )
+        
+        registrationCoordinator?.onRegistrationComplete = { [weak self] in
+            registrationCoordinator = nil
+        }
+
+        registrationCoordinator?.start()
     }
 
     //MARK: - Empty Builder

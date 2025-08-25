@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-147980072569-ios-c9c433e390d88c8d3f86a8</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Уведомления могут содержать напоминания, звуки и наклейки значков. Их конфигурирование возможно в Настройках.</string>
 	<key>UIAppFonts</key>

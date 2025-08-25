@@ -56,4 +56,15 @@ extension String {
         }
         return result
     }
+    
+    // MARK: - Для firebase
+    func formatPhoneNumber() -> String {
+        var cleanedNumber = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        
+        if !cleanedNumber.hasPrefix("+") {
+            cleanedNumber = "+" + cleanedNumber
+        }
+        
+        return cleanedNumber
+    }
 }

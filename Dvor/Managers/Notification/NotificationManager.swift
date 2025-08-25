@@ -34,7 +34,6 @@ final class NotificationManager: NotificationManagerProtocol {
     }
     
     // MARK: - Schedule Notifications
-    
     func scheduleNotification(
         identifier: String,
         title: String,
@@ -73,7 +72,6 @@ final class NotificationManager: NotificationManagerProtocol {
     }
     
     // MARK: - Manage Notifications
-    
     func cancelNotification(identifier: String) {
         center.removePendingNotificationRequests(withIdentifiers: [identifier])
     }
@@ -108,5 +106,9 @@ final class NotificationManager: NotificationManagerProtocol {
         content.body = body
         content.sound = .default
         return content
+    }
+    
+    deinit {
+        print("Deinit NotificationManager")
     }
 }

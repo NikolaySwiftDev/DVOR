@@ -28,8 +28,6 @@ protocol PhotoManagerProtocol: AnyObject {
                                completion: @escaping (Result<UIImage, PhotoError>) -> Void)
 }
 
-
-
 final class PhotoManager: NSObject {
     
     // MARK: - Properties
@@ -37,6 +35,9 @@ final class PhotoManager: NSObject {
     private var completion: ((Result<UIImage, PhotoError>) -> Void)?
     private var allowsEditing: Bool = true
     
+    deinit {
+        print("Deinit PhotoManager")
+    }
 }
 
 // MARK: - PhotoManagerProtocol
@@ -88,7 +89,7 @@ extension PhotoManager: PhotoManagerProtocol {
                                                 width: 0, height: 0)
         }
         
-        router.present(vc: alert)
+        router.present(alert)
     }
 }
 
@@ -108,7 +109,7 @@ private extension PhotoManager {
         picker.allowsEditing = allowsEditing
         picker.cameraDevice = .front
         
-        router?.present(vc: picker)
+        router?.present(picker)
     }
     
     //MARK: - Gallery
@@ -121,7 +122,7 @@ private extension PhotoManager {
         picker.delegate = self
         setupPickerDismissHandler(picker)
         
-        router?.present(vc: picker)
+        router?.present(picker)
     }
     
     //MARK: - Selected Image
@@ -213,7 +214,7 @@ extension PhotoManager: PHPickerViewControllerDelegate {
 //MARK: -  UIAdaptivePresentationControllerDelegate
 extension PhotoManager: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        //For swipe pocker
+        //For swipe picker
         handleError(.cancelled)
     }
     

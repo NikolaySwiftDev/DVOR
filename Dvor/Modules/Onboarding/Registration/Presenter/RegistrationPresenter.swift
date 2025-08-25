@@ -25,33 +25,37 @@ protocol RegistPresenterProtocol: AnyObject {
     
     func completeRegistration(model: RegistrationData)
     
+    func pushViewController(_ vc: UIViewController)
+    func setViewController(_ vc: UIViewController)
+    
 
-    init(router: RouterMainProtocol, userDefaults: UserDefaultsProtocol, photoManager: PhotoManagerProtocol, notifManager: NotificationManagerProtocol)
+    init(router: RouterMainProtocol,
+//         firebase: FirebaseManagerProtocol,
+         userDefaults: UserDefaultsProtocol,
+         photoManager: PhotoManagerProtocol,
+         notifManager: NotificationManagerProtocol)
 }
 
 final class RegistPresenter: RegistPresenterProtocol {
 
+
     weak var view: RegistProtocol?
     let userDefaults: UserDefaultsProtocol
     let router: RouterMainProtocol?
+//    let firebase: FirebaseManagerProtocol?
     let photoManager: PhotoManagerProtocol
     let notifManager: NotificationManagerProtocol
-
-    private var email: String = ""
-    private var password: String = ""
-    private var firstName: String = ""
-    private var lastName: String = ""
-    private let date: Date = Date()
-    private let position: String = ""
-    private let club: String = ""
-    private let gender: String = ""
-    private let mobile: String = ""
+    
+    private let mock = true
+    private var code = "12345"
 
     required init(router: RouterMainProtocol,
+//                  firebase: FirebaseManagerProtocol,
                   userDefaults: UserDefaultsProtocol,
                   photoManager: PhotoManagerProtocol,
                   notifManager: NotificationManagerProtocol) {
         self.router = router
+//        self.firebase = firebase
         self.userDefaults = userDefaults
         self.photoManager = photoManager
         self.notifManager = notifManager
@@ -62,21 +66,49 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
     
     func makeCodeRequest(with phone: String) {
-        print("Request with phone \(phone)")
-        view?.showLoading()
+        if mock {
+            print("Request with phone \(phone)")
+            view?.showLoading()
+        } else {
+//            firebase?.sendVerificationCode(phoneNumber: phone, completion: { [weak self] result in
+//                 guard let self = self else { return }
+//                switch result {
+//                case .success(let code):
+//                    self.code = code
+//                    print("CODE -----", code)
+//                case .failure(let error):
+//                    router?.showErrorAlerWithTitle(error.localizedDescription)
+//                }
+//            })
+        }
     }
     
     func repeatCodeRequest(with phone: String) {
-        router?.showErrorAlerWithTitle("Запрос отправлен")
-        view?.showLoading()
-        print("Request with phone \(phone)")
+        if mock {
+            router?.showErrorAlerWithTitle("Запрос отправлен")
+            view?.showLoading()
+            print("Request with phone \(phone)")
+        } else {
+//            router?.showErrorAlerWithTitle("Запрос отправлен")
+//            view?.showLoading()
+//            firebase?.sendVerificationCode(phoneNumber: phone, completion: { [weak self] result in
+////                guard let self = self else { return }
+//                switch result {
+//                case .success(let code):
+//                    print("CODE -----", code)
+//                case .failure(let error):
+//                    print("Error -----", error.localizedDescription)
+//                }
+//            })
+        }
     }
     
     func makePhoneRequest(with code: String) {
-        if code == "12345" {
+        if code == self.code {
             view?.showSuccess()
         } else {
             let error = "Неверный код"
+            print(self.code)
             router?.showErrorAlerWithTitle(error)
             view?.showError(error)
         }
@@ -126,6 +158,15 @@ final class RegistPresenter: RegistPresenterProtocol {
         router?.pushTabBarVC()
     }
     
+    func pushViewController(_ vc: UIViewController) {
+        router?.pushVC(vc)
+    }
+    
+    func setViewController(_ vc: UIViewController) {
+        router?.setVC(vc)
+    }
+    
+
     deinit {
         print("Deinit Registr Presenter")
     }

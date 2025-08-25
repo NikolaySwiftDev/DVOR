@@ -1,11 +1,9 @@
 import UIKit
 
 protocol Coordinator: AnyObject {
-    init(navigationController: UINavigationController, presenter: RegistPresenterProtocol)
-    var navigationController: UINavigationController { get set }
+    init(presenter: RegistPresenterProtocol?)
     func start()
 }
-
 
 protocol RegistrationCoordinatorProtocol: Coordinator {
     func showPhoneInput()
@@ -19,15 +17,13 @@ protocol RegistrationCoordinatorProtocol: Coordinator {
 final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     
     // MARK: - Properties
-    var navigationController: UINavigationController
     weak var presenter: RegistPresenterProtocol?
     var onRegistrationComplete: (() -> Void)?
     
     private var registrationData = RegistrationData()
     
     // MARK: - Initialization
-    init(navigationController: UINavigationController, presenter: RegistPresenterProtocol) {
-        self.navigationController = navigationController
+    init(presenter: RegistPresenterProtocol?) {
         self.presenter = presenter
     }
     
@@ -45,7 +41,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.registrationData.phone = phone
             self?.showPhoneConfirmation(with: phone)
         }
-        pushViewController(vc)
+        presenter?.pushViewController(vc)
     }
     
     func showPhoneConfirmation(with phone: String) {
@@ -58,7 +54,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
         }
-        pushViewController(vc)
+        presenter?.pushViewController(vc)
     }
     
     func showInfoInput() {
@@ -72,7 +68,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.registrationData.dateBD = dateBD
             self?.showUserDataInput()
         }
-        setViewController(vc)
+        presenter?.setViewController(vc)
     }
     
     func showUserDataInput() {
@@ -86,7 +82,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.createAvatar()
         }
 
-        pushViewController(vc)
+        presenter?.pushViewController(vc)
     }
     
     func createAvatar() {
@@ -103,7 +99,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
         }
-        pushViewController(vc)
+        presenter?.pushViewController(vc)
     }
     
     func chooseCity() {
@@ -114,7 +110,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.registrationData.city = city
             self?.acceptNotification()
         }
-        pushViewController(vc)
+        presenter?.pushViewController(vc)
     }
     
     func acceptNotification() {
@@ -127,13 +123,13 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
         }
-        pushViewController(vc)
+        presenter?.pushViewController(vc)
     }
     
     func showSuccess() {
         let vc = RegistrationViewController(presenter: presenter)
         vc.hideBackButton(true)
-        pushViewController(vc)
+        presenter?.pushViewController(vc)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
             guard let self = self else { return }
@@ -143,19 +139,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         }
     }
 
-    
-    // MARK: - Helper Methods
-    private func pushViewController(_ viewController: UIViewController) {
-        navigationController.pushViewController(viewController, animated: true)
-    }
-
-    // MARK: - Helper Methods
-    private func setViewController(_ viewController: UIViewController) {
-        navigationController.setViewControllers([viewController], animated: true)
-    }
-    
     // MARK: - Deinit
-
     deinit {
         print("RegistrationCoordinator deallocated")
     }

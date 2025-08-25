@@ -1,15 +1,6 @@
 {
-  "originHash" : "d9880094808cc58f63d011b7f123015969260d2974c47bf8bb3101f5f01f470f",
+  "originHash" : "dd27728c8848101841bd8d45243ef43144e233aa3767c82656934b73447347b8",
   "pins" : [
-    {
-      "identity" : "iqkeyboardmanager",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/hackiftekhar/IQKeyboardManager.git",
-      "state" : {
-        "revision" : "c00b1ae9fa1ad8af4465bb6ca901f6943fc98eba",
-        "version" : "6.5.16"
-      }
-    },
     {
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",

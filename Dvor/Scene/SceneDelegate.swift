@@ -1,9 +1,3 @@
-//
-//  SceneDelegate.swift
-//  Dvor
-//
-//  Created by Николай on 15.07.2025.
-//
 
 import UIKit
 
@@ -17,13 +11,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigationController = UINavigationController()
         let builder = Builder()
         let userDefaults = UserDefaultsManager()
-        let photoManager = PhotoManager()
-        let notifManager = NotificationManager()
+
         let router = Router(navigationController: navigationController,
                             builder: builder,
-                            userDefaults: userDefaults,
-                            photoManager: photoManager,
-                            notifManager: notifManager)
+                            userDefaults: userDefaults)
         router.initialViewController()
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

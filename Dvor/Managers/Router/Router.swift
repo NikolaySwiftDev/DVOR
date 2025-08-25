@@ -14,7 +14,9 @@ protocol RouterMainProtocol: RouterMain {
     func dismiss()
     func logOut()
     
-    func present(vc: UIViewController)
+    func present(_ vc: UIViewController)
+    func setVC(_ vc: UIViewController)
+    func pushVC(_ vc: UIViewController)
     
     func pushAuthVC()
     func pushRegistVC()
@@ -36,21 +38,15 @@ class Router: RouterMainProtocol {
     var navigationController: UINavigationController
     var userDefaults: UserDefaultsProtocol
     var builder: BuilderProtocol?
-    var registrationCoordinator: RegistrationCoordinator?
-    var photoManager: PhotoManagerProtocol
-    var notifManager: NotificationManagerProtocol
     
     init(navigationController: UINavigationController,
          builder: BuilderProtocol,
-         userDefaults: UserDefaultsProtocol,
-         photoManager: PhotoManagerProtocol,
-         notifManager: NotificationManagerProtocol) {
+         userDefaults: UserDefaultsProtocol) {
         
         self.navigationController = navigationController
         self.builder = builder
         self.userDefaults = userDefaults
-        self.photoManager = photoManager
-        self.notifManager = notifManager
+ 
     }
     
     //MARK: - Initial View Controller
@@ -81,12 +77,19 @@ class Router: RouterMainProtocol {
         sceneDelegate.window?.makeKeyAndVisible()
     }
     
-    //MARK: - Present VC
-    func present(vc: UIViewController) {
+    //MARK: - Custom VC presentation
+    func present(_ vc: UIViewController) {
         navigationController.present(vc, animated: true)
     }
     
+    func setVC(_ vc: UIViewController) {
+        navigationController.setViewControllers([vc], animated: true)
+    }
     
+    func pushVC(_ vc: UIViewController) {
+        navigationController.pushViewController(vc, animated: true)
+    }
+
     //MARK: - Push Auth View Controller
     func pushAuthVC() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -103,23 +106,7 @@ class Router: RouterMainProtocol {
     
     //MARK: - Push to Regist VC
     func pushRegistVC() {
-        let presenter = RegistPresenter(
-            router: self,
-            userDefaults: userDefaults,
-            photoManager: photoManager,
-            notifManager: notifManager
-        )
-
-        registrationCoordinator = RegistrationCoordinator(
-            navigationController: navigationController,
-            presenter: presenter
-        )
-        
-        registrationCoordinator?.onRegistrationComplete = { [weak self] in
-            self?.registrationCoordinator = nil
-        }
-
-        registrationCoordinator?.start()
+        builder?.createRegistrationCoordinator(router: self)
     }
     
     //MARK: - Push to Detail VC
@@ -160,7 +147,7 @@ class Router: RouterMainProtocol {
         navigationController.pushViewController(detailVC, animated: true)
     }
     
-    //MARK: -
+    //MARK: - Push Rating VC
     func pushRatingVC(model: UserModel) {
         guard let detailVC = builder?.createRatingVC(router: self, model: model) else { return }
         navigationController.pushViewController(detailVC, animated: true)

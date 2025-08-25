@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		95DE97B32E264F1E0002C780 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE97B22E264F1E0002C780 /* IQKeyboardManagerSwift */; };
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -41,7 +40,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				95DE97B32E264F1E0002C780 /* IQKeyboardManagerSwift in Frameworks */,
 				95DE98542E266DBD0002C780 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,7 +83,6 @@
 			);
 			name = Dvor;
 			packageProductDependencies = (
-				95DE97B22E264F1E0002C780 /* IQKeyboardManagerSwift */,
 				95DE98532E266DBD0002C780 /* SnapKit */,
 			);
 			productName = Dvor;
@@ -117,7 +114,6 @@
 			mainGroup = 95DE96E72E264CF00002C780;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				95DE97B12E264F1E0002C780 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 				95DE98522E266DBD0002C780 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -156,6 +152,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Dvor/Dvor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T82Y9NV4PB;
@@ -186,6 +183,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Dvor/Dvor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T82Y9NV4PB;
@@ -354,15 +352,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		95DE97B12E264F1E0002C780 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager.git";
-			requirement = {
-				kind = versionRange;
-				maximumVersion = 7.0.0;
-				minimumVersion = 6.5.0;
-			};
-		};
 		95DE98522E266DBD0002C780 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -374,11 +363,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		95DE97B22E264F1E0002C780 /* IQKeyboardManagerSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 95DE97B12E264F1E0002C780 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
-			productName = IQKeyboardManagerSwift;
-		};
 		95DE98532E266DBD0002C780 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 95DE98522E266DBD0002C780 /* XCRemoteSwiftPackageReference "SnapKit" */;
