@@ -133,16 +133,16 @@ private extension InfoInputViewController {
 
         view.addSubview(stack)
         stack.snp.makeConstraints { make in
-            make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight * 2)
+            make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
         }
         
         view.addSubview(dateBDView)
         dateBDView.snp.makeConstraints { make in
-            make.top.equalTo(stack.snp.bottom).offset(Constants.verticalPadding / 2)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight * 2)
+            make.top.equalTo(stack.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
         }
     }
 
@@ -162,9 +162,9 @@ private extension InfoInputViewController {
         }
 
         tf.snp.makeConstraints { make in
-            make.top.equalTo(label.snp.bottom).offset(Constants.verticalPadding / 2)
+            make.top.equalTo(label.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constants.buttonHeight)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
         }
         
         return view

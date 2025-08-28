@@ -20,7 +20,7 @@ extension UIButton {
     static func createStandartButton(
         title: String,
         backgroundColor: UIColor = Constants.Colors.buttonInActiveColor,
-        cornerRadius: CGFloat = Constants.cornerRadius,
+        cornerRadius: CGFloat = Constants.Constraint.cornerRadius,
         target: Any? = nil,
         action: Selector? = nil,
         for controlEvents: UIControl.Event = .touchUpInside

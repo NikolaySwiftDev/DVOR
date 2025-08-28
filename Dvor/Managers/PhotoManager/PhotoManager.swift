@@ -34,7 +34,7 @@ final class PhotoManager: NSObject {
     private var router: RouterMainProtocol?
     private var completion: ((Result<UIImage, PhotoError>) -> Void)?
     private var allowsEditing: Bool = true
-    
+        
     deinit {
         print("Deinit PhotoManager")
     }

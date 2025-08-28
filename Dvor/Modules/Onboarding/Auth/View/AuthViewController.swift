@@ -27,7 +27,7 @@ final class AuthViewController: UIViewController {
         btn.setTitle("Войти", for: .normal)
         btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
         btn.backgroundColor = Constants.Colors.buttonActiveColor
-        btn.layer.cornerRadius = Constants.cornerRadius
+        btn.layer.cornerRadius = Constants.Constraint.cornerRadius
         btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
         btn.addTarget(self, action: #selector(enterButtonTapped), for: .touchUpInside)
         return btn
@@ -70,19 +70,16 @@ private extension AuthViewController {
         
         skipButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(60)
-            make.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight)
-            make.width.equalTo(Constants.buttonHeight * 2)
+            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+            make.width.equalTo(Constants.Constraint.buttonHeight * 2)
         }
         
         enterButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(AuthConstants.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
 }
 
-fileprivate struct AuthConstants {
-    static let verticalPadding: CGFloat = 20
-}

@@ -27,7 +27,7 @@ final class AuthTextFieldView: UIView, UITextFieldDelegate {
     // MARK: - Setup
     private func setupView() {
         backgroundColor = Constants.Colors.tfBackColor
-        layer.cornerRadius = Constants.cornerRadius
+        layer.cornerRadius = Constants.Constraint.cornerRadius
         layer.borderWidth = 1
         layer.borderColor = UIColor.clear.cgColor
         
@@ -36,7 +36,7 @@ final class AuthTextFieldView: UIView, UITextFieldDelegate {
         textField.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().offset(12)
             make.centerY.equalToSuperview()
-            make.height.equalTo(Constants.buttonHeight)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
 

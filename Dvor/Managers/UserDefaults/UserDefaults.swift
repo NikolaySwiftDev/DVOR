@@ -17,7 +17,7 @@ final class UserDefaultsManager: UserDefaultsProtocol {
     
     private let userInfoAuth = "userInfoAuth"
     private let userInfoModel = "userInfoPassword"
-    
+        
     func setAuthorizationStatus(_ isAuthorized: Bool) {
         userDefaults.set(isAuthorized, forKey: userInfoAuth)
     }

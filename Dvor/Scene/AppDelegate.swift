@@ -1,6 +1,6 @@
 import UIKit
-//import IQKeyboardManagerSwift
-//import FirebaseCore
+import FirebaseDatabaseInternal
+import FirebaseCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -10,12 +10,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        IQKeyboardManager.shared.shouldResignOnTouchOutside = true
 //        IQKeyboardManager.shared.enableAutoToolbar = false
         
-//        FirebaseApp.configure()
+        FirebaseApp.configure()
         return true
     }
 
     // MARK: UISceneSession Lifecycle
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        Database.database().goOffline()
+    }
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        Database.database().goOnline()
     }
 }

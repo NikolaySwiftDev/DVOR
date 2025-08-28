@@ -80,9 +80,9 @@ extension CreateAvatarViewController {
         }
         
         chooseFoto.snp.makeConstraints { make in
-            make.bottom.equalTo(nextButton.snp.top).offset(-Constants.verticalPadding / 2)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight)
+            make.bottom.equalTo(nextButton.snp.top).offset(-Constants.Constraint.verticalPadding / 2)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
     

@@ -44,11 +44,10 @@ final class InfoView: UIView {
         titleAddress.text = model.address
         titlePlace.text = model.namePlace
         titleDate.text = model.date.formattedAsDayMonthYear()
-        titleTime.text = model.time + " ч"
-        
-        titlePrice.text = String(model.price) + "руб"
-        titleTimeGame.text = "60мин"
-        titleCountPeop.text = String(model.peopleCount) + "/16"
+        titleTime.text = model.time
+        titlePrice.text = model.priceString
+        titleTimeGame.text = model.formattedTimeGame
+        titleCountPeop.text = model.peopleAllCount
     }
     
     @objc private func mapButtonTapped() {

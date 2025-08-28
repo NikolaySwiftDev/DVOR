@@ -53,25 +53,25 @@ private extension UserDataViewController {
         view.addSubview(experienceLabel)
         
         positionLabel.snp.makeConstraints { make in
-            make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.verticalPadding * 2)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding * 2)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         positionCV.snp.makeConstraints { make in
-            make.top.equalTo(positionLabel.snp.bottom).offset(Constants.verticalPadding / 2)
+            make.top.equalTo(positionLabel.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constants.cellHeight * 1.2)
+            make.height.equalTo(Constants.Constraint.cellHeight * 1.2)
         }
         
         experienceLabel.snp.makeConstraints { make in
-            make.top.equalTo(positionCV.snp.bottom).offset(Constants.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.top.equalTo(positionCV.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         experienceCV.snp.makeConstraints { make in
-            make.top.equalTo(experienceLabel.snp.bottom).offset(Constants.verticalPadding / 2)
+            make.top.equalTo(experienceLabel.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constants.cellHeight * 1.2)
+            make.height.equalTo(Constants.Constraint.cellHeight * 1.2)
         }
     }
     

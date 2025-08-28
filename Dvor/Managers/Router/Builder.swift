@@ -13,6 +13,7 @@ protocol BuilderProtocol: AnyObject {
 }
 
 class Builder: BuilderProtocol {
+    
 
     //MARK: - Tab bar Builder
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController {
@@ -93,7 +94,7 @@ class Builder: BuilderProtocol {
     //MARK: -  Home Builder
     func createHomeVC(router: RouterMainProtocol) -> UIViewController {
         let view = HomeViewController()
-        let network = NetworkService()
+        let network = FirebaseDataManager()
         let presenter = HomePresenter(view: view, router: router, network: network)
         view.presenter = presenter
         return view

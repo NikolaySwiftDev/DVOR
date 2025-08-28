@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		95DD00D92E5CA02D008B5836 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00D82E5CA02D008B5836 /* FirebaseAuth */; };
+		95DD00DB2E5CA02D008B5836 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00DA2E5CA02D008B5836 /* FirebaseCore */; };
+		95DD00DD2E5CA02D008B5836 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00DC2E5CA02D008B5836 /* FirebaseDatabase */; };
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +44,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				95DE98542E266DBD0002C780 /* SnapKit in Frameworks */,
+				95DD00DB2E5CA02D008B5836 /* FirebaseCore in Frameworks */,
+				95DD00DD2E5CA02D008B5836 /* FirebaseDatabase in Frameworks */,
+				95DD00D92E5CA02D008B5836 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +90,9 @@
 			name = Dvor;
 			packageProductDependencies = (
 				95DE98532E266DBD0002C780 /* SnapKit */,
+				95DD00D82E5CA02D008B5836 /* FirebaseAuth */,
+				95DD00DA2E5CA02D008B5836 /* FirebaseCore */,
+				95DD00DC2E5CA02D008B5836 /* FirebaseDatabase */,
 			);
 			productName = Dvor;
 			productReference = 95DE96F02E264CF00002C780 /* Dvor.app */;
@@ -115,6 +124,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				95DE98522E266DBD0002C780 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				95DD00D72E5CA02D008B5836 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 95DE96F12E264CF00002C780 /* Products */;
@@ -352,6 +362,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		95DD00D72E5CA02D008B5836 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.1.0;
+			};
+		};
 		95DE98522E266DBD0002C780 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -363,6 +381,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		95DD00D82E5CA02D008B5836 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DD00D72E5CA02D008B5836 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		95DD00DA2E5CA02D008B5836 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DD00D72E5CA02D008B5836 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		95DD00DC2E5CA02D008B5836 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DD00D72E5CA02D008B5836 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
 		95DE98532E266DBD0002C780 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 95DE98522E266DBD0002C780 /* XCRemoteSwiftPackageReference "SnapKit" */;

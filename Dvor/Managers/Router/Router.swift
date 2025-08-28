@@ -194,7 +194,7 @@ class Router: RouterMainProtocol {
                                       message: nil,
                                       preferredStyle: .alert)
 
-        let cancelAction = UIAlertAction(title: "Отмена",
+        let cancelAction = UIAlertAction(title: "Ок",
                                          style: .default)
         
         alert.addAction(cancelAction)

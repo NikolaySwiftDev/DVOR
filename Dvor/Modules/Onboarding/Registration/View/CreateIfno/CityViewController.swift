@@ -38,9 +38,9 @@ extension CityViewController {
     private func setupLayout() {
         view.addSubview(cityCV)
         cityCV.snp.makeConstraints { make in
-            make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.verticalPadding)
+            make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constants.cellHeight * 1.2)
+            make.height.equalTo(Constants.Constraint.cellHeight * 1.2)
         }
     }
     

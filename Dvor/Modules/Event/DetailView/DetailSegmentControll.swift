@@ -45,7 +45,7 @@ final class DetailSegmentContainerView: UIView {
     // MARK: - Public Configuration
     func configureAllViews(_ users: EventModel) {
         //User config
-        usersView.configure(with: users.detail)
+//        usersView.configure(with: users.detail)
         
         //Info config
         infoView.configure(with: users)

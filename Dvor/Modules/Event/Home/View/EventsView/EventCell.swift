@@ -147,15 +147,15 @@ final class EventTableViewCell: UITableViewCell {
     func configure(with model: EventModel) {
         timeLabel.text = model.time
         titleLabel.text = model.address
-        priceLabel.text = String(format: "%.2f€", Double(model.price))
+        priceLabel.text = String(format: "%.2fР", Double(model.price))
         formatLabel.text = model.format
-        ownerLabel.text = model.ownerName ?? "Unknown"
+//        ownerLabel.text = model.ownerName ?? "Unknown"
         peopleCountLabel.text = "\(model.peopleCount)"
-        fieldIconImageView.image = UIImage(systemName: model.iconName)
+        fieldIconImageView.image = UIImage(systemName: "")
 
-        if let ownerImageName = model.ownerImage {
-            ownerImageView.image = UIImage(systemName: ownerImageName)
-        }
+//        if let ownerImageName = model.ownerImage {
+//            ownerImageView.image = UIImage(systemName: ownerImageName)
+//        }
 
         locationText = model.address
     }

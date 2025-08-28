@@ -28,13 +28,13 @@ final class EnterPhoneViewController: BaseRegistrationViewController {
         
         descNumberLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(-100)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         phoneTF.snp.makeConstraints { make in
             make.top.equalTo(descNumberLabel.snp.bottom).offset(5)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
 

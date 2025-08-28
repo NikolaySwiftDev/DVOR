@@ -45,13 +45,13 @@ private extension RegistrationViewController {
         }
         
         titleRegist.snp.makeConstraints { make in
-            make.top.equalTo(activityIndicator.snp.bottom).offset(Constants.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.top.equalTo(activityIndicator.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         descLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleRegist.snp.bottom).offset(Constants.verticalPadding / 2)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.top.equalTo(titleRegist.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
 
     }

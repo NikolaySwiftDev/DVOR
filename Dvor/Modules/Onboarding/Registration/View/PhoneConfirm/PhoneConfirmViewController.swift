@@ -76,14 +76,14 @@ final class PhoneConfirmViewController: BaseRegistrationViewController {
         }
         
         codeField.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom).offset(Constants.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight)
+            make.top.equalTo(numberLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
         }
         
         repeatCodeLabel.snp.makeConstraints { make in
-            make.top.equalTo(codeField.snp.bottom).offset(Constants.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.top.equalTo(codeField.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
     }
     

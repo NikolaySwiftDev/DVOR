@@ -3,11 +3,13 @@ import UIKit
 
 struct Constants {
     
-    static let horizPadding: CGFloat = 15
-    static let verticalPadding: CGFloat = 20
-    static let cornerRadius: CGFloat = 15
-    static let buttonHeight: CGFloat = 52
-    static let cellHeight: CGFloat = 40
+    enum Constraint {
+        static let horizPadding: CGFloat = 15
+        static let verticalPadding: CGFloat = 20
+        static let cornerRadius: CGFloat = 15
+        static let buttonHeight: CGFloat = 52
+        static let cellHeight: CGFloat = 40
+    }
     
     enum Colors {
         static let backgroungColor = UIColor.white

@@ -20,9 +20,9 @@ class BaseCollectionView: UICollectionView {
         super.init(frame: .zero, collectionViewLayout: layout)
         
         layout.scrollDirection = .horizontal
-        layout.estimatedItemSize = CGSize(width: 200, height: Constants.cellHeight)
+        layout.estimatedItemSize = CGSize(width: 200, height: Constants.Constraint.cellHeight)
         layout.minimumLineSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 0, left: Constants.horizPadding, bottom: 0, right: 10)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: Constants.Constraint.horizPadding, bottom: 0, right: 10)
         
         bounces = false
         alwaysBounceHorizontal = false

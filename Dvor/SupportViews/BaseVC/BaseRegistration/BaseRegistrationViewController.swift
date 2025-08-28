@@ -7,7 +7,7 @@ class BaseRegistrationViewController: UIViewController {
     
     //MARK: - Properties
     var presenter: RegistPresenterProtocol?
-    private var heightKeyboard: CGFloat = Constants.verticalPadding
+    private var heightKeyboard: CGFloat = Constants.Constraint.verticalPadding
     
     // MARK: - UI
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
@@ -80,7 +80,7 @@ class BaseRegistrationViewController: UIViewController {
     func configureBottomPaddingButtom(isActiveTF: Bool, isNumberPad: Bool = true) {
         let newInset =  isActiveTF ?
                         isNumberPad ? BaseConstants.bottomPaddingNumberPad
-                                    : BaseConstants.bottomPaddingKeyboard : Constants.horizPadding
+                                    : BaseConstants.bottomPaddingKeyboard : Constants.Constraint.horizPadding
         
         UIView.animate(withDuration: 0.25,
                        delay: 0,
@@ -119,37 +119,37 @@ private extension BaseRegistrationViewController {
 
     private func setupConstraints() {
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.verticalPadding)
-            make.leading.equalToSuperview().offset(Constants.horizPadding)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
+            make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
             make.size.equalTo(BaseConstants.backButtonSize)
         }
         
         pageLabel.snp.makeConstraints { make in
             make.centerY.equalTo(backButton.snp.centerY)
-            make.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         progressBar.snp.makeConstraints { make in
             make.centerY.equalTo(backButton.snp.centerY)
-            make.leading.equalTo(backButton.snp.trailing).offset(Constants.horizPadding * 2)
-            make.trailing.equalTo(pageLabel.snp.leading).offset(-Constants.horizPadding * 2)
+            make.leading.equalTo(backButton.snp.trailing).offset(Constants.Constraint.horizPadding * 2)
+            make.trailing.equalTo(pageLabel.snp.leading).offset(-Constants.Constraint.horizPadding * 2)
             make.height.equalTo(BaseConstants.progressHeight)
         }
         
         profileTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom).offset(Constants.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.top.equalTo(backButton.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         descTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(profileTitleLabel.snp.bottom).offset(Constants.verticalPadding / 2)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
+            make.top.equalTo(profileTitleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         nextButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(heightKeyboard)
-            make.leading.trailing.equalToSuperview().inset(Constants.horizPadding)
-            make.height.equalTo(Constants.buttonHeight)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
 }
