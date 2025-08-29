@@ -52,25 +52,6 @@ struct EventModel: Codable {
         self.orgId = orgId
     }
     
-    func toDictionary() -> [String: Any] {
-        return [
-            "id": id,
-            "date": date.timeIntervalSince1970,
-            "time": time,
-            "name": name,
-            "format": format,
-            "location": location,
-            "address": address,
-            "namePlace": namePlace,
-            "price": price,
-            "ownerName": ownerName,
-            "timeGame": timeGame,
-            "totalPeopleCount": totalPeopleCount,
-            "users": users,
-            "orgId": orgId
-        ]
-    }
-    
     init?(from dictionary: [String: Any]) {
         guard let id = dictionary["id"] as? String,
               let timestamp = dictionary["date"] as? TimeInterval,
@@ -129,8 +110,41 @@ extension EventModel {
     var formattedTimeGame: String {
         String(timeGame) + " мин"
     }
-    
-    
 }
 
-
+extension EventModel {
+    
+    func toDictionary() -> [String: Any] {
+        return [
+            "id": id,
+            "date": date.timeIntervalSince1970,
+            "time": time,
+            "name": name,
+            "format": format,
+            "location": location,
+            "address": address,
+            "namePlace": namePlace,
+            "price": price,
+            "ownerName": ownerName,
+            "timeGame": timeGame,
+            "totalPeopleCount": totalPeopleCount,
+            "users": users,
+            "orgId": orgId
+        ]
+    }
+    
+    func toDetailModel() -> DetailModel {
+        return DetailModel(
+            id: self.id,
+            name: self.name,
+            address: self.address,
+            namePlace: self.namePlace,
+            date: self.date,
+            formattedTime: self.formattedTime,
+            priceString: self.priceString,
+            formattedTimeGame: self.formattedTimeGame,
+            peopleAllCount: self.peopleAllCount,
+            users: self.users
+        )
+    }
+}

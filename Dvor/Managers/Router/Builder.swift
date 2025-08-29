@@ -6,13 +6,14 @@ protocol BuilderProtocol: AnyObject {
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController
     func createRegistrationCoordinator(router: RouterMainProtocol)
     func createAuthVC(router: RouterMainProtocol) -> UIViewController
-    func createDetailVC(router: RouterMainProtocol, model: EventModel) -> UIViewController
+    func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController
 }
 
 class Builder: BuilderProtocol {
+    
     var registrationCoordinator: RegistrationCoordinator?
 
     //MARK: - Tab bar Builder
@@ -92,7 +93,8 @@ class Builder: BuilderProtocol {
     func createHomeVC(router: RouterMainProtocol) -> UIViewController {
         let view = HomeViewController()
         let network = FirebaseDataManager()
-        let presenter = HomePresenter(view: view, router: router, network: network)
+        let userDefaults = UserDefaultsManager()
+        let presenter = HomePresenter(view: view, router: router, network: network, userDefaults: userDefaults)
         view.presenter = presenter
         return view
     }
@@ -107,9 +109,10 @@ class Builder: BuilderProtocol {
     }
 
     //MARK: -  Detail Builder
-    func createDetailVC(router: RouterMainProtocol, model: EventModel) -> UIViewController {
-        let view = DetailViewController(event: model)
-        let presenter = DetailPresenter(view: view, router: router)
+    func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController {
+        let view = DetailViewController(details: model)
+        let network = FirebaseDataManager()
+        let presenter = DetailPresenter(view: view, router: router, network: network)
         view.presenter = presenter
         return view
     }

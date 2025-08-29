@@ -21,14 +21,14 @@ protocol RouterMainProtocol: RouterMain {
     func pushAuthVC()
     func pushRegistVC()
     func pushTabBarVC()
-    func pushDetailVC(model: EventModel)
+    func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
     func pushDetailUserInfo(model: UserModel)
     func pushRatingVC(model: UserModel)
  
     func showErrorAlerWithTitle(_ title: String)
     func showBottomSheetAlertForUser(model: UserModel)
-    func showAuthErrorAlert(handelr: @escaping()->())
+    func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping()->())
     
     func showLocationOnMap(location: String)
 }
@@ -110,7 +110,7 @@ class Router: RouterMainProtocol {
     }
     
     //MARK: - Push to Detail VC
-    func pushDetailVC(model: EventModel) {
+    func pushDetailVC(model: DetailModel) {
         guard let detailVC = builder?.createDetailVC(router: self, model: model) else { return }
         
         if let tabBarController = navigationController.topViewController as? UITabBarController {
@@ -169,21 +169,17 @@ class Router: RouterMainProtocol {
         navigationController.dismiss(animated: true)
     }
 
-    //MARK: - Show Auth Error Alert
-    func showAuthErrorAlert(handelr: @escaping()->()) {
-        let alert = UIAlertController(title: "Неверное имя или почта",
-                                      message: nil,
+    //MARK: - Show Alert with Config
+    func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping()->()) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
                                       preferredStyle: .alert)
-        let repeatAction = UIAlertAction(title: "Очистить",
+        let repeatAction = UIAlertAction(title: titleActionButton,
                                          style: .default) { handler in
             handelr()
         }
         
-        let cancelAction = UIAlertAction(title: "Отмена",
-                                         style: .default)
-        
         alert.addAction(repeatAction)
-        alert.addAction(cancelAction)
         
         navigationController.present(alert, animated: true)
     }
@@ -229,33 +225,6 @@ class Router: RouterMainProtocol {
         
         navigationController.present(alert, animated: true)
     }
-    
-    //MARK: - Show Bottom Sheet Alert
-    private func showImagePickerAlert() {
-        let alert = UIAlertController(title: "Выбрать фото", message: nil, preferredStyle: .actionSheet)
-        
-        // Камера
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            alert.addAction(UIAlertAction(title: "Сделать фото", style: .default) { _ in
-//                self.openCamera()
-            })
-        }
-        
-        // Галерея
-        alert.addAction(UIAlertAction(title: "Выбрать из галереи", style: .default) { _ in
-//            self.openGallery()
-        })
-        
-        // Удалить фото (если уже выбрано)
-        alert.addAction(UIAlertAction(title: "Удалить фото", style: .destructive) { _ in
-//                self.removePhoto()
-        })
-        
-        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
-        
-        navigationController.present(alert, animated: true)
-    }
-    
     
     //MARK: - Show Location On Map
     func showLocationOnMap(location: String) {

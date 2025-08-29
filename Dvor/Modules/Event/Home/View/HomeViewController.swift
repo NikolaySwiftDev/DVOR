@@ -29,7 +29,7 @@ final class HomeViewController: BaseViewController {
     }
     
     override func didTapCartButton() {
-        presenter?.addUserToEvent(idEvent: eventID, idUser: "233321")
+        presenter?.addUserToEvent(idEvent: eventID)
     }
   
     override func didTapMenuButton() {
@@ -50,7 +50,6 @@ final class HomeViewController: BaseViewController {
             
         presenter?.writeEvent(model: model)
     }
-    
     
     deinit {
         print("deinit HomeVC")
@@ -79,8 +78,8 @@ extension HomeViewController: CustomCalendarViewDelegate, EventsTableViewDelegat
     
     //Event delegate
     func didSelectEvent(_ event: EventModel) {
-//        presenter?.pushDetailVC(model: event)
         eventID = event.id
+        presenter?.pushDetailVC(model: event)
     }
 }
 
@@ -100,8 +99,6 @@ private extension HomeViewController {
         eventsTableView.delegate = self
         eventsTableView.cellDelegate = self
         calendarView.delegate = self
-        
-       
     }
     
     private func setupConstraints() {
@@ -112,7 +109,7 @@ private extension HomeViewController {
         }
         
         eventsTableView.snp.makeConstraints { make in
-            make.top.equalTo(calendarView.snp.bottom).offset(HomeConstants.paddingCVTop)
+            make.top.equalTo(calendarView.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.left.right.bottom.equalToSuperview()
         }
     }
@@ -121,48 +118,6 @@ private extension HomeViewController {
 // MARK: - Home Constants
 fileprivate struct HomeConstants {
     static let paddingTop: CGFloat = 70
-    static let paddingCVTop: CGFloat = 20
     static let heightCV: CGFloat = 60
 }
 
-fileprivate let newEvent = EventModel(date: Date.now,
-                                      time: "19:00",
-                                      name: "Zaruba",
-                                      format: "6x6",
-                                      location: "Spb",
-                                      address: "Avtovo",
-                                      namePlace: "Sc 229",
-                                      price: 2000,
-                                      ownerName: "Nik",
-                                      timeGame: 120,
-                                      totalPeopleCount: 12,
-                                      users: [],
-                                      orgId: "1234")
-
-fileprivate let newEvent1 = EventModel(date: Date.now,
-                                       time: "19:00",
-                                       name: "Zaruba",
-                                       format: "6x6",
-                                       location: "Spb",
-                                       address: "Avtovo",
-                                       namePlace: "Sc 229",
-                                       price: 2000,
-                                       ownerName: "Nik",
-                                       timeGame: 120,
-                                       totalPeopleCount: 12,
-                                       users: [],
-                                       orgId: "1234")
-
-fileprivate let newEvent2 = EventModel(date: Date.now,
-                                       time: "20:00",
-                                       name: "Zaruba2",
-                                       format: "7x7",
-                                       location: "Spb",
-                                       address: "Avtovo5",
-                                       namePlace: "Sc 229",
-                                       price: 2000,
-                                       ownerName: "Nik",
-                                       timeGame: 120,
-                                       totalPeopleCount: 12,
-                                       users: ["1", "2"],
-                                       orgId: "1234")

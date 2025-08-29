@@ -28,15 +28,15 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
     
     func getProfileInto() {
-        userDefaults.loadUserInfo(completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let user):
-                self.user = user
-                view?.success(model: user)
-            case .failure(let failure):
-                view?.error(error: failure)
-            }
-        })
+//        userDefaults.loadUserInfo(completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let user):
+//                self.user = user
+//                view?.success(model: user)
+//            case .failure(let failure):
+//                view?.error(error: failure)
+//            }
+//        })
     }
 }

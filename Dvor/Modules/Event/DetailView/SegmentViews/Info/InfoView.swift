@@ -40,7 +40,7 @@ final class InfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: EventModel) {
+    func configure(with model: DetailModel) {
         titleAddress.text = model.address
         titlePlace.text = model.namePlace
         titleDate.text = model.date.formattedAsDayMonthYear()

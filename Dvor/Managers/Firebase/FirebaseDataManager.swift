@@ -6,8 +6,9 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void)
     func writeUser(model: UserModel, completion: @escaping (Result<String, Error>) -> Void)
-    func deleteEvent(eventId: String, completion: @escaping (Result<String, Error>) -> Void)
+    func deleteEvent(idEvent: String, completion: @escaping (Result<String, Error>) -> Void)
     func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<String, Error>) -> Void)
+    func getAllUsersFromEvent(usersID: [String], completion: @escaping (Result<[UserModel], any Error>) -> Void)
 
     func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
     func stopObservingEvents()
@@ -49,14 +50,59 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
     
     
-    //MARK: - Общий метод получения данных
+    //MARK: - Общий метод получения всех событий
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {
         database.child(eventsPath).observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let self = self else { return }
             self.processSnapshot(snapshot, completion: completion)
         }
     }
+    
+    //MARK: - Общий метод получения всех уастников ОДНОГО события
+    func getAllUsersFromEvent(usersID: [String], completion: @escaping (Result<[UserModel], Error>) -> Void) {
+        let uniqueIDs = Array(Set(usersID)).filter { !$0.isEmpty }
         
+        guard !uniqueIDs.isEmpty else {
+            completion(.success([]))
+            return
+        }
+        
+        // Ограничиваем количество одновременных запросов
+        let maxConcurrentRequests = 10
+        let usersRef = database.child("users")
+        var users: [UserModel] = []
+        let semaphore = DispatchSemaphore(value: maxConcurrentRequests)
+        let queue = DispatchQueue(label: "com.user.fetch.queue", attributes: .concurrent)
+        
+        let group = DispatchGroup()
+        
+        for userID in uniqueIDs {
+            group.enter()
+            
+            queue.async {
+                semaphore.wait()
+                
+                usersRef.child(userID).observeSingleEvent(of: .value) { snapshot in
+                    defer {
+                        semaphore.signal()
+                        group.leave()
+                    }
+                    
+                    if let userData = snapshot.value as? [String: Any],
+                       let user = UserModel(from: userData) {
+                        DispatchQueue.main.async {
+                            users.append(user)
+                        }
+                    }
+                }
+            }
+        }
+        
+        group.notify(queue: .main) {
+            completion(.success(users))
+        }
+    }
+  
     //MARK: - Обращение к БД запросом
     private func processSnapshot(_ snapshot: DataSnapshot, completion: @escaping (Result<[EventModel], Error>) -> Void) {
         guard snapshot.exists() else {
@@ -128,7 +174,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
 
     //MARK: - удаление события
-    func deleteEvent(eventId: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func deleteEvent(idEvent eventId: String, completion: @escaping (Result<String, Error>) -> Void) {
         database.child(eventsPath).child(eventId).removeValue { error, _ in
             if let error = error {
                 completion(.failure(error))
@@ -148,5 +194,9 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                 print("❌ Not connected to Firebase")
             }
         }
+    }
+    
+    deinit {
+        print("Deinit Firebase real data base")
     }
 }

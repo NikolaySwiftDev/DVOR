@@ -1,13 +1,11 @@
 import UIKit
 
 final class DetailViewController: UIViewController {
-    
-    var location = String()
-    
+        
     //MARK: - Properties
     var presenter: DetailPresenterProtocol?
-    var event: EventModel
-    var viewPosition: DetailViewPosition = .users
+    var details: DetailModel
+    var viewPosition: DetailSegmentViewPosition = .users
 
     private let mapImage: UIImageView = {
         let image = UIImageView.init(image: UIImage(systemName: "photo.artframe"))
@@ -33,16 +31,17 @@ final class DetailViewController: UIViewController {
     }()
 
 
-    private lazy var titleAdress = UILabel(text: event.address,
+    private lazy var titleAdress = UILabel(text: details.address,
                                            font: .poppins(weight: .medium, size: .mid),
-                                           textColor: DetailConstants.textColor)
+                                           textColor: DetailConstants.textColor,
+                                           textAlignment: .center)
     
     private let segmentView = DetailSegmentContainerView()
     
     
     //MARK: - Init
-    init(event: EventModel) {
-        self.event = event
+    init(details: DetailModel) {
+        self.details = details
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -56,6 +55,7 @@ final class DetailViewController: UIViewController {
         setupView()
         configure()
         setupContraints()
+        presenter?.fetchAllUsers(usersID: details.users)
     }
     
     //MARK: - Back Button Tapped
@@ -94,7 +94,7 @@ extension DetailViewController: UserCellProtocol {
 //MARK: - Detail Info Protocol
 extension DetailViewController: InfoViewProtocol {
     func mapButtonTapped() {
-        presenter?.showLocationOnMap(location: event.address)
+        presenter?.showLocationOnMap(location: details.address)
     }
 }
 
@@ -102,7 +102,7 @@ extension DetailViewController: InfoViewProtocol {
 private extension DetailViewController {
     private func setupView() {
 
-        view.backgroundColor = DetailConstants.backColor
+        view.backgroundColor = Constants.Colors.backgroungColor
         
         view.addSubview(backButton)
         view.addSubview(shareButton)
@@ -112,7 +112,7 @@ private extension DetailViewController {
     }
     
     private func configure() {
-        segmentView.configureAllViews(event)
+        segmentView.configureAllViews(details)
 
         segmentView.usersView.delegate = self
         segmentView.infoView.delegate = self

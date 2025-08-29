@@ -41,7 +41,6 @@ extension NotificationViewController: RegistProtocol {
     }
     
     func showSuccess() {
-        print("Success true")
         onNext?()
     }
     

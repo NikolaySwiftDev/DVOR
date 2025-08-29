@@ -4,13 +4,14 @@ import UIKit
 final class CreateAvatarViewController: BaseRegistrationViewController {
     
     //MARK: - Properties
-    private lazy var avatar = UIImage(systemName: "person.and.background.dotted")
+//    private lazy var avatar = UIImage(systemName: "person.and.background.dotted")
+    private var avatar: UIImage?
     var onNext: ((UIImage?) -> Void)?
     
     //MARK: - UI
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = avatar
+        imageView.image = UIImage(systemName: "person.and.background.dotted")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 125
@@ -31,7 +32,7 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        removePhoto()
+        updateNextButtonState()
     }
     
     //MARK: - ChooseFoto Button Action
@@ -87,11 +88,11 @@ extension CreateAvatarViewController {
     }
     
     
-    private func removePhoto() {
-        avatar = UIImage(systemName: "person.and.background.dotted")
-        avatarImageView.image = avatar
-        updateNextButtonState()
-    }
+//    private func removePhoto() {
+//        avatar = UIImage(systemName: "person.and.background.dotted")
+//        avatarImageView.image = avatar
+//        updateNextButtonState()
+//    }
     
     private func updateNextButtonState() {
         let isValid = checkValidButton()

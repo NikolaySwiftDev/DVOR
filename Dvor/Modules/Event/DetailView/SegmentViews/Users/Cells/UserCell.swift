@@ -135,30 +135,30 @@ final class UserTableViewCell: UITableViewCell {
     }
 
     // MARK: - Configuration
-    func configure(with model: UserModel, index: Int) {
+    func configure(with name: String, index: Int) {
         indexLabel.text = "\(index + 1)"
-        nameLabel.text = model.name
+        nameLabel.text = name
         
-        positionLabel.text = model.position
-        ticketImageView.isHidden = !model.hasTicket
-        checkmarkImageView.isHidden = !model.isChecked
-        progressView.progress = model.progress
-        
-        if let data = model.image {
-            avatarImageView.image = UIImage(data: data)
-        } else {
-            avatarImageView.image = UIImage(systemName: "photo.circle")
-        }
-        
-        switch model.progress {
-        case 0...0.3:
-            progressView.progressTintColor = .red
-        case 0.3...0.6:
-            progressView.progressTintColor = .yellow
-        case 0.6...1:
-            progressView.progressTintColor = .green
-        default:
-            progressView.progressTintColor = .blue
-        }
+//        positionLabel.text = model.position
+//        ticketImageView.isHidden = !model.hasTicket
+//        checkmarkImageView.isHidden = !model.isChecked
+//        progressView.progress = model.progress
+//        
+//        if let data = model.image {
+//            avatarImageView.image = UIImage(data: data)
+//        } else {
+//            avatarImageView.image = UIImage(systemName: "photo.circle")
+//        }
+//        
+//        switch model.progress {
+//        case 0...0.3:
+//            progressView.progressTintColor = .red
+//        case 0.3...0.6:
+//            progressView.progressTintColor = .yellow
+//        case 0.6...1:
+//            progressView.progressTintColor = .green
+//        default:
+//            progressView.progressTintColor = .blue
+//        }
     }
 }

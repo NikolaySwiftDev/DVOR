@@ -13,14 +13,13 @@ final class UsersView: UIView {
     private let tableView = UITableView()
     
     // MARK: - Data
-    private var detailEvent: EventModel?
+    private var detailEvent: DetailModel?
 
     // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupView()
         config()
-        setupConstraints()
     }
 
     required init?(coder: NSCoder) {
@@ -28,7 +27,7 @@ final class UsersView: UIView {
     }
 
     // MARK: - Configuration
-    func configure(with detail: EventModel) {
+    func configure(with detail: DetailModel) {
         self.detailEvent = detail
         tableView.reloadData()
     }
@@ -48,17 +47,13 @@ private extension UsersView {
         
         tableView.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
         tableView.register(OrganizatorTableViewCell.self, forCellReuseIdentifier: OrganizatorTableViewCell.identifier)
+        
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 
-    private func setupConstraints() {
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
+
 }
 
 // MARK: - UITableViewDelegate & DataSource
@@ -80,9 +75,10 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
             ) as? OrganizatorTableViewCell else {
                 return UITableViewCell()
             }
-//            cell.configure(with: data.org)
+            cell.configure(with: data.name)
             return cell
         }
+        
         // Остальные ячейки - пользователи
         else {
             guard let cell = tableView.dequeueReusableCell(
@@ -93,8 +89,8 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
             }
             
             let userIndex = indexPath.row - 1
-            let userModel = data.users[userIndex]
-//            cell.configure(with: userModel, index: userIndex)
+            let eventUser = data.users[userIndex]
+            cell.configure(with: eventUser, index: userIndex)
             return cell
         }
     }
@@ -102,7 +98,7 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let data = detailEvent else { return }
         if indexPath.row == 0 {
-//            delegate?.orgCellTapped(data.org)
+//            delegate?.orgCellTapped(data)
         } else {
 //            delegate?.userCellTapped(data.users[indexPath.row - 1])
         }

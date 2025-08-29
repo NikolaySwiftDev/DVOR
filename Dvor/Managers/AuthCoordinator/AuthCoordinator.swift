@@ -92,7 +92,6 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         vc.onNext = { [weak self] avatar in
             if let imageData = avatar?.pngData() {
                 self?.registrationData.image = imageData
-                print("foto saved")
             }
             self?.chooseCity()
         }
@@ -153,7 +152,7 @@ struct RegistrationData: Codable {
     var dateBD: Date = Date()
     var position: String = ""
     var experience: String = ""
-    var image: Data = Data()
+    var image: Data?
     var city: String = ""
 }
 

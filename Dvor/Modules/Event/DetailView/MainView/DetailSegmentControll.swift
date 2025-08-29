@@ -5,7 +5,7 @@ final class DetailSegmentContainerView: UIView {
     
     // MARK: - UI Components
     private let segmentedControl: UISegmentedControl = {
-        let items = DetailModel().items
+        let items = DetailSegmentModel().items
         let sc = UISegmentedControl(items: items)
         sc.selectedSegmentIndex = 1
         sc.selectedSegmentTintColor = .mediumGreen
@@ -18,7 +18,7 @@ final class DetailSegmentContainerView: UIView {
     let usersView = UsersView()
     private let commentsView = CommentsView()
 
-    private var currentPosition: DetailViewPosition = .users
+    private var currentPosition: DetailSegmentViewPosition = .users
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -43,12 +43,12 @@ final class DetailSegmentContainerView: UIView {
     }
     
     // MARK: - Public Configuration
-    func configureAllViews(_ users: EventModel) {
+    func configureAllViews(_ detail: DetailModel) {
         //User config
-//        usersView.configure(with: users.detail)
+        usersView.configure(with: detail)
         
         //Info config
-        infoView.configure(with: users)
+        infoView.configure(with: detail)
     }
 
     private func setupConstraints() {
@@ -135,7 +135,7 @@ final class DetailSegmentContainerView: UIView {
     }
 
     // MARK: - External Control
-    func configureInitialPosition(_ position: DetailViewPosition) {
+    func configureInitialPosition(_ position: DetailSegmentViewPosition) {
         switch position {
         case .info: segmentedControl.selectedSegmentIndex = 0
         case .users: segmentedControl.selectedSegmentIndex = 1

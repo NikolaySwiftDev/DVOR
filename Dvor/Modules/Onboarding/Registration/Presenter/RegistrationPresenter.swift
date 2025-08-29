@@ -172,10 +172,13 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-                userDefaults.saveUserInfo(model: data)
+                userDefaults.saveUser(model: data)
                 router?.pushTabBarVC()
-            case .failure(let failure):
-                router?.showAuthErrorAlert(handelr: { [weak self] in
+            case .failure(let error):
+                router?.showAlertConfigur(title: "Ошибка записи",
+                                          message: error.localizedDescription,
+                                          titleActionButton: "Продолжить",
+                                          handelr:  { [weak self] in
                     guard let self = self else { return }
                     self.router?.pushTabBarVC()
                 })

@@ -21,7 +21,6 @@ final class CityViewController: BaseRegistrationViewController {
     //MARK: - Next Button Action
     override func nextButtonTapped() {
         onNext?(city)
-        print("City", city)
     }
 }
 

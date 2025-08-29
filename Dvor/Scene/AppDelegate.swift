@@ -5,11 +5,7 @@ import FirebaseCore
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-//        IQKeyboardManager.shared.enable = true
-//        IQKeyboardManager.shared.shouldResignOnTouchOutside = true
-//        IQKeyboardManager.shared.enableAutoToolbar = false
-        
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {        
         FirebaseApp.configure()
         return true
     }

@@ -12,13 +12,17 @@ protocol HomePresenterProtocol: AnyObject {
     func fetchEvents()
     func writeEvent(model: EventModel)
     func filterEventsWithDate(date: Date)
-    func addUserToEvent(idEvent: String, idUser: String)
+    func addUserToEvent(idEvent: String)
     func deleteEvent(eventId: String)
     
     func showLocationOnMap(location: String)
     func pushDetailVC(model: EventModel)
     
-    init(view: HomeProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol)
+    init(view: HomeProtocol,
+         router: RouterMainProtocol,
+         network: FirebaseDataManagerProtocol,
+         userDefaults: UserDefaultsProtocol
+    )
 }
 
 final class HomePresenter: HomePresenterProtocol {
@@ -28,13 +32,18 @@ final class HomePresenter: HomePresenterProtocol {
     var filteredEvents: [EventModel]?
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
+    let userDefaults: UserDefaultsProtocol?
     
     private var lastFilterDate: Date = .now
 
-    required init(view: HomeProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol) {
+    required init(view: HomeProtocol,
+                  router: RouterMainProtocol,
+                  network: FirebaseDataManagerProtocol,
+                  userDefaults: UserDefaultsProtocol) {
         self.view = view
         self.router = router
         self.network = network
+        self.userDefaults = userDefaults
         setupRealTimeObservation()
     }
 
@@ -98,11 +107,17 @@ final class HomePresenter: HomePresenterProtocol {
     }
     
     //MARK: - Добавление участника
-    func addUserToEvent(idEvent: String, idUser: String) {
+    func addUserToEvent(idEvent: String) {
         guard idEvent != "" else {
             router?.showErrorAlerWithTitle("Выберите событие")
             return
         }
+        
+        guard let idUser = userDefaults?.getIDUser() else {
+            router?.showErrorAlerWithTitle("Добавьте аккаунт")
+            return
+        }
+                
         network?.addUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -121,7 +136,7 @@ final class HomePresenter: HomePresenterProtocol {
             router?.showErrorAlerWithTitle("Выберите событие")
             return
         }
-        network?.deleteEvent(eventId: eventId, completion: { [weak self] result in
+        network?.deleteEvent(idEvent: eventId, completion: { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -141,7 +156,8 @@ final class HomePresenter: HomePresenterProtocol {
     
     //MARK: - Пуш в детальный экран
     func pushDetailVC(model: EventModel) {
-        router?.pushDetailVC(model: model)
+        let details = model.toDetailModel()
+        router?.pushDetailVC(model: details)
     }
     
     //MARK: - Deinit
