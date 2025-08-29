@@ -27,20 +27,27 @@ final class HomeViewController: BaseViewController {
     override func didTapBellButton() {
         presenter?.deleteEvent(eventId: eventID)
     }
+    
+    override func didTapCartButton() {
+        presenter?.addUserToEvent(idEvent: eventID, idUser: "233321")
+    }
   
     override func didTapMenuButton() {
         let model = EventModel(date: date,
                                time: "20:00",
                                name: "Zaruba2",
                                format: "7x7",
-                               location: "Spb",
-                               address: "Avtovo5",
+                               location: "",
+                               address: "Кировец",
                                namePlace: "Sc 229",
                                price: 2000,
-                               peopleCount: 0,
                                ownerName: "Nik",
                                timeGame: 120,
-                               totlePeoplaCount: 12)
+                               totalPeopleCount: 12,
+                               users: [],
+                               orgId: "1234")
+                               
+            
         presenter?.writeEvent(model: model)
     }
     
@@ -126,33 +133,36 @@ fileprivate let newEvent = EventModel(date: Date.now,
                                       address: "Avtovo",
                                       namePlace: "Sc 229",
                                       price: 2000,
-                                      peopleCount: 0,
                                       ownerName: "Nik",
                                       timeGame: 120,
-                                      totlePeoplaCount: 12)
+                                      totalPeopleCount: 12,
+                                      users: [],
+                                      orgId: "1234")
 
 fileprivate let newEvent1 = EventModel(date: Date.now,
-                                      time: "19:00",
-                                      name: "Zaruba",
-                                      format: "6x6",
-                                      location: "Spb",
-                                      address: "Avtovo",
-                                      namePlace: "Sc 229",
-                                      price: 2000,
-                                      peopleCount: 0,
-                                      ownerName: "Nik",
-                                      timeGame: 120,
-                                      totlePeoplaCount: 12)
+                                       time: "19:00",
+                                       name: "Zaruba",
+                                       format: "6x6",
+                                       location: "Spb",
+                                       address: "Avtovo",
+                                       namePlace: "Sc 229",
+                                       price: 2000,
+                                       ownerName: "Nik",
+                                       timeGame: 120,
+                                       totalPeopleCount: 12,
+                                       users: [],
+                                       orgId: "1234")
 
 fileprivate let newEvent2 = EventModel(date: Date.now,
-                                      time: "20:00",
-                                      name: "Zaruba2",
-                                      format: "7x7",
-                                      location: "Spb",
-                                      address: "Avtovo5",
-                                      namePlace: "Sc 229",
-                                      price: 2000,
-                                      peopleCount: 0,
-                                      ownerName: "Nik",
-                                      timeGame: 120,
-                                      totlePeoplaCount: 12)
+                                       time: "20:00",
+                                       name: "Zaruba2",
+                                       format: "7x7",
+                                       location: "Spb",
+                                       address: "Avtovo5",
+                                       namePlace: "Sc 229",
+                                       price: 2000,
+                                       ownerName: "Nik",
+                                       timeGame: 120,
+                                       totalPeopleCount: 12,
+                                       users: ["1", "2"],
+                                       orgId: "1234")

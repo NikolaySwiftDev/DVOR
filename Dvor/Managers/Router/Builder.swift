@@ -13,7 +13,7 @@ protocol BuilderProtocol: AnyObject {
 }
 
 class Builder: BuilderProtocol {
-    
+    var registrationCoordinator: RegistrationCoordinator?
 
     //MARK: - Tab bar Builder
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController {
@@ -51,27 +51,24 @@ class Builder: BuilderProtocol {
     func createRegistrationCoordinator(router: RouterMainProtocol) {
         let userDefaults = UserDefaultsManager()
 //        let firebase = FirebaseManager()
+        let network = FirebaseDataManager()
         let photoManager = PhotoManager()
         let notifManager = NotificationManager()
         
         let presenter = RegistPresenter(
             router: router,
+            network: network,
 //            firebase: firebase,
             userDefaults: userDefaults,
             photoManager: photoManager,
             notifManager: notifManager
         )
         
-        var registrationCoordinator: RegistrationCoordinator?
-
-        registrationCoordinator = RegistrationCoordinator(
-            presenter: presenter
-        )
-        
+        registrationCoordinator = RegistrationCoordinator(presenter: presenter)
         registrationCoordinator?.onRegistrationComplete = { [weak self] in
+            guard let self = self else { return }
             registrationCoordinator = nil
         }
-
         registrationCoordinator?.start()
     }
 

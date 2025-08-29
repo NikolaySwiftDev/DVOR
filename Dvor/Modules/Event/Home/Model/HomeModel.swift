@@ -6,6 +6,7 @@ struct CalendarDateModel {
 }
 
 struct EventModel: Codable {
+    let id: String
     let date: Date
     let time: String
     let name: String
@@ -14,13 +15,11 @@ struct EventModel: Codable {
     let address: String
     let namePlace: String
     let price: Int
-    let peopleCount: Int
     let ownerName: String
     let timeGame: Int
-    let totlePeoplaCount: Int
-    
-    // Добавляем уникальный идентификатор
-    let id: String
+    let totalPeopleCount: Int
+    var users: [String] = []
+    let orgId: String
     
     init(id: String = UUID().uuidString,
          date: Date,
@@ -31,10 +30,11 @@ struct EventModel: Codable {
          address: String,
          namePlace: String,
          price: Int,
-         peopleCount: Int,
          ownerName: String,
          timeGame: Int,
-         totlePeoplaCount: Int
+         totalPeopleCount: Int,
+         users: [String] = [],
+         orgId: String
     ) {
         self.id = id
         self.date = date
@@ -45,17 +45,17 @@ struct EventModel: Codable {
         self.address = address
         self.namePlace = namePlace
         self.price = price
-        self.peopleCount = peopleCount
         self.ownerName = ownerName
         self.timeGame = timeGame
-        self.totlePeoplaCount = totlePeoplaCount
+        self.totalPeopleCount = totalPeopleCount
+        self.users = users
+        self.orgId = orgId
     }
     
-    // Преобразование в словарь для Firebase
     func toDictionary() -> [String: Any] {
         return [
             "id": id,
-            "date": date.timeIntervalSince1970, // Сохраняем как timestamp
+            "date": date.timeIntervalSince1970,
             "time": time,
             "name": name,
             "format": format,
@@ -63,14 +63,14 @@ struct EventModel: Codable {
             "address": address,
             "namePlace": namePlace,
             "price": price,
-            "peopleCount": peopleCount,
             "ownerName": ownerName,
             "timeGame": timeGame,
-            "totlePeoplaCount": totlePeoplaCount,
+            "totalPeopleCount": totalPeopleCount,
+            "users": users,
+            "orgId": orgId
         ]
     }
     
-    // Инициализация из словаря Firebase
     init?(from dictionary: [String: Any]) {
         guard let id = dictionary["id"] as? String,
               let timestamp = dictionary["date"] as? TimeInterval,
@@ -81,11 +81,10 @@ struct EventModel: Codable {
               let address = dictionary["address"] as? String,
               let namePlace = dictionary["namePlace"] as? String,
               let price = dictionary["price"] as? Int,
-              let peopleCount = dictionary["peopleCount"] as? Int,
               let ownerName = dictionary["ownerName"] as? String,
               let timeGame = dictionary["timeGame"] as? Int,
-              let totlePeoplaCount = dictionary["totlePeoplaCount"] as? Int else
-        {
+              let totalPeopleCount = dictionary["totalPeopleCount"] as? Int,
+              let orgId = dictionary["orgId"] as? String else {
             return nil
         }
         
@@ -98,12 +97,12 @@ struct EventModel: Codable {
         self.address = address
         self.namePlace = namePlace
         self.price = price
-        self.peopleCount = peopleCount
         self.ownerName = ownerName
         self.timeGame = timeGame
-        self.totlePeoplaCount = totlePeoplaCount
+        self.totalPeopleCount = totalPeopleCount
+        self.users = dictionary["users"] as? [String] ?? []
+        self.orgId = orgId
     }
-
 }
 
 extension EventModel {
@@ -112,57 +111,26 @@ extension EventModel {
     }
     
     var formattedTime: String {
-        return time + "ч"
+        return time + " ч"
     }
     
     var priceString: String {
         return "\(price) руб."
     }
     
+    var participantsCount: Int {
+         return users.count
+     }
+    
     var peopleAllCount: String {
-        return "\(peopleCount) / \(totlePeoplaCount)"
+        return "\(participantsCount) / \(totalPeopleCount)"
     }
     
     var formattedTimeGame: String {
-        String(timeGame)
+        String(timeGame) + " мин"
     }
+    
+    
 }
 
-struct EventDetail: Codable {
-    let users: [UserModel]
-    let org: OrganizatorModel
-}
-
-struct UserModel: Codable {
-    let image: Data?
-    let age: Int
-    let followers: Int
-    let following: Int
-    let club: String
-    let name: String
-    let surname: String
-    let email: String
-    let dateBirthday: String
-    let mobile: String
-    let gender: String
-    let progress: Float
-    let position: String
-    let hasTicket: Bool
-    let isChecked: Bool
-    let stats: UserStats
-}
-
-struct UserStats: Codable {
-    let plays: Int
-    let level: Double
-    let mvpCount: Int
-    let mvpNominations: Int
-    let attendance: String
-}
-
-struct OrganizatorModel: Codable {
-    let image: Data?
-    let name: String
-    let infoOrg: String
-}
 

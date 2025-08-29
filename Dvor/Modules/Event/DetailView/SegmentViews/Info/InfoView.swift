@@ -44,7 +44,7 @@ final class InfoView: UIView {
         titleAddress.text = model.address
         titlePlace.text = model.namePlace
         titleDate.text = model.date.formattedAsDayMonthYear()
-        titleTime.text = model.time
+        titleTime.text = model.formattedTime
         titlePrice.text = model.priceString
         titleTimeGame.text = model.formattedTimeGame
         titleCountPeop.text = model.peopleAllCount

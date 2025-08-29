@@ -12,6 +12,7 @@ protocol HomePresenterProtocol: AnyObject {
     func fetchEvents()
     func writeEvent(model: EventModel)
     func filterEventsWithDate(date: Date)
+    func addUserToEvent(idEvent: String, idUser: String)
     func deleteEvent(eventId: String)
     
     func showLocationOnMap(location: String)
@@ -96,6 +97,24 @@ final class HomePresenter: HomePresenterProtocol {
         view?.success()
     }
     
+    //MARK: - Добавление участника
+    func addUserToEvent(idEvent: String, idUser: String) {
+        guard idEvent != "" else {
+            router?.showErrorAlerWithTitle("Выберите событие")
+            return
+        }
+        network?.addUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                router?.showErrorAlerWithTitle(success)
+            case .failure(let error):
+                router?.showErrorAlerWithTitle("Ошибка сохранения")
+                view?.error(error: error)
+            }
+        })
+    }
+
     //MARK: - Удаление собитыя
     func deleteEvent(eventId: String) {
         guard eventId != "" else {

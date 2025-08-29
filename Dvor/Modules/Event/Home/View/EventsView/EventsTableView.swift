@@ -28,7 +28,6 @@ final class EventsTableView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-
     private func setupTableView() {
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none

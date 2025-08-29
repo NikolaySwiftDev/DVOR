@@ -13,7 +13,7 @@ final class UsersView: UIView {
     private let tableView = UITableView()
     
     // MARK: - Data
-    private var detailEvent: EventDetail?
+    private var detailEvent: EventModel?
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -28,7 +28,7 @@ final class UsersView: UIView {
     }
 
     // MARK: - Configuration
-    func configure(with detail: EventDetail) {
+    func configure(with detail: EventModel) {
         self.detailEvent = detail
         tableView.reloadData()
     }
@@ -80,7 +80,7 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
             ) as? OrganizatorTableViewCell else {
                 return UITableViewCell()
             }
-            cell.configure(with: data.org)
+//            cell.configure(with: data.org)
             return cell
         }
         // Остальные ячейки - пользователи
@@ -94,7 +94,7 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
             
             let userIndex = indexPath.row - 1
             let userModel = data.users[userIndex]
-            cell.configure(with: userModel, index: userIndex)
+//            cell.configure(with: userModel, index: userIndex)
             return cell
         }
     }
@@ -102,9 +102,9 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let data = detailEvent else { return }
         if indexPath.row == 0 {
-            delegate?.orgCellTapped(data.org)
+//            delegate?.orgCellTapped(data.org)
         } else {
-            delegate?.userCellTapped(data.users[indexPath.row - 1])
+//            delegate?.userCellTapped(data.users[indexPath.row - 1])
         }
     }
 }

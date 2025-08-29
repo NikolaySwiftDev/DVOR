@@ -72,7 +72,7 @@ final class EventTableViewCell: UITableViewCell {
         locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
 
         fieldIconImageView.image = UIImage(systemName: "flag.fill")
-        fieldIconImageView.tintColor = .systemGreen
+        fieldIconImageView.tintColor = .white
         fieldIconImageView.contentMode = .scaleAspectFit
 
         arrowImageView.tintColor = .white
@@ -90,7 +90,7 @@ final class EventTableViewCell: UITableViewCell {
         timeLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(10)
             $0.leading.equalToSuperview().offset(10)
-            $0.width.equalTo(50)
+            $0.width.equalTo(60)
         }
 
         titleLabel.snp.makeConstraints {
@@ -145,19 +145,12 @@ final class EventTableViewCell: UITableViewCell {
     }
 
     func configure(with model: EventModel) {
-        timeLabel.text = model.time
+        timeLabel.text = model.formattedTime
         titleLabel.text = model.address
-        priceLabel.text = String(format: "%.2fР", Double(model.price))
+        priceLabel.text = model.priceString
         formatLabel.text = model.format
-//        ownerLabel.text = model.ownerName ?? "Unknown"
-        peopleCountLabel.text = "\(model.peopleCount)"
-        fieldIconImageView.image = UIImage(systemName: "")
-
-//        if let ownerImageName = model.ownerImage {
-//            ownerImageView.image = UIImage(systemName: ownerImageName)
-//        }
-
+        ownerLabel.text = model.ownerName
+        peopleCountLabel.text = model.peopleAllCount
         locationText = model.address
     }
-
 }

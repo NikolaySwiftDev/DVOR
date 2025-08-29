@@ -5,8 +5,9 @@ import FirebaseDatabase
 protocol FirebaseDataManagerProtocol: AnyObject {
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void)
+    func writeUser(model: UserModel, completion: @escaping (Result<String, Error>) -> Void)
     func deleteEvent(eventId: String, completion: @escaping (Result<String, Error>) -> Void)
-    
+    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<String, Error>) -> Void)
 
     func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
     func stopObservingEvents()
@@ -16,6 +17,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
 
     private let database: DatabaseReference
     private let eventsPath = "events"
+    private let usersPath = "users"
     private var observationHandle: DatabaseHandle?
     private var observationCompletion: ((Result<[EventModel], Error>) -> Void)?
     
@@ -54,20 +56,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             self.processSnapshot(snapshot, completion: completion)
         }
     }
-    
-    //MARK: - Запись События в БД
-    func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void) {
-        let eventRef = database.child(eventsPath).child(model.id)
-        eventRef.setValue(model.toDictionary()) { [weak self] error, _ in
-            guard let self = self else { return }
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success("Событие добавлено"))
-            }
-        }
-    }
-    
+        
     //MARK: - Обращение к БД запросом
     private func processSnapshot(_ snapshot: DataSnapshot, completion: @escaping (Result<[EventModel], Error>) -> Void) {
         guard snapshot.exists() else {
@@ -87,6 +76,57 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         completion(.success(events))
     }
     
+    //MARK: - Запись События в БД
+    func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void) {
+        let eventRef = database.child(eventsPath).child(model.id)
+        eventRef.setValue(model.toDictionary()) { [weak self] error, _ in
+            guard let self = self else { return }
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success("Событие добавлено"))
+            }
+        }
+    }
+    
+    //MARK: - Запись пользователя в БД
+    func writeUser(model: UserModel, completion: @escaping (Result<String, any Error>) -> Void) {
+        let eventRef = database.child(usersPath).child(model.id)
+        eventRef.setValue(model.toDictionary()) { [weak self] error, _ in
+            guard let self = self else { return }
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success("Событие добавлено"))
+                print("Пользователь добавлен успешно")
+            }
+        }
+    }
+    
+    //MARK: - Добавление пользоватля к событию в БД
+    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let usersRef = database.child(eventsPath).child(idEvent).child("users")
+        
+        usersRef.observeSingleEvent(of: .value) { snapshot in
+            var currentUsers = snapshot.value as? [String] ?? []
+            
+            // Проверяем, нет ли уже пользователя
+            if !currentUsers.contains(idUser) {
+                currentUsers.append(idUser)
+            } else {
+                completion(.success("Пользователь уже добавлен"))
+            }
+            
+            usersRef.setValue(currentUsers) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success("Пользователь добавлен"))
+                }
+            }
+        }
+    }
+
     //MARK: - удаление события
     func deleteEvent(eventId: String, completion: @escaping (Result<String, Error>) -> Void) {
         database.child(eventsPath).child(eventId).removeValue { error, _ in

@@ -45,7 +45,7 @@ final class UserCardView: UIView {
         }
         usernameLabel.text = model.name
         
-        setupStats(with: model.stats)
+        setupStats(with: model)
     }
     
     // MARK: - Private Methods
@@ -88,7 +88,7 @@ final class UserCardView: UIView {
         }
     }
     
-    private func setupStats(with stats: UserStats) {
+    private func setupStats(with stats: UserModel) {
         // Очищаем предыдущие данные
         statsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
@@ -107,7 +107,7 @@ final class UserCardView: UIView {
         statsStackView.addArrangedSubview(mvpNominationsView)
         
         // ATT
-        let attView = createStatView(title: "ATT", value: stats.attendance)
+        let attView = createStatView(title: "ATT", value: "na")
         statsStackView.addArrangedSubview(attView)
     }
     

@@ -32,6 +32,7 @@ protocol RegistPresenterProtocol: AnyObject {
 
     init(router: RouterMainProtocol,
 //         firebase: FirebaseManagerProtocol,
+         network: FirebaseDataManager,
          userDefaults: UserDefaultsProtocol,
          photoManager: PhotoManagerProtocol,
          notifManager: NotificationManagerProtocol)
@@ -44,6 +45,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     let userDefaults: UserDefaultsProtocol
     let router: RouterMainProtocol?
 //    let firebase: FirebaseManagerProtocol?
+    let network: FirebaseDataManager
     let photoManager: PhotoManagerProtocol
     let notifManager: NotificationManagerProtocol
     
@@ -52,11 +54,13 @@ final class RegistPresenter: RegistPresenterProtocol {
 
     required init(router: RouterMainProtocol,
 //                  firebase: FirebaseManagerProtocol,
+                  network: FirebaseDataManager,
                   userDefaults: UserDefaultsProtocol,
                   photoManager: PhotoManagerProtocol,
                   notifManager: NotificationManagerProtocol) {
         self.router = router
 //        self.firebase = firebase
+        self.network = network
         self.userDefaults = userDefaults
         self.photoManager = photoManager
         self.notifManager = notifManager
@@ -154,10 +158,29 @@ final class RegistPresenter: RegistPresenterProtocol {
         }
     }
 
-    func completeRegistration(model: RegistrationData) {
-        print(model)
-        userDefaults.saveUserInfo(model: model)
-        router?.pushTabBarVC()
+    func completeRegistration(model: RegistrationData) {        
+        let data = UserModel(image: model.image,
+                             name: model.name,
+                             surname: model.surname,
+                             dateBirthday: model.dateBD,
+                             mobile: model.phone,
+                             experience: model.experience,
+                             city: model.city,
+                             position: model.position)
+        
+        network.writeUser(model: data, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                userDefaults.saveUserInfo(model: data)
+                router?.pushTabBarVC()
+            case .failure(let failure):
+                router?.showAuthErrorAlert(handelr: { [weak self] in
+                    guard let self = self else { return }
+                    self.router?.pushTabBarVC()
+                })
+            }
+        })
     }
     
     func pushViewController(_ vc: UIViewController) {

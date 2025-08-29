@@ -3,7 +3,7 @@ import Foundation
 
 protocol UserDefaultsProtocol: AnyObject {
     func setAuthorizationStatus(_ isAuthorized: Bool)
-    func saveUserInfo(model: RegistrationData)
+    func saveUserInfo(model: UserModel)
     func getAuthorizationStatus() -> Bool
     func loadUserInfo(completion: @escaping (Result<UserModel, Error>) -> Void)
     func deleteAuthStatus()
@@ -31,7 +31,7 @@ final class UserDefaultsManager: UserDefaultsProtocol {
         return userDefaults.bool(forKey: userInfoAuth)
     }
     
-    func saveUserInfo(model: RegistrationData) {
+    func saveUserInfo(model: UserModel) {
         do {
             let data = try encoder.encode(model)
 
