@@ -11,8 +11,9 @@ struct Responsibilities {
 }
 
 struct OrganizatorModel: Codable {
-    let id: String
-    let image: Data?
-    let name: String
-    let infoOrg: String
+    var id: String = ""
+    var image: Data? = nil
+    var name: String = ""
+//    let infoOrg: String
+
 }

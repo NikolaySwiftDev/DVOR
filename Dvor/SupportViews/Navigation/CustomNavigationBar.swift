@@ -52,7 +52,7 @@ final class CustomNavigationBar: UIView {
         addSubview(menuButton)
         
         cartButton.setImage(UIImage(systemName: "cart"), for: .normal)
-        bellButton.setImage(UIImage(systemName: "bell"), for: .normal)
+        bellButton.setImage(UIImage(systemName: "plus.circle"), for: .normal)
         menuButton.setImage(UIImage(systemName: "line.3.horizontal"), for: .normal)
 
         [cartButton, bellButton, menuButton].forEach {

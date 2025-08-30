@@ -7,8 +7,8 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void)
     func writeUser(model: UserModel, completion: @escaping (Result<String, Error>) -> Void)
     func deleteEvent(idEvent: String, completion: @escaping (Result<String, Error>) -> Void)
-    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<String, Error>) -> Void)
-    func getAllUsersFromEvent(usersID: [String], completion: @escaping (Result<[UserModel], any Error>) -> Void)
+    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void)
+    func getAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void)
 
     func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
     func stopObservingEvents()
@@ -26,7 +26,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         let databaseURL = "https://dvor-496f1-default-rtdb.europe-west1.firebasedatabase.app/"
         Database.database().isPersistenceEnabled = true
         database = Database.database(url: databaseURL).reference()
-        checkConnection()
+//        checkConnection()
     }
     
     // MARK: - Start Observation Methods
@@ -58,48 +58,55 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         }
     }
     
-    //MARK: - Общий метод получения всех уастников ОДНОГО события
-    func getAllUsersFromEvent(usersID: [String], completion: @escaping (Result<[UserModel], Error>) -> Void) {
+    //MARK: - Общий метод получения всех участников ОДНОГО события + организатора
+    func getAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void) {
         let uniqueIDs = Array(Set(usersID)).filter { !$0.isEmpty }
         
-        guard !uniqueIDs.isEmpty else {
-            completion(.success([]))
+        // Проверяем, есть ли хотя бы участники или организатор
+        guard !uniqueIDs.isEmpty || !orgId.isEmpty else {
+            completion(.success(([], nil)))
             return
         }
-        
-        // Ограничиваем количество одновременных запросов
-        let maxConcurrentRequests = 10
+
         let usersRef = database.child("users")
         var users: [UserModel] = []
-        let semaphore = DispatchSemaphore(value: maxConcurrentRequests)
-        let queue = DispatchQueue(label: "com.user.fetch.queue", attributes: .concurrent)
-        
+        var organizator: UserModel?
         let group = DispatchGroup()
         
+        // Загружаем участников
         for userID in uniqueIDs {
             group.enter()
             
-            queue.async {
-                semaphore.wait()
+            usersRef.child(userID).observeSingleEvent(of: .value) { snapshot in
+                defer { group.leave() }
                 
-                usersRef.child(userID).observeSingleEvent(of: .value) { snapshot in
-                    defer {
-                        semaphore.signal()
-                        group.leave()
+                if let userData = snapshot.value as? [String: Any],
+                   let user = UserModel(from: userData) {
+                    DispatchQueue.main.async {
+                        users.append(user)
                     }
-                    
-                    if let userData = snapshot.value as? [String: Any],
-                       let user = UserModel(from: userData) {
-                        DispatchQueue.main.async {
-                            users.append(user)
-                        }
+                }
+            }
+        }
+        
+        // Загружаем организатора, если указан
+        if !orgId.isEmpty {
+            group.enter()
+            
+            usersRef.child(orgId).observeSingleEvent(of: .value) { snapshot in
+                defer { group.leave() }
+                
+                if let orgData = snapshot.value as? [String: Any],
+                   let org = UserModel(from: orgData) {
+                    DispatchQueue.main.async {
+                        organizator = org
                     }
                 }
             }
         }
         
         group.notify(queue: .main) {
-            completion(.success(users))
+            completion(.success((users, organizator?.toOrgModel())))
         }
     }
   
@@ -150,24 +157,26 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
     
     //MARK: - Добавление пользоватля к событию в БД
-    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
         let usersRef = database.child(eventsPath).child(idEvent).child("users")
         
         usersRef.observeSingleEvent(of: .value) { snapshot in
             var currentUsers = snapshot.value as? [String] ?? []
             
             // Проверяем, нет ли уже пользователя
-            if !currentUsers.contains(idUser) {
-                currentUsers.append(idUser)
-            } else {
-                completion(.success("Пользователь уже добавлен"))
+            if currentUsers.contains(idUser) {
+                completion(.success(currentUsers)) // Возвращаем текущий список
+                return
             }
+            
+            // Добавляем пользователя
+            currentUsers.append(idUser)
             
             usersRef.setValue(currentUsers) { error, _ in
                 if let error = error {
                     completion(.failure(error))
                 } else {
-                    completion(.success("Пользователь добавлен"))
+                    completion(.success(currentUsers)) // Возвращаем обновленный список
                 }
             }
         }
@@ -185,16 +194,16 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
 
     //MARK: - Проверка подключения
-    func checkConnection() {
-        let connectedRef = database.database.reference(withPath: ".info/connected")
-        connectedRef.observe(.value) { snapshot in
-            if let connected = snapshot.value as? Bool, connected {
-                print("✅ Connected to Firebase!")
-            } else {
-                print("❌ Not connected to Firebase")
-            }
-        }
-    }
+//    func checkConnection() {
+//        let connectedRef = database.database.reference(withPath: ".info/connected")
+//        connectedRef.observe(.value) { snapshot in
+//            if let connected = snapshot.value as? Bool, connected {
+//                print("✅ Connected to Firebase!")
+//            } else {
+//                print("❌ Not connected to Firebase")
+//            }
+//        }
+//    }
     
     deinit {
         print("Deinit Firebase real data base")

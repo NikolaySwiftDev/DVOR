@@ -13,7 +13,8 @@ final class UsersView: UIView {
     private let tableView = UITableView()
     
     // MARK: - Data
-    private var detailEvent: DetailModel?
+    private var userModel: [UserModel]?
+    private var orgModel: OrganizatorModel?
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -27,8 +28,9 @@ final class UsersView: UIView {
     }
 
     // MARK: - Configuration
-    func configure(with detail: DetailModel) {
-        self.detailEvent = detail
+    func configure(userModel: [UserModel], orgModel: OrganizatorModel) {
+        self.userModel = userModel
+        self.orgModel = orgModel
         tableView.reloadData()
     }
 }
@@ -60,12 +62,13 @@ private extension UsersView {
 extension UsersView: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let data = detailEvent?.users else { return 0 }
+        guard let data = userModel else { return 0 }
         return data.count + 1 // +1 для ячейки организатора
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let data = detailEvent else { return UITableViewCell() }
+        guard let data = userModel else { return UITableViewCell() }
+        guard let orgModel = orgModel else { return UITableViewCell() }
 
         // Первая ячейка - организатор
         if indexPath.row == 0 {
@@ -75,7 +78,7 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
             ) as? OrganizatorTableViewCell else {
                 return UITableViewCell()
             }
-            cell.configure(with: data.name)
+            cell.configure(with: orgModel)
             return cell
         }
         
@@ -89,18 +92,19 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
             }
             
             let userIndex = indexPath.row - 1
-            let eventUser = data.users[userIndex]
+            let eventUser = data[userIndex]
             cell.configure(with: eventUser, index: userIndex)
             return cell
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let data = detailEvent else { return }
+        guard let userModel = userModel else { return }
+        guard let orgModel = orgModel else { return }
         if indexPath.row == 0 {
-//            delegate?.orgCellTapped(data)
+            delegate?.orgCellTapped(orgModel)
         } else {
-//            delegate?.userCellTapped(data.users[indexPath.row - 1])
+            delegate?.userCellTapped(userModel[indexPath.row - 1])
         }
     }
 }

@@ -101,8 +101,13 @@ final class OrganizatorTableViewCell: UITableViewCell {
     }
 
     // MARK: - Configuration
-    func configure(with name: String) {
-        nameLabel.text = name
-
+    func configure(with model: OrganizatorModel) {
+        nameLabel.text = model.name
+        
+        if let data = model.image {
+            avatarImageView.image = UIImage(data: data)
+        } else {
+            avatarImageView.image = UIImage(systemName: "photo.circle")
+        }
     }
 }

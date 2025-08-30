@@ -2,12 +2,13 @@ import UIKit
 import PhotosUI
 
 
-enum PhotoError: Error, LocalizedError {
+enum PhotoError: Error, LocalizedError, Equatable {
     case noCameraAvailable
     case noPhotoSelected
     case permissionDenied
     case unknownError
     case cancelled
+    case sizeExceeded(maxSize: Int) // Новый кейс ошибки
     
     var errorDescription: String? {
         switch self {
@@ -16,15 +17,19 @@ enum PhotoError: Error, LocalizedError {
         case .permissionDenied: return "Доступ к галерее запрещен"
         case .unknownError: return "Неизвестная ошибка"
         case .cancelled: return "Выбор отменен"
+        case .sizeExceeded(let maxSize):
+            let sizeInMB = maxSize / (1024 * 1024)
+            return "Размер фото превышает \(sizeInMB) MB"
         }
     }
 }
 
-
 protocol PhotoManagerProtocol: AnyObject {
     func pickPhoto(from router: RouterMainProtocol?,
+                  maxSize: Int?, // Добавляем опциональный параметр максимального размера
                   completion: @escaping (Result<UIImage, PhotoError>) -> Void)
     func showPhotoPickerOptions(from router: RouterMainProtocol,
+                               maxSize: Int?, // Добавляем опциональный параметр максимального размера
                                completion: @escaping (Result<UIImage, PhotoError>) -> Void)
 }
 
@@ -34,7 +39,8 @@ final class PhotoManager: NSObject {
     private var router: RouterMainProtocol?
     private var completion: ((Result<UIImage, PhotoError>) -> Void)?
     private var allowsEditing: Bool = true
-        
+    private var maxSize: Int? // Максимальный размер в байтах
+    
     deinit {
         print("Deinit PhotoManager")
     }
@@ -45,22 +51,25 @@ extension PhotoManager: PhotoManagerProtocol {
     
     // MARK: - Call Pick Photo
     func pickPhoto(from router: RouterMainProtocol?,
+                   maxSize: Int? = nil, // Значение по умолчанию nil (без ограничения)
                    completion: @escaping (Result<UIImage, PhotoError>) -> Void) {
         
         self.router = router
         self.completion = completion
+        self.maxSize = maxSize
         
         guard let router else {return}
-        showPhotoPickerOptions(from: router, completion: completion)
-        
+        showPhotoPickerOptions(from: router, maxSize: maxSize, completion: completion)
     }
     
     // MARK: - Show Alert For Photo Picker
     func showPhotoPickerOptions(from router: RouterMainProtocol,
+                               maxSize: Int? = nil,
                                completion: @escaping (Result<UIImage, PhotoError>) -> Void) {
         
         self.router = router
         self.completion = completion
+        self.maxSize = maxSize
         
         let alert = UIAlertController(title: "Выбрать фото", message: nil, preferredStyle: .actionSheet)
         
@@ -81,7 +90,7 @@ extension PhotoManager: PhotoManagerProtocol {
             self?.completion?(.failure(.cancelled))
         })
         
-//         Для iPad
+        // Для iPad
         if let popoverController = alert.popoverPresentationController {
             popoverController.sourceView = router.navigationController.view
             popoverController.sourceRect = CGRect(x: router.navigationController.view.bounds.midX,
@@ -96,8 +105,33 @@ extension PhotoManager: PhotoManagerProtocol {
 // MARK: - Private Methods
 private extension PhotoManager {
     
+    //MARK: - Проверка размера изображения
+    private func checkImageSize(_ image: UIImage) -> Bool {
+        guard let maxSize = maxSize else { return true } // Если лимит не установлен
+        
+        // Конвертируем изображение в Data для проверки размера
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else {
+            return false
+        }
+        
+        let imageSize = imageData.count
+        print("Размер изображения: \(imageSize) bytes, лимит: \(maxSize) bytes")
+        
+        return imageSize <= maxSize
+    }
+    
+    //MARK: - Обработка выбранного изображения с проверкой размера
+    private func handleSelectedImageWithSizeCheck(_ image: UIImage) {
+        if checkImageSize(image) {
+            completion?(.success(image))
+        } else {
+            completion?(.failure(.sizeExceeded(maxSize: maxSize ?? 0)))
+        }
+        cleanup()
+    }
+    
     //MARK: - Camera
-   private func openCamera() {
+    private func openCamera() {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             completion?(.failure(.noCameraAvailable))
             return
@@ -125,12 +159,6 @@ private extension PhotoManager {
         router?.present(picker)
     }
     
-    //MARK: - Selected Image
-    private func handleSelectedImage(_ image: UIImage) {
-        completion?(.success(image))
-        cleanup()
-    }
-    
     //MARK: - Selected error
     private func handleError(_ error: PhotoError) {
         completion?(.failure(error))
@@ -141,6 +169,7 @@ private extension PhotoManager {
     private func cleanup() {
         router = nil
         completion = nil
+        maxSize = nil
     }
 }
 
@@ -154,9 +183,9 @@ extension PhotoManager: UIImagePickerControllerDelegate, UINavigationControllerD
             guard let self = self else { return }
             
             if let editedImage = info[.editedImage] as? UIImage {
-                self.handleSelectedImage(editedImage)
+                self.handleSelectedImageWithSizeCheck(editedImage)
             } else if let originalImage = info[.originalImage] as? UIImage {
-                self.handleSelectedImage(originalImage)
+                self.handleSelectedImageWithSizeCheck(originalImage)
             } else {
                 self.handleError(.noPhotoSelected)
             }
@@ -196,7 +225,7 @@ extension PhotoManager: PHPickerViewControllerDelegate {
         result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
             if let image = object as? UIImage {
                 DispatchQueue.main.async {
-                    self.handleSelectedImage(image)
+                    self.handleSelectedImageWithSizeCheck(image)
                 }
             } else if error != nil {
                 DispatchQueue.main.async {
@@ -211,15 +240,21 @@ extension PhotoManager: PHPickerViewControllerDelegate {
     }
 }
 
-//MARK: -  UIAdaptivePresentationControllerDelegate
+// MARK: - UIAdaptivePresentationControllerDelegate
 extension PhotoManager: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        //For swipe picker
         handleError(.cancelled)
     }
     
-    // For dismiss delegate
     func setupPickerDismissHandler(_ picker: PHPickerViewController) {
         picker.presentationController?.delegate = self
     }
 }
+
+// MARK: - Вспомогательные константы
+    struct SizeLimits {
+        static let mb1 = 1024 * 1024 // 1 MB
+        static let mb2 = 2 * 1024 * 1024 // 2 MB
+        static let mb3 = 3 * 1024 * 1024 // 5 MB
+    }
+

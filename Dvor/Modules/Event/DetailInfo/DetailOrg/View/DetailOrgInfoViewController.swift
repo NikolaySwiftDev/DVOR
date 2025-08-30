@@ -123,7 +123,7 @@ final class DetailOrgInfoViewController: UIViewController {
     // MARK: - Cconfigure
     private func configureWithModel() {
         nameLabel.text = model.name
-        aboutText.text = model.infoOrg
+        aboutText.text = "Я просто лучший орг на всей планете"
         
         if let imageData = model.image, let image = UIImage(data: imageData) {
             orgImageView.image = image

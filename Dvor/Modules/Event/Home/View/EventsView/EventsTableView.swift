@@ -3,6 +3,7 @@ import SnapKit
 
 protocol EventsTableViewDelegate: AnyObject {
     func didSelectEvent(_ event: EventModel)
+    func removeSelectedEvent(_ eventID: String)
 }
 
 final class EventsTableView: UIView {
@@ -66,4 +67,20 @@ extension EventsTableView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.didSelectEvent(events[indexPath.row])
     }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Удалить") { [weak self] (_, _, completion) in
+            guard let self = self else { return }
+            let eventId = self.events[indexPath.row].id
+            self.delegate?.removeSelectedEvent(eventId)
+            
+            completion(true)
+        }
+        
+        deleteAction.backgroundColor = .red
+        deleteAction.image = UIImage(systemName: "trash")
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }    
 }

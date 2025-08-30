@@ -12,4 +12,5 @@ struct DetailModel {
     let formattedTimeGame: String
     let peopleAllCount: String
     let users: [String]
+    let orgID: String
 }

@@ -12,8 +12,10 @@ protocol HomePresenterProtocol: AnyObject {
     func fetchEvents()
     func writeEvent(model: EventModel)
     func filterEventsWithDate(date: Date)
-    func addUserToEvent(idEvent: String)
+    
     func deleteEvent(eventId: String)
+    
+    func createNewEvent() //mock
     
     func showLocationOnMap(location: String)
     func pushDetailVC(model: EventModel)
@@ -105,30 +107,7 @@ final class HomePresenter: HomePresenterProtocol {
         lastFilterDate = date
         view?.success()
     }
-    
-    //MARK: - Добавление участника
-    func addUserToEvent(idEvent: String) {
-        guard idEvent != "" else {
-            router?.showErrorAlerWithTitle("Выберите событие")
-            return
-        }
-        
-        guard let idUser = userDefaults?.getIDUser() else {
-            router?.showErrorAlerWithTitle("Добавьте аккаунт")
-            return
-        }
-                
-        network?.addUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let success):
-                router?.showErrorAlerWithTitle(success)
-            case .failure(let error):
-                router?.showErrorAlerWithTitle("Ошибка сохранения")
-                view?.error(error: error)
-            }
-        })
-    }
+
 
     //MARK: - Удаление собитыя
     func deleteEvent(eventId: String) {
@@ -164,5 +143,31 @@ final class HomePresenter: HomePresenterProtocol {
     deinit {
         print("Deinit HomePresenter")
         stopRealTimeObservation()
+    }
+    
+    
+    //MOCK
+    
+    func createNewEvent() {
+        guard let orgID = userDefaults?.getIDUser() else {
+            router?.showErrorAlerWithTitle("Зарегистрируйтесь")
+            return
+        }
+        
+        let model = EventModel(date: lastFilterDate,
+                               time: "18:00",
+                               name: "Товарка",
+                               format: "11x11",
+                               location: "Спб",
+                               address: "пр. Просвещения 25",
+                               namePlace: "Школа 555",
+                               price: 1000,
+                               ownerName: "Орг",
+                               timeGame: 120,
+                               totalPeopleCount: 24,
+                               orgId: orgID)
+        
+        writeEvent(model: model)
+        
     }
 }

@@ -157,3 +157,12 @@ extension UserModel {
         return ageComponents.year ?? 0
     }
 }
+
+extension UserModel {
+    func toOrgModel() -> OrganizatorModel {
+        return OrganizatorModel(id: self.id,
+                                image: self.image,
+                                name: self.name
+                                )
+    }
+}

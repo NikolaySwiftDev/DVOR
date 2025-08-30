@@ -55,7 +55,7 @@ final class DetailViewController: UIViewController {
         setupView()
         configure()
         setupContraints()
-        presenter?.fetchAllUsers(usersID: details.users)
+        presenter?.fetchAllUsers(usersID: details.users, orgID: details.orgID)
     }
     
     //MARK: - Back Button Tapped
@@ -65,7 +65,7 @@ final class DetailViewController: UIViewController {
 
     //MARK: - Share Button Tapped
     @objc private func shareButtonTapped() {
-        print(#function)
+        presenter?.addUserToEvent(idEvent: details.id)
     }
  
     deinit {
@@ -75,7 +75,22 @@ final class DetailViewController: UIViewController {
 
 //MARK: - Detail Protocol
 extension DetailViewController: DetailProtocol {
-    func getModel() {}
+    func updateUsers(model: [String]) {
+        presenter?.fetchAllUsers(usersID: model, orgID: details.orgID)
+    }
+    
+    func success(users: [UserModel], org: OrganizatorModel) {
+        hideLoadingView(with: view, tag: 33, state: .delete)
+        segmentView.configureAllViews(detail: details, users: users, org: org)
+    }
+    
+    func load() {
+        hideLoadingView(with: view, tag: 33, state: .add)
+    }
+    
+    func error(error: String) {
+        hideLoadingView(with: view, tag: 33, state: .delete)
+    }
 }
 
 //MARK: - Detail User Protocol
@@ -112,11 +127,8 @@ private extension DetailViewController {
     }
     
     private func configure() {
-        segmentView.configureAllViews(details)
-
         segmentView.usersView.delegate = self
         segmentView.infoView.delegate = self
-        
     }
     
     private func setupContraints() {

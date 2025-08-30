@@ -144,7 +144,8 @@ extension EventModel {
             priceString: self.priceString,
             formattedTimeGame: self.formattedTimeGame,
             peopleAllCount: self.peopleAllCount,
-            users: self.users
+            users: self.users,
+            orgID: self.orgId
         )
     }
 }
