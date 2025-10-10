@@ -16,22 +16,16 @@ final class DetailOrgInfoViewController: UIViewController {
     
 //    private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
     
-    private let orgImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
-        iv.layer.cornerRadius = DetailOrgInfoConstants.cornerRadius
-        return iv
-    }()
+    private let orgImageView = UIImageView(cornerRadius: DetailOrgInfoConstants.cornerRadius)
     
     private let titleLabel = UILabel(text: "Организатор", font: .poppins(weight: .bold, size: .big), textColor: .white)
     private let nameLabel = UILabel(text: "", textColor: .white)
     private let aboutTitle = UILabel(text: "О себе", font: .poppins(weight: .bold, size: .big), textColor: .white)
-    private let aboutText = UILabel(text: "", textColor: .lightGray)
+    private let aboutText = UILabel(text: "", textColor: Constants.Colors.inActiveColor)
     private let responsibilitiesTitle = UILabel(text: "Мои обязанности:", font: .poppins(weight: .bold, size: .big), textColor: .white)
     private let responsibilitiesStack = UIStackView()
     private let reminderLabel = UILabel(text: "Не забудьте! После матча/игры/мероприятия вы можете оценить мою работу",
-                                     textColor: .lightGray)
+                                        textColor: Constants.Colors.inActiveColor)
     
     // MARK: - Init
     init(model: OrganizatorModel) {
@@ -109,9 +103,9 @@ final class DetailOrgInfoViewController: UIViewController {
         }
         
 //        backButton.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide)
-//            make.leading.equalToSuperview().offset(DetailOrgInfoConstants.paddingStandart)
-//            make.height.width.equalTo(DetailOrgInfoConstants.heightBackBtn)
+//            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
+//            make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
+//            make.size.equalTo(Constants.Constraint.backButtonSize)
 //        }
         
         orgImageView.snp.makeConstraints { make in
@@ -129,6 +123,7 @@ final class DetailOrgInfoViewController: UIViewController {
             orgImageView.image = image
         } else {
             orgImageView.image = UIImage(systemName: "person.and.background.dotted")
+            orgImageView.tintColor = Constants.Colors.layerColor
         }
     }
     

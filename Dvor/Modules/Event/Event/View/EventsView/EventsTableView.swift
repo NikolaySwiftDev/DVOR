@@ -42,7 +42,8 @@ final class EventsTableView: UIView {
 
     private func setupConstraints() {
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(10)
+            make.top.bottom.equalToSuperview()
         }
     }
 }

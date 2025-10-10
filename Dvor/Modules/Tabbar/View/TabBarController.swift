@@ -53,10 +53,10 @@ class TabBarViewController: UITabBarController {
 extension TabBarViewController: TabBarProtocol {
     func setTabbarControllers(controllers: TabBarModels) {
         viewControllers = [
-            generateVC(model: controllers.cells[0]),
-            generateVC(model: controllers.cells[1]),
+//            generateVC(model: controllers.cells[0]),
+//            generateVC(model: controllers.cells[1]),
             generateVC(model: controllers.cells[2]),
-            generateVC(model: controllers.cells[3]),
+//            generateVC(model: controllers.cells[3]),
             generateVC(model: controllers.cells[4]),
         ]
     }
@@ -64,7 +64,7 @@ extension TabBarViewController: TabBarProtocol {
 
 //MARK: - Tab Bar Constants
 fileprivate struct TabBarConstants {
-    static let selectedColor = UIColor(.green)
-    static let unSelectedColor = UIColor.gray
-    static let itemsCount: CGFloat = 5
+    static let selectedColor = UIColor(.white)
+    static let unSelectedColor = Constants.Colors.inActiveColor
+    static let itemsCount: CGFloat = 2
 }

@@ -4,14 +4,16 @@ import FirebaseDatabase
 
 protocol FirebaseDataManagerProtocol: AnyObject {
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
+    func fetchUser(idUser: String, completion: @escaping (Result<UserModel, Error>) -> Void)
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void)
     func writeUser(model: UserModel, completion: @escaping (Result<String, Error>) -> Void)
     func deleteEvent(idEvent: String, completion: @escaping (Result<String, Error>) -> Void)
     func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void)
     func getAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void)
+    func updateUserFollowers()
 
-    func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
-    func stopObservingEvents()
+//    func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
+//    func stopObservingEvents()
 }
 
 final class FirebaseDataManager: FirebaseDataManagerProtocol {
@@ -19,8 +21,8 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     private let database: DatabaseReference
     private let eventsPath = "events"
     private let usersPath = "users"
-    private var observationHandle: DatabaseHandle?
-    private var observationCompletion: ((Result<[EventModel], Error>) -> Void)?
+//    private var observationHandle: DatabaseHandle?
+//    private var observationCompletion: ((Result<[EventModel], Error>) -> Void)?
     
     init() {
         let databaseURL = "https://dvor-496f1-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -29,26 +31,26 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
 //        checkConnection()
     }
     
-    // MARK: - Start Observation Methods
-    func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {
-        stopObservingEvents()
-        
-        observationCompletion = completion
-        observationHandle = database.child(eventsPath).observe(.value) { [weak self] snapshot in
-            guard let self = self else { return }
-            self.processSnapshot(snapshot, completion: completion)
-        }
-    }
-    
-    //MARK: - Stop Observing Events
-    func stopObservingEvents() {
-        if let handle = observationHandle {
-            database.child(eventsPath).removeObserver(withHandle: handle)
-            observationHandle = nil
-        }
-        observationCompletion = nil
-    }
-    
+    //Для получения информации (тут события) в онлайне)
+//    // MARK: - Start Observation Methods
+//    func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {
+//        stopObservingEvents()
+//        
+////        observationCompletion = completion
+//        observationHandle = database.child(eventsPath).observe(.value) { [weak self] snapshot in
+//            guard let self = self else { return }
+//            self.processSnapshot(snapshot, completion: completion)
+//        }
+//    }
+//    
+//    //MARK: - Stop Observing Events
+//    func stopObservingEvents() {
+//        if let handle = observationHandle {
+//            database.child(eventsPath).removeObserver(withHandle: handle)
+//            observationHandle = nil
+//        }
+//    }
+//    
     
     //MARK: - Общий метод получения всех событий
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {
@@ -129,6 +131,33 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         completion(.success(events))
     }
     
+    //MARK: - Получение одного пользователя
+    func fetchUser(idUser: String, completion: @escaping (Result<UserModel, Error>) -> Void) {
+        guard !idUser.isEmpty else {
+            completion(.failure(NSError(domain: "InvalidUserID", code: 400, userInfo: [NSLocalizedDescriptionKey: "ID пользователя не может быть пустым"])))
+            return
+        }
+        
+        let userRef = database.child("users").child(idUser)
+        
+        userRef.observeSingleEvent(of: .value) { snapshot in
+            // Проверяем, что пользователь существует
+            guard snapshot.exists() else {
+                completion(.failure(NSError(domain: "UserNotFound", code: 404, userInfo: [NSLocalizedDescriptionKey: "Пользователь не найден"])))
+                return
+            }
+            
+            // Проверяем, что данные есть и их можно распарсить
+            guard let userData = snapshot.value as? [String: Any],
+                  let user = UserModel(from: userData) else {
+                completion(.failure(NSError(domain: "InvalidUserData", code: 500, userInfo: [NSLocalizedDescriptionKey: "Неверный формат данных пользователя"])))
+                return
+            }
+            
+            completion(.success(user))
+        }
+    }
+    
     //MARK: - Запись События в БД
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void) {
         let eventRef = database.child(eventsPath).child(model.id)
@@ -180,6 +209,11 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                 }
             }
         }
+    }
+
+    //MARK: - Обновление подписчиков
+    func updateUserFollowers() {
+        print("Update users followers")
     }
 
     //MARK: - удаление события

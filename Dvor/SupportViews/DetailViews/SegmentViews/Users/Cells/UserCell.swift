@@ -6,23 +6,13 @@ final class UserTableViewCell: UITableViewCell {
     static let identifier = "UserTableViewCell"
 
     // MARK: - UI Elements
-
-    private let indexLabel = UILabel.init(textColor: .white)
-    
-    private let avatarImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.layer.cornerRadius = 20
-        iv.clipsToBounds = true
-        iv.contentMode = .scaleAspectFill
-        return iv
-    }()
-    
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
-        label.textColor = .white
-        return label
-    }()
+    private let indexLabel = UILabel.init()
+    private let nameLabel = UILabel.init()
+    private let positionLabel = UILabel.init()
+    private let avatarImageView = UIImageView.init(cornerRadius: 20)
+    private let ticketImageView = UIImageView(systemImage: "ticket.fill")
+    private let checkmarkImageView = UIImageView(systemImage: "checkmark.circle.fill")
+    private let rightArrowImageView = UIImageView(systemImage: "chevron.right")
     
     private let progressView: UIProgressView = {
         let progress = UIProgressView(progressViewStyle: .default)
@@ -30,31 +20,6 @@ final class UserTableViewCell: UITableViewCell {
         progress.layer.cornerRadius = 2
         progress.clipsToBounds = true
         return progress
-    }()
-    
-    private let positionLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .systemTeal
-        return label
-    }()
-    
-    private let ticketImageView: UIImageView = {
-        let iv = UIImageView(image: UIImage(systemName: "ticket.fill"))
-        iv.tintColor = .systemGreen
-        return iv
-    }()
-    
-    private let checkmarkImageView: UIImageView = {
-        let iv = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
-        iv.tintColor = .systemGreen
-        return iv
-    }()
-    
-    private let rightArrowImageView: UIImageView = {
-        let iv = UIImageView(image: UIImage(systemName: "chevron.right"))
-        iv.tintColor = .systemGray
-        return iv
     }()
 
     // MARK: - Init
@@ -71,7 +36,7 @@ final class UserTableViewCell: UITableViewCell {
 
     // MARK: - Layout
     private func setupViews() {
-        backgroundColor = UIColor.darkGreen
+        backgroundColor = Constants.Colors.backgroungColor
         selectionStyle = .none
         
         contentView.addSubview(indexLabel)

@@ -155,24 +155,3 @@ struct RegistrationData: Codable {
     var image: Data?
     var city: String = ""
 }
-
-//private var model = UserModel(image: nil,
-//                              age: 0,
-//                              followers: 0,
-//                              following: 0,
-//                              club: "",
-//                              name: "",
-//                              surname: "",
-//                              email: "",
-//                              dateBirthday: "",
-//                              mobile: "",
-//                              gender: "",
-//                              progress: 0,
-//                              position: "",
-//                              hasTicket: false,
-//                              isChecked: false,
-//                              stats: UserStats(plays: 0,
-//                                               level: 50,
-//                                               mvpCount: 0,
-//                                               mvpNominations: 0,
-//                                               attendance: ""))

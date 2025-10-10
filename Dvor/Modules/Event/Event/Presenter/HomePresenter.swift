@@ -19,6 +19,7 @@ protocol HomePresenterProtocol: AnyObject {
     
     func showLocationOnMap(location: String)
     func pushDetailVC(model: EventModel)
+    func pushProfileVC()
     
     init(view: HomeProtocol,
          router: RouterMainProtocol,
@@ -46,22 +47,22 @@ final class HomePresenter: HomePresenterProtocol {
         self.router = router
         self.network = network
         self.userDefaults = userDefaults
-        setupRealTimeObservation()
+//        setupRealTimeObservation()
     }
 
     
-    //MARK: - Настройка наблюдения в реальном времени
-    private func setupRealTimeObservation() {
-        network?.startObservingEvents(completion: { [weak self] result in
-            guard let self = self else { return }
-            self.handleEventsResult(result)
-        })
-    }
-    
-    //MARK: - Остановка наблюдения
-    private func stopRealTimeObservation() {
-        network?.stopObservingEvents()
-    }
+//    //MARK: - Настройка наблюдения в реальном времени
+//    private func setupRealTimeObservation() {
+//        network?.startObservingEvents(completion: { [weak self] result in
+//            guard let self = self else { return }
+//            self.handleEventsResult(result)
+//        })
+//    }
+//    
+//    //MARK: - Остановка наблюдения
+//    private func stopRealTimeObservation() {
+//        network?.stopObservingEvents()
+//    }
     
     //MARK: - Общая обработка результатов
     private func handleEventsResult(_ result: Result<[EventModel], Error>) {
@@ -89,6 +90,7 @@ final class HomePresenter: HomePresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let success):
+                fetchEvents()
                 router?.showErrorAlerWithTitle(success)
             case .failure(let error):
                 router?.showErrorAlerWithTitle("Ошибка сохранения")
@@ -120,6 +122,7 @@ final class HomePresenter: HomePresenterProtocol {
 
             switch result {
             case .success(let success):
+                fetchEvents()
                 router?.showErrorAlerWithTitle(success)
             case .failure(let error):
                 router?.showErrorAlerWithTitle("Ошибка удаления")
@@ -138,11 +141,16 @@ final class HomePresenter: HomePresenterProtocol {
         let details = model.toDetailModel()
         router?.pushDetailVC(model: details)
     }
+
+    //MARK: - Пуш в детальный экран
+    func pushProfileVC() {
+        router?.pushProfileVC()
+    }
     
     //MARK: - Deinit
     deinit {
         print("Deinit HomePresenter")
-        stopRealTimeObservation()
+//        stopRealTimeObservation()
     }
     
     
@@ -164,10 +172,11 @@ final class HomePresenter: HomePresenterProtocol {
                                price: 1000,
                                ownerName: "Орг",
                                timeGame: 120,
-                               totalPeopleCount: 24,
+                               totalPeopleCount: 4,
                                orgId: orgID)
         
         writeEvent(model: model)
+        
         
     }
 }

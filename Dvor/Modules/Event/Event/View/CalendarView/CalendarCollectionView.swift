@@ -35,6 +35,7 @@ final class CustomCalendarView: UIView {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 12
+        layout.sectionInset = UIEdgeInsets(top: 2, left: 10, bottom: 2, right: 10)
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear

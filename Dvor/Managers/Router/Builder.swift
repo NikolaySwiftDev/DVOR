@@ -10,6 +10,10 @@ protocol BuilderProtocol: AnyObject {
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController
+    
+    //Для отмены от таббара
+    func createHomeVC(router: RouterMainProtocol) -> UIViewController
+    func createProfileVC(router: RouterMainProtocol) -> UIViewController
 }
 
 class Builder: BuilderProtocol {
@@ -103,7 +107,8 @@ class Builder: BuilderProtocol {
     func createProfileVC(router: RouterMainProtocol) -> UIViewController {
         let view = ProfileViewController()
         let userDefaults = UserDefaultsManager()
-        let presenter = ProfilePresenter(view: view, router: router, userDefaults: userDefaults)
+        let network = FirebaseDataManager()
+        let presenter = ProfilePresenter(view: view, router: router, network: network, userDefaults: userDefaults)
         view.presenter = presenter
         return view
     }
@@ -137,7 +142,8 @@ class Builder: BuilderProtocol {
     //MARK: - Rating Builder
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController {
         let view = RatingViewController(model: model)
-        let presenter = RatingPresenter(view: view, router: router)
+        let network = FirebaseDataManager()
+        let presenter = RatingPresenter(view: view, router: router, network: network)
         view.presenter = presenter
         return view
     }

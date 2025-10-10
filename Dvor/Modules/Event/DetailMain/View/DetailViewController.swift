@@ -7,12 +7,7 @@ final class DetailViewController: UIViewController {
     var details: DetailModel
     var viewPosition: DetailSegmentViewPosition = .users
 
-    private let mapImage: UIImageView = {
-        let image = UIImageView.init(image: UIImage(systemName: "photo.artframe"))
-        image.backgroundColor = .white
-        image.layer.cornerRadius = DetailConstants.cornerRadius
-        return image
-    }()
+    private let mapImage = UIImageView(systemImage: "photo.artframe")
     
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
 

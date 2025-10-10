@@ -21,6 +21,7 @@ protocol RouterMainProtocol: RouterMain {
     func pushAuthVC()
     func pushRegistVC()
     func pushTabBarVC()
+    func pushProfileVC()
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
     func pushDetailUserInfo(model: UserModel)
@@ -34,6 +35,7 @@ protocol RouterMainProtocol: RouterMain {
 }
 
 class Router: RouterMainProtocol {
+
 
     var navigationController: UINavigationController
     var userDefaults: UserDefaultsProtocol
@@ -52,7 +54,7 @@ class Router: RouterMainProtocol {
     //MARK: - Initial View Controller
     func initialViewController() {
         if userDefaults.getAuthorizationStatus() {
-            guard let mainVC = builder?.createTabbarVC(router: self) else { return }
+            guard let mainVC = builder?.createHomeVC(router: self) else { return }
             navigationController.viewControllers = [mainVC]
             navigationController.setNavigationBarHidden(true, animated: true)
             
@@ -67,7 +69,8 @@ class Router: RouterMainProtocol {
     func pushTabBarVC() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let sceneDelegate = windowScene.delegate as? SceneDelegate,
-              let tabbarVC = builder?.createTabbarVC(router: self) else {
+//              let tabbarVC = builder?.createTabbarVC(router: self) else {
+              let tabbarVC = builder?.createHomeVC(router: self) else {
             return
         }
 
@@ -112,12 +115,12 @@ class Router: RouterMainProtocol {
     //MARK: - Push to Detail VC
     func pushDetailVC(model: DetailModel) {
         guard let detailVC = builder?.createDetailVC(router: self, model: model) else { return }
-        
-        if let tabBarController = navigationController.topViewController as? UITabBarController {
-            if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
-                selectedNavigationController.pushViewController(detailVC, animated: true)
-            }
-        }
+        navigationController.pushViewController(detailVC, animated: true)
+//        if let tabBarController = navigationController.topViewController as? UITabBarController {
+//            if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
+//                selectedNavigationController.pushViewController(detailVC, animated: true)
+//            }
+//        }
     }
 
     //MARK: - Log Out
@@ -132,6 +135,12 @@ class Router: RouterMainProtocol {
         navigationController = UINavigationController(rootViewController: tabbarVC)
         sceneDelegate.window?.rootViewController = navigationController
         sceneDelegate.window?.makeKeyAndVisible()
+    }
+    
+    //MARK: - Push Profile User Info
+    func pushProfileVC() {
+        guard let detailVC = builder?.createProfileVC(router: self) else { return }
+        navigationController.pushViewController(detailVC, animated: true)
     }
     
     //MARK: - Push Detail Organizator Info

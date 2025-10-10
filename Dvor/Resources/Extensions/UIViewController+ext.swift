@@ -37,7 +37,5 @@ extension UIViewController {
                 loadingView.removeFromSuperview()
             }
         }
-        
     }
-    
 }

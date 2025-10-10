@@ -1,18 +1,20 @@
 protocol RatingProtocol: AnyObject {}
 
 protocol RatingPresenterProtocol: AnyObject {
-    init(view: RatingProtocol, router: RouterMainProtocol)
+    init(view: RatingProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol)
     func popVC()
     func saveRating(rate: Int)
 }
 
 final class RatingPresenter: RatingPresenterProtocol {
     weak var view: RatingProtocol?
-    var router: RouterMainProtocol?
+    let router: RouterMainProtocol?
+    let network: FirebaseDataManagerProtocol?
     
-    required init(view: RatingProtocol, router: RouterMainProtocol) {
+    required init(view: RatingProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol) {
         self.view = view
         self.router = router
+        self.network = network
     }
     
     func popVC() {
@@ -20,7 +22,7 @@ final class RatingPresenter: RatingPresenterProtocol {
     }
     
     func saveRating(rate: Int) {
-        print(rate)
+        network?.updateUserFollowers()
     }
     
     deinit {

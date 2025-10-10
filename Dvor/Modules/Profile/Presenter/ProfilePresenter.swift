@@ -8,9 +8,10 @@ protocol ProfileProtocol: AnyObject {
 
 protocol ProfilePresenterProtocol: AnyObject {
     var user: UserModel? { get set }
-    init(view: ProfileProtocol, router: RouterMainProtocol, userDefaults: UserDefaultsProtocol)
+    init(view: ProfileProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol, userDefaults: UserDefaultsProtocol)
     
     func getProfileInto()
+    func popVC()
 }
 
 final class ProfilePresenter: ProfilePresenterProtocol {
@@ -18,25 +19,37 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     var user: UserModel?
 
     weak var view: ProfileProtocol?
-    var router: RouterMainProtocol
-    var userDefaults: UserDefaultsProtocol
+    let router: RouterMainProtocol?
+    let network: FirebaseDataManagerProtocol?
+    let userDefaults: UserDefaultsProtocol?
     
-    init(view: ProfileProtocol, router: RouterMainProtocol, userDefaults: UserDefaultsProtocol) {
+    init(view: ProfileProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol, userDefaults: UserDefaultsProtocol) {
         self.view = view
         self.router = router
+        self.network = network
         self.userDefaults = userDefaults
     }
     
     func getProfileInto() {
-//        userDefaults.loadUserInfo(completion: { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let user):
-//                self.user = user
-//                view?.success(model: user)
-//            case .failure(let failure):
-//                view?.error(error: failure)
-//            }
-//        })
+        guard let idUser = userDefaults?.getIDUser() else {
+            router?.showErrorAlerWithTitle("Добавьте аккаунт")
+            return
+        }
+        
+        network?.fetchUser(idUser: idUser, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                self.user = success
+                view?.success(model: success)
+            case .failure(let failure):
+                view?.error(error: failure)
+                router?.showErrorAlerWithTitle(failure.localizedDescription)
+            }
+        })
+    }
+    
+    func popVC() {
+        router?.popVC()
     }
 }

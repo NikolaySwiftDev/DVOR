@@ -3,9 +3,9 @@ import SnapKit
 
 // MARK: - Delegate Protocol
 protocol CustomNavigationBarDelegate: AnyObject {
-    func didTapCartButton()
+    func didTapMagnifyingglassButton()
     func didTapBellButton()
-    func didTapMenuButton()
+    func didTapPersonButton()
 }
 
 final class CustomNavigationBar: UIView {
@@ -18,13 +18,13 @@ final class CustomNavigationBar: UIView {
         let label = UILabel()
         label.text = "Заголовок"
         label.font = UIFont.poppins(weight: .bold, size: 24)
-        label.textColor = .white
+        label.textColor = .black
         return label
     }()
     
-    let cartButton = UIButton()
-    let bellButton = UIButton()
-    let menuButton = UIButton()
+    let magnifyingglass = UIButton(type: .system)
+    let bellButton = UIButton(type: .system)
+    let personButton = UIButton(type: .system)
     
     // MARK: - Init
     init(title: String) {
@@ -47,17 +47,16 @@ final class CustomNavigationBar: UIView {
     // MARK: - Setup
     private func setupView() {
         addSubview(titleLabel)
-        addSubview(cartButton)
-        addSubview(bellButton)
-        addSubview(menuButton)
         
-        cartButton.setImage(UIImage(systemName: "cart"), for: .normal)
-        bellButton.setImage(UIImage(systemName: "plus.circle"), for: .normal)
-        menuButton.setImage(UIImage(systemName: "line.3.horizontal"), for: .normal)
-
-        [cartButton, bellButton, menuButton].forEach {
-            $0.tintColor = .white
+        [magnifyingglass, bellButton, personButton].forEach {
+            $0.tintColor = .black
+            addSubview($0)
         }
+        
+        magnifyingglass.setBackgroundImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        bellButton.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
+        personButton.setBackgroundImage(UIImage(systemName: "person"), for: .normal)
+
     }
     
     private func setupConstraints() {
@@ -66,38 +65,41 @@ final class CustomNavigationBar: UIView {
             make.centerY.equalToSuperview()
         }
         
-        menuButton.snp.makeConstraints { make in
+        personButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
+            make.size.equalTo(25)
             make.right.equalToSuperview().inset(16)
         }
         
         bellButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
-            make.right.equalTo(menuButton.snp.left).offset(-16)
+            make.size.equalTo(25)
+            make.right.equalTo(personButton.snp.left).offset(-16)
         }
         
-        cartButton.snp.makeConstraints { make in
+        magnifyingglass.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
+            make.size.equalTo(25)
             make.right.equalTo(bellButton.snp.left).offset(-16)
         }
     }
     
     private func setupActions() {
-        cartButton.addTarget(self, action: #selector(cartTapped), for: .touchUpInside)
+        magnifyingglass.addTarget(self, action: #selector(magnifyingglassTapped), for: .touchUpInside)
         bellButton.addTarget(self, action: #selector(bellTapped), for: .touchUpInside)
-        menuButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
+        personButton.addTarget(self, action: #selector(personTapped), for: .touchUpInside)
     }
     
     // MARK: - Actions
-    @objc private func cartTapped() {
-        delegate?.didTapCartButton()
+    @objc private func magnifyingglassTapped() {
+        delegate?.didTapMagnifyingglassButton()
     }
     
     @objc private func bellTapped() {
         delegate?.didTapBellButton()
     }
     
-    @objc private func menuTapped() {
-        delegate?.didTapMenuButton()
+    @objc private func personTapped() {
+        delegate?.didTapPersonButton()
     }
 }

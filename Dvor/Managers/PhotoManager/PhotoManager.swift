@@ -8,7 +8,7 @@ enum PhotoError: Error, LocalizedError, Equatable {
     case permissionDenied
     case unknownError
     case cancelled
-    case sizeExceeded(maxSize: Int) // Новый кейс ошибки
+    case sizeExceeded(maxSize: Int)
     
     var errorDescription: String? {
         switch self {

@@ -7,40 +7,13 @@ final class OrganizatorTableViewCell: UITableViewCell {
 
     // MARK: - UI Elements
     
-    private let avatarImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.layer.cornerRadius = 20
-        iv.clipsToBounds = true
-        iv.contentMode = .scaleAspectFill
-        return iv
-    }()
+    private let avatarImageView = UIImageView(cornerRadius: 20)
     
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
-        label.textColor = .white
-        return label
-    }()
+    private let nameLabel = UILabel.init()
+    private let orgLabel = UILabel(text: "Организатор")
     
-    private let orgLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Организатор"
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .systemTeal
-        return label
-    }()
-    
-    private let checkmarkImageView: UIImageView = {
-        let iv = UIImageView(image: UIImage(systemName: "soccerball.inverse"))
-        iv.tintColor = .systemGreen
-        return iv
-    }()
-    
-    private let rightArrowImageView: UIImageView = {
-        let iv = UIImageView(image: UIImage(systemName: "chevron.right"))
-        iv.tintColor = .systemGray
-        return iv
-    }()
+    private let checkmarkImageView = UIImageView(systemImage: "soccerball.inverse")
+    private let rightArrowImageView = UIImageView(systemImage: "chevron.right")
 
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -56,7 +29,7 @@ final class OrganizatorTableViewCell: UITableViewCell {
 
     // MARK: - Layout
     private func setupViews() {
-        backgroundColor = UIColor.darkGreen
+        backgroundColor = Constants.Colors.backgroungColor
         selectionStyle = .none
         
         contentView.addSubview(avatarImageView)

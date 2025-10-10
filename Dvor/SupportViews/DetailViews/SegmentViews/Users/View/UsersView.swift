@@ -37,7 +37,7 @@ final class UsersView: UIView {
 
 private extension UsersView {
     private func setupView() {
-        backgroundColor = .darkGreen
+        backgroundColor = Constants.Colors.backgroungColor
         addSubview(tableView)
     }
 

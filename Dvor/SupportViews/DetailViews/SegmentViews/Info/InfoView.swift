@@ -15,18 +15,17 @@ final class InfoView: UIView {
     private let stackView = UIStackView()
     private let miniStackView = UIStackView()
     private let titleEvent = UILabel(text: "Событие",
-                                     font: .poppins(weight: .bold, size: .big),
-                                     textColor: .white)
+                                     font: .poppins(weight: .bold, size: .big))
     
-    private let titleAddress = UILabel(textColor: .white)
+    private let titleAddress = UILabel.init()
     private let mapAdress = UIButton(type: .custom)
-    private let titlePlace = UILabel(textColor: .white)
-    private let titleDate = UILabel(textColor: .white)
-    private let titleTime = UILabel(textColor: .white)
+    private let titlePlace = UILabel.init()
+    private let titleDate = UILabel.init()
+    private let titleTime = UILabel.init()
     
-    private let titlePrice = UILabel(textColor: .white)
-    private let titleTimeGame = UILabel(textColor: .white)
-    private let titleCountPeop = UILabel(textColor: .white)
+    private let titlePrice = UILabel.init()
+    private let titleTimeGame = UILabel.init()
+    private let titleCountPeop = UILabel.init()
 
     
     override init(frame: CGRect) {
@@ -57,7 +56,7 @@ final class InfoView: UIView {
 
 private extension InfoView {
     private func setupView() {
-        backgroundColor = UIColor.darkGreen
+        backgroundColor = Constants.Colors.backgroungColor
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
@@ -86,7 +85,7 @@ private extension InfoView {
         miniStackView.distribution = .fill
 
         mapAdress.setTitle("Показать на карте", for: .normal)
-        mapAdress.setTitleColor(.cyan, for: .normal)
+        mapAdress.setTitleColor(Constants.Colors.textColor.withAlphaComponent(0.8), for: .normal)
         mapAdress.addTarget(self, action: #selector(mapButtonTapped), for: .touchUpInside)
     }
     

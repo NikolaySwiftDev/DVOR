@@ -39,14 +39,14 @@ final class RatingViewController: UIViewController {
         let label = UILabel()
         label.text = "Вы сможете оценить коллег, если зарегистрированы на мероприятие и после его окончания 😊"
         label.font = .systemFont(ofSize: 14)
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.inActiveColor
         label.numberOfLines = 0
         return label
     }()
     
     private let separatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = Constants.Colors.inActiveColor
         return view
     }()
     
@@ -64,7 +64,7 @@ final class RatingViewController: UIViewController {
         let label = UILabel()
         label.text = "Оцените ваше отношение с другими пользователями на поле или вне его."
         label.font = .systemFont(ofSize: 14)
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.inActiveColor
         label.numberOfLines = 0
         return label
     }()
@@ -113,7 +113,7 @@ final class RatingViewController: UIViewController {
             guard let button = view as? RatingButton else { return }
             let isSelected = button.ratingValue == selectedRating
             button.backgroundColor = isSelected ? .systemGreen : .darkGray
-            button.layer.borderColor = isSelected ? UIColor.systemGreen.cgColor : UIColor.lightGray.cgColor
+            button.layer.borderColor = isSelected ? UIColor.systemGreen.cgColor : Constants.Colors.inActiveColor.cgColor
         }
     }
     
@@ -236,7 +236,7 @@ final class RatingButton: UIButton {
         backgroundColor = .darkGray
         layer.cornerRadius = 8
         layer.borderWidth = 1
-        layer.borderColor = UIColor.lightGray.cgColor
+        layer.borderColor = Constants.Colors.inActiveColor.cgColor
         addTarget(self, action: #selector(didTap), for: .touchUpInside)
     }
     
@@ -265,7 +265,7 @@ final class UserRatingView: UIView {
     private let positionLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
-        label.textColor = .lightGray
+        label.textColor = Constants.Colors.inActiveColor
         return label
     }()
     

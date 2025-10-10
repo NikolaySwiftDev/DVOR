@@ -4,15 +4,7 @@ import SnapKit
 final class UserCardView: UIView {
     
     // MARK: - UI Elements
-    private let avatarImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
-        iv.layer.cornerRadius = 40
-        iv.backgroundColor = .lightGray
-        return iv
-    }()
-    
+    private let avatarImageView = UIImageView(cornerRadius: 40)
     private let usernameLabel = UILabel(textColor: .yellow)
     private let eventsPlayedLabel = UILabel(textColor: .yellow)
     

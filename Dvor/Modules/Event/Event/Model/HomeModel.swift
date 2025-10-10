@@ -92,7 +92,7 @@ extension EventModel {
     }
     
     var formattedTime: String {
-        return time + " ч"
+        return time + "ч"
     }
     
     var priceString: String {
@@ -102,9 +102,13 @@ extension EventModel {
     var participantsCount: Int {
          return users.count
      }
+
+    var peopleAllCountInt: Int {
+        totalPeopleCount - participantsCount
+    }
     
     var peopleAllCount: String {
-        return "\(participantsCount) / \(totalPeopleCount)"
+        return "еще \(peopleAllCountInt.placesString)"
     }
     
     var formattedTimeGame: String {

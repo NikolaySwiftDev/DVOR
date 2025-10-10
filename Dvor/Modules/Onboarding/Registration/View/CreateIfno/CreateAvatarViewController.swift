@@ -9,17 +9,7 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
     var onNext: ((UIImage?) -> Void)?
     
     //MARK: - UI
-    private lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person.and.background.dotted")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 125
-        imageView.backgroundColor = .systemGray5
-        imageView.tintColor = .systemGray3
-        imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
+    private lazy var avatarImageView = UIImageView(systemImage: "person.and.background.dotted", cornerRadius: 125)
     
     private let chooseFoto = UIButton.createStandartButton(
         title: "Выбрать фото",
@@ -86,13 +76,6 @@ extension CreateAvatarViewController {
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
-    
-    
-//    private func removePhoto() {
-//        avatar = UIImage(systemName: "person.and.background.dotted")
-//        avatarImageView.image = avatar
-//        updateNextButtonState()
-//    }
     
     private func updateNextButtonState() {
         let isValid = checkValidButton()

@@ -11,7 +11,7 @@ final class HomeViewController: BaseViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigationTitle("События")
+        setNavigationTitle("Матчи")
         setupView()
         setupConstraints()
     }
@@ -23,6 +23,10 @@ final class HomeViewController: BaseViewController {
   
     override func didTapBellButton() {
         presenter?.createNewEvent()
+    }
+    
+    override func didTapPersonButton() {
+        presenter?.pushProfileVC()
     }
     
     deinit {

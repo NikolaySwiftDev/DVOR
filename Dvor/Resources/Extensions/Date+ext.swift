@@ -9,6 +9,21 @@ extension DateFormatter {
         formatter.timeZone = .current
         return formatter
     }()
+    
+    static let shortDay: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "EEE"
+        return formatter
+    }()
+    
+    static let dayNumber: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "d"
+        return formatter
+    }()
+    
 }
 
 extension Date {
@@ -17,32 +32,6 @@ extension Date {
         dateFormatter.locale = Locale(identifier: "ru_RU")
         dateFormatter.dateFormat = "E, d MMMM yyyy"
         return dateFormatter.string(from: self)
-    }
-    
-    func formattedBirthday() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        dateFormatter.locale = Locale(identifier: "ru_RU")
-        return dateFormatter.string(from: self)
-    }
-    
-    func age() -> Int {
-        
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.locale = Locale(identifier: "ru_RU")
-        
-        let now = Date()
-        let birthComponents = calendar.dateComponents([.year, .month, .day], from: self)
-        let currentComponents = calendar.dateComponents([.year, .month, .day], from: now)
-        
-        var age = currentComponents.year! - birthComponents.year!
-        
-        if (birthComponents.month! > currentComponents.month!) ||
-            (birthComponents.month == currentComponents.month && birthComponents.day! > currentComponents.day!) {
-            age -= 1
-        }
-        
-        return age
     }
     
     func isAdult() -> Bool {
@@ -54,6 +43,14 @@ extension Date {
         }
         
         return age >= 3 && age <= 100
+    }
+    
+    var shortDay: String {
+        return DateFormatter.shortDay.string(from: self)
+    }
+    
+    var shortMonth: String {
+        return DateFormatter.dayNumber.string(from: self)
     }
 }
 

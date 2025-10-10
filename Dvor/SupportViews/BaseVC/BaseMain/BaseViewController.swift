@@ -39,22 +39,22 @@ class BaseViewController: UIViewController {
 }
 
 extension BaseViewController: CustomNavigationBarDelegate {
-    @objc open func didTapCartButton() {
-        print("🛒 Кнопка корзины нажата (по умолчанию)")
+    @objc open func didTapMagnifyingglassButton() {
+        print(" Кнопка нажата (по умолчанию)")
     }
 
     @objc open func didTapBellButton() {
-        print("🔔 Кнопка уведомлений нажата (по умолчанию)")
+        print(" Кнопка нажата (по умолчанию)")
     }
 
-    @objc open func didTapMenuButton() {
-        print("☰ Меню нажато (по умолчанию)")
+    @objc open func didTapPersonButton() {
+        print(" Кнопка нажата (по умолчанию)")
     }
 }
 
 // MARK: - Auth Constants
 fileprivate struct AuthConstants {
-    static let backgroundColor = UIColor(.backgrDarkGreen)
+    static let backgroundColor = UIColor.white
     static let viewWidth: CGFloat = UIScreen.main.bounds.width
     static let cornerRadius: CGFloat = 20
 }
