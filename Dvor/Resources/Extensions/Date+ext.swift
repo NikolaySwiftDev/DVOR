@@ -34,6 +34,14 @@ extension Date {
         return dateFormatter.string(from: self)
     }
     
+    func toString(format: String = "d MMMM, EEEE", locale: String = "ru_RU") -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: locale)
+        return formatter.string(from: self)
+    }
+    
+    
     func isAdult() -> Bool {
         let calendar = Calendar.current
         let currentDate = Date()

@@ -5,6 +5,7 @@ final class HomeViewController: BaseViewController {
     
     // MARK: - Properties
     var presenter: HomePresenterProtocol?
+    private lazy var titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small))
     private let calendarView = CustomCalendarView()
     private let eventsTableView = EventsTableView()
     
@@ -36,7 +37,8 @@ final class HomeViewController: BaseViewController {
 
 // MARK: - Home Protocol
 extension HomeViewController: HomeProtocol {
-    func success() {
+    func success(date: String) {
+        titleDate.text = "\(date), Санкт-Петербург"
         eventsTableView.events = presenter?.filteredEvents ?? []
     }
     
@@ -74,6 +76,7 @@ extension HomeViewController: EventTableViewCellProtocol {
 // MARK: - UI Setup
 private extension HomeViewController {
     private func setupView() {
+        view.addSubview(titleDate)
         view.addSubview(calendarView)
         view.addSubview(eventsTableView)
         
@@ -83,8 +86,13 @@ private extension HomeViewController {
     }
     
     private func setupConstraints() {
-        calendarView.snp.makeConstraints { make in
+        titleDate.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(HomeConstants.paddingTop)
+            make.left.right.equalToSuperview().inset(Constants.Constraint.horizPadding)
+        }
+        
+        calendarView.snp.makeConstraints { make in
+            make.top.equalTo(titleDate.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.left.right.equalToSuperview()
             make.height.equalTo(HomeConstants.heightCV)
         }
@@ -98,7 +106,7 @@ private extension HomeViewController {
 
 // MARK: - Home Constants
 fileprivate struct HomeConstants {
-    static let paddingTop: CGFloat = 70
+    static let paddingTop: CGFloat = 65
     static let heightCV: CGFloat = 60
 }
 

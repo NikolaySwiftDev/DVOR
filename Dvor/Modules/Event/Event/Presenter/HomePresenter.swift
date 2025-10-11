@@ -1,7 +1,7 @@
 import Foundation
 
 protocol HomeProtocol: AnyObject {
-    func success()
+    func success(date: String)
     func error(error: Error)
 }
 
@@ -70,7 +70,7 @@ final class HomePresenter: HomePresenterProtocol {
         case .success(let events):
             self.events = events
             self.filterEventsWithDate(date: lastFilterDate)
-            self.view?.success()
+            view?.success(date: lastFilterDate.toString())
         case .failure(let error):
             self.view?.error(error: error)
         }
@@ -107,7 +107,7 @@ final class HomePresenter: HomePresenterProtocol {
             calendar.isDate($0.date, inSameDayAs: date)
         }
         lastFilterDate = date
-        view?.success()
+        view?.success(date: lastFilterDate.toString())
     }
 
 
