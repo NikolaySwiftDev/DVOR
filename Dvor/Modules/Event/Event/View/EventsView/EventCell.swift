@@ -67,10 +67,10 @@ final class EventTableViewCell: UITableViewCell {
 
     private func setupConstraints() {
         containerView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(5)    // Spacing сверху
+            $0.top.equalToSuperview().offset(5)
             $0.leading.equalToSuperview().offset(0)
             $0.trailing.equalToSuperview().offset(0)
-            $0.bottom.equalToSuperview().offset(-5) // Spacing снизу
+            $0.bottom.equalToSuperview().offset(-5)
         }
         
         timeLabel.snp.makeConstraints {
