@@ -17,7 +17,7 @@ final class CustomNavigationBar: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Заголовок"
-        label.font = UIFont.poppins(weight: .bold, size: 24)
+        label.font = UIFont.poppins(weight: .bold, size: 28)
         label.textColor = .black
         return label
     }()
