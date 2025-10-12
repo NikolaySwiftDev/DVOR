@@ -90,9 +90,9 @@ final class HomePresenter: HomePresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let success):
-                router?.showErrorAlerWithTitle(success)
+                router?.showAlertWithTitle(success)
             case .failure(let error):
-                router?.showErrorAlerWithTitle("Ошибка сохранения")
+                router?.showAlertWithTitle("Ошибка сохранения")
                 view?.error(error: error)
             }
         })
@@ -100,6 +100,7 @@ final class HomePresenter: HomePresenterProtocol {
     
     //MARK: - фильтрация Событий
     func filterEventsWithDate(date: Date) {
+//        fetchEvents()
         guard let events = events else { return }
         let calendar = Calendar.current
         filteredEvents = events.filter {
@@ -113,7 +114,7 @@ final class HomePresenter: HomePresenterProtocol {
     //MARK: - Удаление собитыя
     func deleteEvent(eventId: String) {
         guard eventId != "" else {
-            router?.showErrorAlerWithTitle("Выберите событие")
+            router?.showAlertWithTitle("Выберите событие")
             return
         }
         network?.deleteEvent(idEvent: eventId, completion: { [weak self] result in
@@ -122,9 +123,9 @@ final class HomePresenter: HomePresenterProtocol {
             switch result {
             case .success(let success):
                 fetchEvents()
-                router?.showErrorAlerWithTitle(success)
+                router?.showAlertWithTitle(success)
             case .failure(let error):
-                router?.showErrorAlerWithTitle("Ошибка удаления")
+                router?.showAlertWithTitle("Ошибка удаления")
                 view?.error(error: error)
             }
         })
@@ -152,12 +153,10 @@ final class HomePresenter: HomePresenterProtocol {
 //        stopRealTimeObservation()
     }
     
-    
     //MOCK
-    
     func createNewEvent() {
         guard let orgID = userDefaults?.getIDUser() else {
-            router?.showErrorAlerWithTitle("Зарегистрируйтесь")
+            router?.showAlertWithTitle("Зарегистрируйтесь")
             return
         }
         

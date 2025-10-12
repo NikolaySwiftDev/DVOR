@@ -19,6 +19,7 @@ extension UIButton {
     
     static func createStandartButton(
         title: String,
+        titleColor: UIColor = Constants.Colors.titleColor,
         backgroundColor: UIColor = Constants.Colors.buttonInActiveColor,
         cornerRadius: CGFloat = Constants.Constraint.cornerRadius,
         target: Any? = nil,
@@ -29,7 +30,7 @@ extension UIButton {
         button.backgroundColor = backgroundColor
         button.layer.cornerRadius = cornerRadius
         button.setTitle(title, for: .normal)
-        button.setTitleColor(Constants.Colors.titleColor, for: .normal)
+        button.setTitleColor(titleColor, for: .normal)
         if let target = target, let action = action {
             button.addTarget(target, action: action, for: controlEvents)
         }

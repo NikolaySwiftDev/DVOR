@@ -32,7 +32,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     func getProfileInto() {
         guard let idUser = userDefaults?.getIDUser() else {
-            router?.showErrorAlerWithTitle("Добавьте аккаунт")
+            router?.showAlertWithTitle("Добавьте аккаунт")
             return
         }
         
@@ -44,7 +44,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
                 view?.success(model: success)
             case .failure(let failure):
                 view?.error(error: failure)
-                router?.showErrorAlerWithTitle(failure.localizedDescription)
+                router?.showAlertWithTitle(failure.localizedDescription)
             }
         })
     }

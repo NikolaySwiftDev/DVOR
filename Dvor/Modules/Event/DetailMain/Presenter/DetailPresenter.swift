@@ -42,7 +42,7 @@ final class DetailPresenter: DetailPresenterProtocol {
                 view?.success(users: users, org: org ?? OrganizatorModel(id: "", image: nil, name: ""))
             case .failure(let failure):
                 view?.error(error: failure.localizedDescription)
-                router?.showErrorAlerWithTitle(failure.localizedDescription)
+                router?.showAlertWithTitle(failure.localizedDescription)
             }
         })
     }
@@ -50,12 +50,12 @@ final class DetailPresenter: DetailPresenterProtocol {
     //MARK: - Добавление участника
     func addUserToEvent(idEvent: String) {
         guard idEvent != "" else {
-            router?.showErrorAlerWithTitle("Выберите событие")
+            router?.showAlertWithTitle("Выберите событие")
             return
         }
         
         guard let idUser = userDefaults?.getIDUser() else {
-            router?.showErrorAlerWithTitle("Добавьте аккаунт")
+            router?.showAlertWithTitle("Добавьте аккаунт")
             return
         }
                 
@@ -64,9 +64,9 @@ final class DetailPresenter: DetailPresenterProtocol {
             switch result {
             case .success(let success):
                 view?.updateUsers(model: success)
-                router?.showErrorAlerWithTitle("Пользователь добавлен")
+                router?.showAlertWithTitle("Пользователь добавлен")
             case .failure(let error):
-                router?.showErrorAlerWithTitle("Ошибка сохранения")
+                router?.showAlertWithTitle("Ошибка сохранения")
                 view?.error(error: error.localizedDescription)
             }
         })

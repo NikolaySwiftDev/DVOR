@@ -83,7 +83,7 @@ final class RegistPresenter: RegistPresenterProtocol {
 //                    self.code = code
 //                    print("CODE -----", code)
 //                case .failure(let error):
-//                    router?.showErrorAlerWithTitle(error.localizedDescription)
+//                    router?.showAlertWithTitle(error.localizedDescription)
 //                }
 //            })
         }
@@ -91,11 +91,11 @@ final class RegistPresenter: RegistPresenterProtocol {
     
     func repeatCodeRequest(with phone: String) {
         if mock {
-            router?.showErrorAlerWithTitle("Запрос отправлен")
+            router?.showAlertWithTitle("Запрос отправлен")
             view?.showLoading()
             print("Request with phone \(phone)")
         } else {
-//            router?.showErrorAlerWithTitle("Запрос отправлен")
+//            router?.showAlertWithTitle("Запрос отправлен")
 //            view?.showLoading()
 //            firebase?.sendVerificationCode(phoneNumber: phone, completion: { [weak self] result in
 ////                guard let self = self else { return }
@@ -115,7 +115,7 @@ final class RegistPresenter: RegistPresenterProtocol {
         } else {
             let error = "Неверный код"
             print(self.code)
-            router?.showErrorAlerWithTitle(error)
+            router?.showAlertWithTitle(error)
             view?.showError(error)
         }
     }
@@ -136,13 +136,13 @@ final class RegistPresenter: RegistPresenterProtocol {
                 if error != .cancelled {
                     let errorMessage = error.errorDescription ?? "Ошибка выбора фото"
                     self.view?.showError(errorMessage)
-                    self.router?.showErrorAlerWithTitle(errorMessage)
+                    self.router?.showAlertWithTitle(errorMessage)
                 }
                 
                 if error == .sizeExceeded(maxSize: SizeLimits.mb3) {
                     let errorMessage = error.errorDescription ?? "Ошибка выбора фото"
                     self.view?.showError(errorMessage)
-                    self.router?.showErrorAlerWithTitle(errorMessage)
+                    self.router?.showAlertWithTitle(errorMessage)
                     
                 }
             

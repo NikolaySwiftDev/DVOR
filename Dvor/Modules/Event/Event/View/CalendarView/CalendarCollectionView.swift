@@ -36,7 +36,7 @@ final class CustomCalendarView: UIView {
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 12
         layout.sectionInset = UIEdgeInsets(top: 2, left: 10, bottom: 2, right: 10)
-
+        
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
@@ -48,7 +48,7 @@ final class CustomCalendarView: UIView {
         addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.height.equalTo(60)
+            make.height.equalTo(68)
         }
     }
 }
@@ -71,7 +71,7 @@ extension CustomCalendarView: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension CustomCalendarView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 48, height: 60)
+        return CGSize(width: 69, height: 68)
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -27,7 +27,7 @@ protocol RouterMainProtocol: RouterMain {
     func pushDetailUserInfo(model: UserModel)
     func pushRatingVC(model: UserModel)
  
-    func showErrorAlerWithTitle(_ title: String)
+    func showAlertWithTitle(_ title: String)
     func showBottomSheetAlertForUser(model: UserModel)
     func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping()->())
     
@@ -194,7 +194,7 @@ class Router: RouterMainProtocol {
     }
     
     //MARK: - Show Network Data
-    func showErrorAlerWithTitle(_ title: String) {
+    func showAlertWithTitle(_ title: String) {
         let alert = UIAlertController(title: title,
                                       message: nil,
                                       preferredStyle: .alert)

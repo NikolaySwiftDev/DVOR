@@ -6,7 +6,7 @@ final class CalendarDateCell: UICollectionViewCell {
 
     private let dayLabel = UILabel()
     private let numberLabel = UILabel()
-    private lazy var stack = UIStackView(arrangedSubviews: [dayLabel, numberLabel])
+    private lazy var stack = UIStackView(arrangedSubviews: [numberLabel, dayLabel])
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,20 +20,20 @@ final class CalendarDateCell: UICollectionViewCell {
 
     private func setupViews() {
         contentView.backgroundColor = .clear
-        contentView.layer.cornerRadius = 10
+        contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
 
-        dayLabel.font = .poppins(weight: .semiBold, size: 16)
+        dayLabel.font = .poppins(weight: .regular, size: 14)
         dayLabel.textAlignment = .center
         dayLabel.textColor = .white
 
-        numberLabel.font = .poppins(weight: .semiBold, size: 16)
+        numberLabel.font = .poppins(weight: .semiBold, size: 20)
         numberLabel.textAlignment = .center
         numberLabel.textColor = .white
 
         
         stack.axis = .vertical
-        stack.spacing = 5
+        stack.spacing = 1
         stack.alignment = .center
         stack.distribution = .equalCentering
         
@@ -42,13 +42,12 @@ final class CalendarDateCell: UICollectionViewCell {
 
     private func setupConstraints() {
         stack.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(5)
-            make.top.bottom.equalToSuperview().inset(5)
+            make.edges.equalToSuperview().inset(10)
         }
     }
 
     func configure(with model: CalendarDateModel) {
-        dayLabel.text = model.date.shortDay
+        dayLabel.text = model.date.shortDay.uppercased()
         dayLabel.textColor = model.isSelected ? .black : .black
         
         numberLabel.text = model.date.shortMonth

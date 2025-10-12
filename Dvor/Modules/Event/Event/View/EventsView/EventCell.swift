@@ -31,8 +31,8 @@ final class EventTableViewCell: UITableViewCell {
     
     private func setupViews() {
         backgroundColor = .clear
-        containerView.backgroundColor = Constants.Colors.inActiveColor.withAlphaComponent(0.3)
-        containerView.layer.cornerRadius = 20
+        containerView.backgroundColor = Constants.Colors.buttonInActiveColor.withAlphaComponent(0.5)
+        containerView.layer.cornerRadius = Constants.Constraint.cornerRadius
         selectionStyle = .none
 
         timeLabel.font = .poppins(weight: .semiBold, size: 16)
