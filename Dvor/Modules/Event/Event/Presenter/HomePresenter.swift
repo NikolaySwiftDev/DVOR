@@ -90,7 +90,6 @@ final class HomePresenter: HomePresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let success):
-                fetchEvents()
                 router?.showErrorAlerWithTitle(success)
             case .failure(let error):
                 router?.showErrorAlerWithTitle("Ошибка сохранения")

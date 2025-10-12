@@ -49,7 +49,6 @@ extension HomeViewController: HomeProtocol {
 
 // MARK: - Custom Calendar and Event Delegate
 extension HomeViewController: CustomCalendarViewDelegate, EventsTableViewDelegate {
-    
     //Calendar delegate
     func didSelectDate(_ date: Date) {
         presenter?.filterEventsWithDate(date: date)
@@ -63,6 +62,11 @@ extension HomeViewController: CustomCalendarViewDelegate, EventsTableViewDelegat
     //Event delegate for REMOVE EVENT
     func removeSelectedEvent(_ eventID: String) {
         presenter?.deleteEvent(eventId: eventID)
+    }
+    
+    //Event delegate for REFRESH EVENTS
+    func didPullToRefresh() {
+        presenter?.fetchEvents()
     }
 }
 

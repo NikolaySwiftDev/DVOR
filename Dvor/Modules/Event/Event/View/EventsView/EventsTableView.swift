@@ -4,6 +4,7 @@ import SnapKit
 protocol EventsTableViewDelegate: AnyObject {
     func didSelectEvent(_ event: EventModel)
     func removeSelectedEvent(_ eventID: String)
+    func didPullToRefresh()
 }
 
 final class EventsTableView: UIView {
@@ -18,10 +19,12 @@ final class EventsTableView: UIView {
     }
 
     private let tableView = UITableView()
-
+    private let refreshControl = UIRefreshControl()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupTableView()
+        setupRefreshControll()
         setupConstraints()
     }
 
@@ -39,11 +42,32 @@ final class EventsTableView: UIView {
 
         addSubview(tableView)
     }
+    
+    private func setupRefreshControll() {
+        refreshControl.tintColor = .gray
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
+        addSubview(tableView)
+    }
 
     private func setupConstraints() {
         tableView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(10)
             make.top.bottom.equalToSuperview()
+        }
+    }
+    
+    @objc private func handleRefresh() {
+        guard !events.isEmpty else {
+            refreshControl.endRefreshing()
+            return
+        }
+        
+        delegate?.didPullToRefresh()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.refreshControl.endRefreshing()
         }
     }
 }
@@ -83,5 +107,13 @@ extension EventsTableView: UITableViewDataSource, UITableViewDelegate {
         deleteAction.image = UIImage(systemName: "trash")
         
         return UISwipeActionsConfiguration(actions: [deleteAction])
-    }    
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if events.isEmpty {
+            tableView.refreshControl = nil
+        } else {
+            tableView.refreshControl = refreshControl
+        }
+    }
 }
