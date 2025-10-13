@@ -17,10 +17,17 @@ final class HomeViewController: BaseViewController {
     private let calendarView = CustomCalendarView()
     private let eventsTableView = EventsTableView()
     
+    //Sort View
+    private let sortView = SupportEventsView(type: .sort)
+    
+    //Filter View
+    private let filterView = SupportEventsView(type: .filter)
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationTitle("Матчи")
+        configure()
         setupView()
         setupConstraints()
     }
@@ -39,12 +46,13 @@ final class HomeViewController: BaseViewController {
     }
     
     @objc private func filterButtonTapped() {
-        print(#function)
+        filterView.showViewWithAnimation(isHidden: false)
     }
     
     @objc private func sortButtonTapped() {
-        print(#function)
+        sortView.showViewWithAnimation(isHidden: false)
     }
+    
     
     deinit {
         print("deinit HomeVC")
@@ -86,10 +94,29 @@ extension HomeViewController: CustomCalendarViewDelegate, EventsTableViewDelegat
     }
 }
 
+extension HomeViewController: SupportEventsViewDelegate {
+
+    func closeView(type: TypeView) {
+        switch type {
+        case .sort:
+            sortView.showViewWithAnimation(isHidden: true)
+        case .filter:
+            filterView.showViewWithAnimation(isHidden: true)
+        }
+    }
+    
+    func sortEvents(predicate: SortPredicate) {
+        presenter?.sortEventsWithPredicate(predicate: predicate)
+    }
+    
+    func filterEvents() {}
+    
+}
+
 // MARK: - Cell Location Delegate
 extension HomeViewController: EventTableViewCellProtocol {
     func locationButtonTapped(location: String) {
-        presenter?.showLocationOnMap(location: location)
+//        presenter?.showLocationOnMap(location: location)
     }
 }
 
@@ -101,7 +128,17 @@ private extension HomeViewController {
         view.addSubview(filterButton)
         view.addSubview(calendarView)
         view.addSubview(eventsTableView)
-        
+        view.addSubview(filterView)
+        view.addSubview(sortView)
+
+    }
+    
+    private func configure() {
+        eventsTableView.delegate = self
+        eventsTableView.cellDelegate = self
+        calendarView.delegate = self
+        sortView.delegate = self
+        filterView.delegate = self
 
         var configurationFilter = UIButton.Configuration.plain()
         configurationFilter.image = UIImage(named: "filterEvent")
@@ -116,10 +153,10 @@ private extension HomeViewController {
         configurationSort.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: -4)
         sortButton.configuration = configurationSort
         sortButton.tintColor = .black
+        
+        sortView.isHidden = true
+        filterView.isHidden = true
 
-        eventsTableView.delegate = self
-        eventsTableView.cellDelegate = self
-        calendarView.delegate = self
     }
     
     private func setupConstraints() {
@@ -148,6 +185,16 @@ private extension HomeViewController {
         
         eventsTableView.snp.makeConstraints { make in
             make.top.equalTo(filterButton.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        filterView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        sortView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
             make.leading.trailing.bottom.equalToSuperview()
         }
     }

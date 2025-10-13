@@ -12,6 +12,7 @@ protocol HomePresenterProtocol: AnyObject {
     func fetchEvents()
     func writeEvent(model: EventModel)
     func filterEventsWithDate(date: Date)
+    func sortEventsWithPredicate(predicate: SortPredicate)
     
     func deleteEvent(eventId: String)
     
@@ -38,6 +39,7 @@ final class HomePresenter: HomePresenterProtocol {
     let userDefaults: UserDefaultsProtocol?
     
     private var lastFilterDate: Date = .now
+    private var lastSortPredicate: SortPredicate = .count
 
     required init(view: HomeProtocol,
                   router: RouterMainProtocol,
@@ -70,7 +72,8 @@ final class HomePresenter: HomePresenterProtocol {
         case .success(let events):
             self.events = events
             self.filterEventsWithDate(date: lastFilterDate)
-            view?.success(date: lastFilterDate.toString())
+            self.sortEventsWithPredicate(predicate: lastSortPredicate)
+//            view?.success(date: lastFilterDate.toString())
         case .failure(let error):
             self.view?.error(error: error)
         }
@@ -82,6 +85,7 @@ final class HomePresenter: HomePresenterProtocol {
             guard let self = self else { return }
             self.handleEventsResult(result)
         })
+        
     }
     
     //MARK: - Записсь события в БД
@@ -98,7 +102,7 @@ final class HomePresenter: HomePresenterProtocol {
         })
     }
     
-    //MARK: - фильтрация Событий
+    //MARK: - фильтрация Событий по Дате
     func filterEventsWithDate(date: Date) {
 //        fetchEvents()
         guard let events = events else { return }
@@ -109,6 +113,27 @@ final class HomePresenter: HomePresenterProtocol {
         lastFilterDate = date
         view?.success(date: lastFilterDate.toString())
     }
+    
+    //MARK: - фильтрация Событий по заданному параметру
+
+    func sortEventsWithPredicate(predicate: SortPredicate) {
+        switch predicate {
+        case .count:
+            let sortEvents = filteredEvents?.sorted { $0.peopleAllCountInt < $1.peopleAllCountInt }
+            filteredEvents = sortEvents
+            view?.success(date: lastFilterDate.toString())
+        case .time:
+            let sortEvents = filteredEvents?.sorted { $0.time < $1.time }
+            filteredEvents = sortEvents
+            view?.success(date: lastFilterDate.toString())
+
+        case .address:
+            let sortEvents = filteredEvents?.sorted { $0.address < $1.address }
+            filteredEvents = sortEvents
+            view?.success(date: lastFilterDate.toString())
+        }
+    }
+    
 
 
     //MARK: - Удаление собитыя
@@ -123,7 +148,7 @@ final class HomePresenter: HomePresenterProtocol {
             switch result {
             case .success(let success):
                 fetchEvents()
-                router?.showAlertWithTitle(success)
+//                router?.showAlertWithTitle(success)
             case .failure(let error):
                 router?.showAlertWithTitle("Ошибка удаления")
                 view?.error(error: error)
@@ -163,17 +188,45 @@ final class HomePresenter: HomePresenterProtocol {
         let model = EventModel(date: lastFilterDate,
                                time: "18:00",
                                name: "Товарка",
-                               format: "11x11",
+                               format: 11,
                                location: "Спб",
                                address: "пр. Просвещения 25",
                                namePlace: "Школа 555",
                                price: 1000,
                                ownerName: "Орг",
                                timeGame: 120,
-                               totalPeopleCount: 4,
+//                               totalPeopleCount: 4,
+                               orgId: orgID)
+        
+        let model1 = EventModel(date: lastFilterDate,
+                               time: "17:00",
+                               name: "Игра",
+                               format: 8,
+                               location: "Спб",
+                               address: "пр. Энгелься 30",
+                               namePlace: "Школа 555",
+                               price: 1000,
+                               ownerName: "Орг",
+                               timeGame: 120,
+//                               totalPeopleCount: 8,
+                               orgId: orgID)
+        
+        let model2 = EventModel(date: lastFilterDate,
+                               time: "12:00",
+                               name: "Турнир",
+                               format: 5,
+                               location: "Спб",
+                               address: "пр. Новаторов 112",
+                               namePlace: "Школа 255",
+                               price: 1000,
+                               ownerName: "Орг",
+                               timeGame: 120,
+//                               totalPeopleCount: 8,
                                orgId: orgID)
         
         writeEvent(model: model)
+        writeEvent(model: model1)
+        writeEvent(model: model2)
         
         
     }

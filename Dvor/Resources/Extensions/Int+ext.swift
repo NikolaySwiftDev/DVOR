@@ -3,22 +3,24 @@ import Foundation
 
 extension Int {
     var placesString: String {
+        guard self > 0 else {
+            return "уже набран"
+        }
+        
         let lastDigit = self % 10
         let lastTwoDigits = self % 100
         
         if lastTwoDigits >= 11 && lastTwoDigits <= 14 {
-            return "\(self) мест"
+            return "еще \(self) мест"
         }
         
         switch lastDigit {
-        case 0:
-            return "набран"
         case 1:
-            return "\(self) место"
+            return "еще \(self) место"
         case 2, 3, 4:
-            return "\(self) места"
+            return "еще \(self) места"
         default:
-            return "\(self) мест"
+            return "еще \(self) мест"
         }
     }
 }

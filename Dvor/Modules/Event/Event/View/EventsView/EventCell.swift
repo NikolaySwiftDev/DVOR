@@ -104,7 +104,7 @@ final class EventTableViewCell: UITableViewCell {
 
     func configure(with model: EventModel) {
         timeLabel.text = model.time
-        formatLabel.text = model.format
+        formatLabel.text = model.formatString
         peopleCountLabel.text = model.peopleAllCount
         locationText = model.address
         

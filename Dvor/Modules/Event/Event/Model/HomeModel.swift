@@ -10,14 +10,13 @@ struct EventModel: Codable {
     let date: Date
     let time: String
     let name: String
-    let format: String
+    let format: Int
     let location: String
     let address: String
     let namePlace: String
     let price: Int
     let ownerName: String
     let timeGame: Int
-    let totalPeopleCount: Int
     var users: [String] = []
     let orgId: String
     
@@ -25,14 +24,14 @@ struct EventModel: Codable {
          date: Date,
          time: String,
          name: String,
-         format: String,
+         format: Int,
          location: String,
          address: String,
          namePlace: String,
          price: Int,
          ownerName: String,
          timeGame: Int,
-         totalPeopleCount: Int,
+//         totalPeopleCount: Int,
          users: [String] = [],
          orgId: String
     ) {
@@ -47,7 +46,7 @@ struct EventModel: Codable {
         self.price = price
         self.ownerName = ownerName
         self.timeGame = timeGame
-        self.totalPeopleCount = totalPeopleCount
+//        self.totalPeopleCount = totalPeopleCount
         self.users = users
         self.orgId = orgId
     }
@@ -57,14 +56,14 @@ struct EventModel: Codable {
               let timestamp = dictionary["date"] as? TimeInterval,
               let time = dictionary["time"] as? String,
               let name = dictionary["name"] as? String,
-              let format = dictionary["format"] as? String,
+              let format = dictionary["format"] as? Int,
               let location = dictionary["location"] as? String,
               let address = dictionary["address"] as? String,
               let namePlace = dictionary["namePlace"] as? String,
               let price = dictionary["price"] as? Int,
               let ownerName = dictionary["ownerName"] as? String,
               let timeGame = dictionary["timeGame"] as? Int,
-              let totalPeopleCount = dictionary["totalPeopleCount"] as? Int,
+//              let totalPeopleCount = dictionary["totalPeopleCount"] as? Int,
               let orgId = dictionary["orgId"] as? String else {
             return nil
         }
@@ -80,7 +79,7 @@ struct EventModel: Codable {
         self.price = price
         self.ownerName = ownerName
         self.timeGame = timeGame
-        self.totalPeopleCount = totalPeopleCount
+//        self.totalPeopleCount = totalPeopleCount
         self.users = dictionary["users"] as? [String] ?? []
         self.orgId = orgId
     }
@@ -102,13 +101,21 @@ extension EventModel {
     var participantsCount: Int {
          return users.count
      }
+    
+    var totalPeopleCount: Int {
+        format * 2
+    }
+    
+    var formatString: String {
+        "\(format)x\(format)"
+    }
 
     var peopleAllCountInt: Int {
         totalPeopleCount - participantsCount
     }
     
     var peopleAllCount: String {
-        return "еще \(peopleAllCountInt.placesString)"
+        return "\(peopleAllCountInt.placesString)"
     }
     
     var formattedTimeGame: String {
@@ -131,7 +138,7 @@ extension EventModel {
             "price": price,
             "ownerName": ownerName,
             "timeGame": timeGame,
-            "totalPeopleCount": totalPeopleCount,
+//            "totalPeopleCount": totalPeopleCount,
             "users": users,
             "orgId": orgId
         ]
