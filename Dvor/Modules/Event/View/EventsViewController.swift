@@ -1,10 +1,10 @@
 import UIKit
 import SnapKit
 
-final class HomeViewController: BaseViewController {
+final class EventsViewController: BaseViewController {
     
     // MARK: - Properties
-    var presenter: HomePresenterProtocol?
+    var presenter: EventsPresenterProtocol?
     
     //Label
     private let titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small))
@@ -60,7 +60,7 @@ final class HomeViewController: BaseViewController {
 }
 
 // MARK: - Home Protocol
-extension HomeViewController: HomeProtocol {
+extension EventsViewController: EventsProtocol {
     func success(date: String) {
         titleDate.text = "\(date), Санкт-Петербург"
         eventsTableView.events = presenter?.filteredEvents ?? []
@@ -72,7 +72,7 @@ extension HomeViewController: HomeProtocol {
 }
 
 // MARK: - Custom Calendar and Event Delegate
-extension HomeViewController: CustomCalendarViewDelegate, EventsTableViewDelegate {
+extension EventsViewController: CustomCalendarViewDelegate, EventsTableViewDelegate {
     //Calendar delegate
     func didSelectDate(_ date: Date) {
         presenter?.filterEventsWithDate(date: date)
@@ -94,7 +94,7 @@ extension HomeViewController: CustomCalendarViewDelegate, EventsTableViewDelegat
     }
 }
 
-extension HomeViewController: SupportEventsViewDelegate {
+extension EventsViewController: SupportEventsViewDelegate {
 
     func closeView(type: TypeView) {
         switch type {
@@ -114,14 +114,14 @@ extension HomeViewController: SupportEventsViewDelegate {
 }
 
 // MARK: - Cell Location Delegate
-extension HomeViewController: EventTableViewCellProtocol {
+extension EventsViewController: EventTableViewCellProtocol {
     func locationButtonTapped(location: String) {
 //        presenter?.showLocationOnMap(location: location)
     }
 }
 
 // MARK: - UI Setup
-private extension HomeViewController {
+private extension EventsViewController {
     private func setupView() {
         view.addSubview(titleDate)
         view.addSubview(sortButton)

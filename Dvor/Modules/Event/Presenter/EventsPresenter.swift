@@ -1,11 +1,11 @@
 import Foundation
 
-protocol HomeProtocol: AnyObject {
+protocol EventsProtocol: AnyObject {
     func success(date: String)
     func error(error: Error)
 }
 
-protocol HomePresenterProtocol: AnyObject {
+protocol EventsPresenterProtocol: AnyObject {
     var events: [EventModel]? { get set }
     var filteredEvents: [EventModel]? { get set }
     
@@ -22,16 +22,16 @@ protocol HomePresenterProtocol: AnyObject {
     func pushDetailVC(model: EventModel)
     func pushProfileVC()
     
-    init(view: HomeProtocol,
+    init(view: EventsProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
          userDefaults: UserDefaultsProtocol
     )
 }
 
-final class HomePresenter: HomePresenterProtocol {
+final class EventsPresenter: EventsPresenterProtocol {
 
-    weak var view: HomeProtocol?
+    weak var view: EventsProtocol?
     var events: [EventModel]?
     var filteredEvents: [EventModel]?
     let router: RouterMainProtocol?
@@ -41,7 +41,7 @@ final class HomePresenter: HomePresenterProtocol {
     private var lastFilterDate: Date = .now
     private var lastSortPredicate: SortPredicate = .count
 
-    required init(view: HomeProtocol,
+    required init(view: EventsProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
                   userDefaults: UserDefaultsProtocol) {

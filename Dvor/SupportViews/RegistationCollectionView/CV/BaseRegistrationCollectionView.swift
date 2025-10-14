@@ -6,7 +6,7 @@ protocol BaseCollectionViewProtocol: AnyObject {
     func cellDidTapped(data: String, collectionType: ProfileInfo)
 }
 
-class BaseCollectionView: UICollectionView {
+class BaseRegistrationCollectionView: UICollectionView {
     
     weak var cellDelegate: BaseCollectionViewProtocol?
     
@@ -39,7 +39,7 @@ class BaseCollectionView: UICollectionView {
         
 }
 
-extension BaseCollectionView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension BaseRegistrationCollectionView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         collectionType.model.count
     }

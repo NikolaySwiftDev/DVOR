@@ -8,7 +8,7 @@ final class CityViewController: BaseRegistrationViewController {
     var onNext: ((String) -> Void)?
     
     //MARK: - UI
-    private let cityCV = BaseCollectionView(collectionType: .city)
+    private let cityCV = BaseRegistrationCollectionView(collectionType: .city)
 
     
     //MARK: - View Didload

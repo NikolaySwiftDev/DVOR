@@ -9,8 +9,8 @@ final class UserDataViewController: BaseRegistrationViewController {
     var onNext: ((String, String) -> Void)?
     
     //MARK: - UI
-    private let positionCV = BaseCollectionView(collectionType: .position)
-    private let experienceCV = BaseCollectionView(collectionType: .experience)
+    private let positionCV = BaseRegistrationCollectionView(collectionType: .position)
+    private let experienceCV = BaseRegistrationCollectionView(collectionType: .experience)
     
     private let positionLabel = UILabel(text: ProfileInfo.position.title, font: .poppins(weight: .medium, size: .small))
     private let experienceLabel = UILabel(text: ProfileInfo.experience.title, font: .poppins(weight: .medium, size: .small))

@@ -95,10 +95,10 @@ class Builder: BuilderProtocol {
     
     //MARK: -  Home Builder
     func createHomeVC(router: RouterMainProtocol) -> UIViewController {
-        let view = HomeViewController()
+        let view = EventsViewController()
         let network = FirebaseDataManager()
         let userDefaults = UserDefaultsManager()
-        let presenter = HomePresenter(view: view, router: router, network: network, userDefaults: userDefaults)
+        let presenter = EventsPresenter(view: view, router: router, network: network, userDefaults: userDefaults)
         view.presenter = presenter
         return view
     }
