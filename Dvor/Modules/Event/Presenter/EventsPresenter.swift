@@ -94,7 +94,8 @@ final class EventsPresenter: EventsPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let success):
-                router?.showAlertWithTitle(success)
+                break
+//                router?.showAlertWithTitle(success)
             case .failure(let error):
                 router?.showAlertWithTitle("Ошибка сохранения")
                 view?.error(error: error)
@@ -121,17 +122,15 @@ final class EventsPresenter: EventsPresenterProtocol {
         case .count:
             let sortEvents = filteredEvents?.sorted { $0.peopleAllCountInt < $1.peopleAllCountInt }
             filteredEvents = sortEvents
-            view?.success(date: lastFilterDate.toString())
         case .time:
             let sortEvents = filteredEvents?.sorted { $0.time < $1.time }
             filteredEvents = sortEvents
-            view?.success(date: lastFilterDate.toString())
-
         case .address:
             let sortEvents = filteredEvents?.sorted { $0.address < $1.address }
             filteredEvents = sortEvents
-            view?.success(date: lastFilterDate.toString())
         }
+        view?.success(date: lastFilterDate.toString())
+
     }
     
 

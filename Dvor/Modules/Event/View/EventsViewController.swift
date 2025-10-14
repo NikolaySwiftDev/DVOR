@@ -11,7 +11,7 @@ final class EventsViewController: BaseViewController {
 
     //Buttons
     private let sortButton = UIButton.createStandartButton(title: "Сортировка", titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(sortButtonTapped))
-    private let filterButton = UIButton.createStandartButton(title: "Фильтры", titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(filterButtonTapped))
+    private let filterButton = UIButton.createStandartButton(title: "Обновить", titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(filterButtonTapped))
     
     //Collections
     private let calendarView = CustomCalendarView()
@@ -46,7 +46,8 @@ final class EventsViewController: BaseViewController {
     }
     
     @objc private func filterButtonTapped() {
-        filterView.showViewWithAnimation(isHidden: false)
+//        filterView.showViewWithAnimation(isHidden: false)
+        presenter?.fetchEvents()
     }
     
     @objc private func sortButtonTapped() {
@@ -141,7 +142,7 @@ private extension EventsViewController {
         filterView.delegate = self
 
         var configurationFilter = UIButton.Configuration.plain()
-        configurationFilter.image = UIImage(named: "filterEvent")
+        configurationFilter.image = UIImage(systemName: "arrow.triangle.2.circlepath")
         configurationFilter.imagePadding = 8
         configurationFilter.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: -4)
         filterButton.configuration = configurationFilter

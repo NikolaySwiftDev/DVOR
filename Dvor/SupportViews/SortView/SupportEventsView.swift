@@ -73,7 +73,7 @@ final class SupportEventsView: UIView {
         
         closeButton.snp.makeConstraints { make in
             make.centerY.equalTo(labelTitle)
-            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.trailing.equalToSuperview().inset(Constants.Constraint.verticalPadding - 2)
             make.size.equalTo(24)
         }
         
@@ -82,7 +82,7 @@ final class SupportEventsView: UIView {
             make.leading.trailing.equalToSuperview()
             switch type {
             case .sort:
-                make.height.equalTo(200)
+                make.height.equalTo(220)
             case .filter:
                 make.height.equalTo(300)
             }

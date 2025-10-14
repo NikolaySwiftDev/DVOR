@@ -48,7 +48,6 @@ final class CustomCalendarView: UIView {
         addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.height.equalTo(68)
         }
     }
 }
@@ -71,7 +70,7 @@ extension CustomCalendarView: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension CustomCalendarView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 69, height: 68)
+        return CGSize(width: 69, height: 70)
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
