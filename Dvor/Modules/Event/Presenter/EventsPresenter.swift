@@ -21,6 +21,7 @@ protocol EventsPresenterProtocol: AnyObject {
     func showLocationOnMap(location: String)
     func pushDetailVC(model: EventModel)
     func pushProfileVC()
+    func pushCreateEvent()
     
     init(view: EventsProtocol,
          router: RouterMainProtocol,
@@ -30,7 +31,6 @@ protocol EventsPresenterProtocol: AnyObject {
 }
 
 final class EventsPresenter: EventsPresenterProtocol {
-
     weak var view: EventsProtocol?
     var events: [EventModel]?
     var filteredEvents: [EventModel]?
@@ -171,6 +171,11 @@ final class EventsPresenter: EventsPresenterProtocol {
         router?.pushProfileVC()
     }
     
+    //MARK: - Пуш в экран создания события
+    func pushCreateEvent() {
+        router?.pushCreateEvent()
+    }
+
     //MARK: - Deinit
     deinit {
         print("Deinit HomePresenter")

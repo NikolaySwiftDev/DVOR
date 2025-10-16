@@ -37,19 +37,27 @@ final class EventsViewController: BaseViewController {
         presenter?.fetchEvents()
     }
   
+    //MARK: - Notification Button Action
     override func didTapBellButton() {
         presenter?.createNewEvent()
     }
     
+    //MARK: - Person Button Action
     override func didTapPersonButton() {
         presenter?.pushProfileVC()
     }
     
+    override func didTapMagnifyingglassButton() {
+        presenter?.pushCreateEvent()
+    }
+    
+    //MARK: - Fetch Button Action
     @objc private func filterButtonTapped() {
 //        filterView.showViewWithAnimation(isHidden: false)
         presenter?.fetchEvents()
     }
     
+    //MARK: - Filter Button Action
     @objc private func sortButtonTapped() {
         sortView.showViewWithAnimation(isHidden: false)
     }

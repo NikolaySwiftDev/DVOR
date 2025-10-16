@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 import MapKit
 
-protocol RouterMain {
+protocol RouterMain: AnyObject {
     var navigationController: UINavigationController { get set }
     var builder: BuilderProtocol? { get set }
 }
@@ -22,6 +22,7 @@ protocol RouterMainProtocol: RouterMain {
     func pushRegistVC()
     func pushTabBarVC()
     func pushProfileVC()
+    func pushCreateEvent()
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
     func pushDetailUserInfo(model: UserModel)
@@ -35,8 +36,7 @@ protocol RouterMainProtocol: RouterMain {
 }
 
 class Router: RouterMainProtocol {
-
-
+    
     var navigationController: UINavigationController
     var userDefaults: UserDefaultsProtocol
     var builder: BuilderProtocol?
@@ -161,6 +161,12 @@ class Router: RouterMainProtocol {
         guard let detailVC = builder?.createRatingVC(router: self, model: model) else { return }
         navigationController.pushViewController(detailVC, animated: true)
     }
+    
+    //MARK: - Push Create Event VC
+    func pushCreateEvent() {
+        guard let detailVC = builder?.createCreateEventVC(router: self) else { return }
+        navigationController.pushViewController(detailVC, animated: true)
+    }
 
     //MARK: - Pop VC
     func popVC() {
@@ -250,6 +256,4 @@ class Router: RouterMainProtocol {
             mapItem.openInMaps(launchOptions: nil)
         }
     }
-
-
 }

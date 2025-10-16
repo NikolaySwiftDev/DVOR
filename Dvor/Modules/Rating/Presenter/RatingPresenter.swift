@@ -11,7 +11,7 @@ final class RatingPresenter: RatingPresenterProtocol {
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
     
-    required init(view: RatingProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol) {
+    init(view: RatingProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol) {
         self.view = view
         self.router = router
         self.network = network

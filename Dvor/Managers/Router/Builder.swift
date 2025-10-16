@@ -10,6 +10,7 @@ protocol BuilderProtocol: AnyObject {
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController
+    func createCreateEventVC(router: RouterMainProtocol) -> UIViewController
     
     //Для отмены от таббара
     func createHomeVC(router: RouterMainProtocol) -> UIViewController
@@ -17,7 +18,7 @@ protocol BuilderProtocol: AnyObject {
 }
 
 class Builder: BuilderProtocol {
-    
+
     var registrationCoordinator: RegistrationCoordinator?
 
     //MARK: - Tab bar Builder
@@ -147,4 +148,14 @@ class Builder: BuilderProtocol {
         view.presenter = presenter
         return view
     }
+    
+    //MARK: - Rating Builder
+    func createCreateEventVC(router: RouterMainProtocol) -> UIViewController {
+        let view = CreateEventViewController()
+        let presenter = CreateEventPresenter(view: view, router: router)
+        view.presenter = presenter
+        return view
+    }
+    
+    
 }

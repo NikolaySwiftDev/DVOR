@@ -87,7 +87,6 @@ final class SupportEventsView: UIView {
                 make.height.equalTo(300)
             }
         }
-        
     }
     
     //MARK: - Setup Sort View

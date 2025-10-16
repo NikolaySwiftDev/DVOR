@@ -6,6 +6,7 @@ protocol CustomNavigationBarDelegate: AnyObject {
     func didTapMagnifyingglassButton()
     func didTapBellButton()
     func didTapPersonButton()
+    func didTapAddTapped()
 }
 
 final class CustomNavigationBar: UIView {
@@ -22,9 +23,11 @@ final class CustomNavigationBar: UIView {
         return label
     }()
     
-    let magnifyingglass = UIButton(type: .system)
-    let bellButton = UIButton(type: .system)
-    let personButton = UIButton(type: .system)
+    private let magnifyingglass = UIButton(type: .system)
+    private let bellButton = UIButton(type: .system)
+    private let personButton = UIButton(type: .system)
+    private let addButton = UIButton(type: .system)
+    private lazy var stack = UIStackView(arrangedSubviews: [magnifyingglass, bellButton, personButton, addButton])
     
     // MARK: - Init
     init(title: String) {
@@ -47,40 +50,38 @@ final class CustomNavigationBar: UIView {
     // MARK: - Setup
     private func setupView() {
         addSubview(titleLabel)
+        addSubview(stack)
         
-        [magnifyingglass, bellButton, personButton].forEach {
+        [magnifyingglass, bellButton, personButton, addButton].forEach {
             $0.tintColor = .black
-            addSubview($0)
+            $0.snp.makeConstraints { make in
+                make.size.equalTo(25)
+
+            }
         }
         
         magnifyingglass.setBackgroundImage(UIImage(systemName: "magnifyingglass"), for: .normal)
         bellButton.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
         personButton.setBackgroundImage(UIImage(systemName: "person"), for: .normal)
+        addButton.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
+        
+        stack.axis = .horizontal
+        stack.spacing = 10
+        stack.alignment = .trailing
 
     }
     
     private func setupConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(16)
+            make.left.equalToSuperview().offset(Constants.Constraint.horizPadding)
             make.centerY.equalToSuperview()
         }
         
-        personButton.snp.makeConstraints { make in
-            make.centerY.equalTo(titleLabel)
-            make.size.equalTo(25)
-            make.right.equalToSuperview().inset(16)
-        }
-        
-        bellButton.snp.makeConstraints { make in
-            make.centerY.equalTo(titleLabel)
-            make.size.equalTo(25)
-            make.right.equalTo(personButton.snp.left).offset(-16)
-        }
-        
-        magnifyingglass.snp.makeConstraints { make in
-            make.centerY.equalTo(titleLabel)
-            make.size.equalTo(25)
-            make.right.equalTo(bellButton.snp.left).offset(-16)
+        stack.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(titleLabel.snp.trailing).offset(Constants.Constraint.verticalPadding)
+            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+
         }
     }
     
@@ -88,6 +89,7 @@ final class CustomNavigationBar: UIView {
         magnifyingglass.addTarget(self, action: #selector(magnifyingglassTapped), for: .touchUpInside)
         bellButton.addTarget(self, action: #selector(bellTapped), for: .touchUpInside)
         personButton.addTarget(self, action: #selector(personTapped), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
     }
     
     // MARK: - Actions
@@ -101,5 +103,9 @@ final class CustomNavigationBar: UIView {
     
     @objc private func personTapped() {
         delegate?.didTapPersonButton()
+    }
+    
+    @objc private func addTapped() {
+        delegate?.didTapAddTapped()
     }
 }

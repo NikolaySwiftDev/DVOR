@@ -50,6 +50,10 @@ extension BaseViewController: CustomNavigationBarDelegate {
     @objc open func didTapPersonButton() {
         print(" Кнопка нажата (по умолчанию)")
     }
+    
+    @objc open func  didTapAddTapped() {
+        print(" Кнопка нажата (по умолчанию)")
+    }
 }
 
 // MARK: - Auth Constants
