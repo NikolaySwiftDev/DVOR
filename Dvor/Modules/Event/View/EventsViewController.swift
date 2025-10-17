@@ -48,6 +48,10 @@ final class EventsViewController: BaseViewController {
     }
     
     override func didTapMagnifyingglassButton() {
+//        presenter?.pushCreateEvent()
+    }
+    
+    override func didTapAddTapped() {
         presenter?.pushCreateEvent()
     }
     
@@ -72,7 +76,15 @@ final class EventsViewController: BaseViewController {
 extension EventsViewController: EventsProtocol {
     func success(date: String) {
         titleDate.text = "\(date), Санкт-Петербург"
-        eventsTableView.events = presenter?.filteredEvents ?? []
+        
+        guard  let model = presenter?.filteredEvents, model.count > 0 else {
+            eventsTableView.events = []
+            filterButton.isHidden = false
+            return
+        }
+        
+        filterButton.isHidden = true
+        eventsTableView.events = model
     }
     
     func error(error: Error) {

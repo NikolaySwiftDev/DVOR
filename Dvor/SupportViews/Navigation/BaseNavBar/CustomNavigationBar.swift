@@ -15,14 +15,7 @@ final class CustomNavigationBar: UIView {
     weak var delegate: CustomNavigationBarDelegate?
     
     // MARK: - UI
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Заголовок"
-        label.font = UIFont.poppins(weight: .bold, size: 28)
-        label.textColor = .black
-        return label
-    }()
-    
+    private let titleLabel = UILabel.init(font: .poppins(weight: .bold, size: 28))    
     private let magnifyingglass = UIButton(type: .system)
     private let bellButton = UIButton(type: .system)
     private let personButton = UIButton(type: .system)
@@ -56,7 +49,6 @@ final class CustomNavigationBar: UIView {
             $0.tintColor = .black
             $0.snp.makeConstraints { make in
                 make.size.equalTo(25)
-
             }
         }
         
