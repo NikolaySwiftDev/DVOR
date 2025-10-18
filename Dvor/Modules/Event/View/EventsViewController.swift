@@ -38,9 +38,9 @@ final class EventsViewController: BaseViewController {
     }
   
     //MARK: - Notification Button Action
-    override func didTapBellButton() {
-        presenter?.createNewEvent()
-    }
+//    override func didTapBellButton() {
+//        presenter?.createNewEvent()
+//    }
     
     //MARK: - Person Button Action
     override func didTapPersonButton() {

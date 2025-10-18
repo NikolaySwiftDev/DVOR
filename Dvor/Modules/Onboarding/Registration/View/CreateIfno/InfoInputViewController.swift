@@ -145,30 +145,6 @@ private extension InfoInputViewController {
             make.height.equalTo(Constants.Constraint.buttonHeight * 2)
         }
     }
-
-    
-    //MARK: - Create TF View
-    private func createTFView(text: String, tf: AuthTextFieldView) -> UIView {
-        let view = UIView()
-        
-        let label = UILabel(text: text, font: .poppins(weight: .medium, size: .small))
-        
-        view.addSubview(label)
-        view.addSubview(tf)
-        
-        label.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
-        }
-
-        tf.snp.makeConstraints { make in
-            make.top.equalTo(label.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constants.Constraint.buttonHeight)
-        }
-        
-        return view
-    }
     
     //MARK: - Parse Birth Date from string
     private func parseBirthDate(_ dateString: String) {
@@ -187,11 +163,5 @@ private extension InfoInputViewController {
         } else {
             dateTF.layer.borderColor = UIColor.red.cgColor
         }
-    }
-    
-    
-    //MARK: - Check TF Is Not Empty
-    func checkTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
-        text.count == 0 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
     }
 }

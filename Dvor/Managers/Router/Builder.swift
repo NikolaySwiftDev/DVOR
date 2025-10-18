@@ -10,7 +10,7 @@ protocol BuilderProtocol: AnyObject {
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController
-    func createCreateEventVC(router: RouterMainProtocol) -> UIViewController
+    func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController
     
     //Для отмены от таббара
     func createHomeVC(router: RouterMainProtocol) -> UIViewController
@@ -150,9 +150,11 @@ class Builder: BuilderProtocol {
     }
     
     //MARK: - Rating Builder
-    func createCreateEventVC(router: RouterMainProtocol) -> UIViewController {
-        let view = CreateEventViewController()
-        let presenter = CreateEventPresenter(view: view, router: router)
+    func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController {
+        let view = CreateEventViewController(date: date)
+        let userDefaults = UserDefaultsManager()
+        let network = FirebaseDataManager()
+        let presenter = CreateEventPresenter(view: view, router: router, network: network, userDefaults: userDefaults)
         view.presenter = presenter
         return view
     }

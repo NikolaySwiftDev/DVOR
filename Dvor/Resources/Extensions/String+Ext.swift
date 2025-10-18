@@ -2,10 +2,10 @@
 import Foundation
 
 extension String {
-//    func isValidEmail() -> Bool {
-//        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-//        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self)
-//    }
+    //    func isValidEmail() -> Bool {
+    //        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+    //        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self)
+    //    }
     
     func formattedAsRussianPhone() -> String {
         let cleanNumber = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
@@ -66,5 +66,59 @@ extension String {
         }
         
         return cleanedNumber
+    }
+    
+    /// Форматирует строку как время в формате HH:mm
+    /// - Returns: Время в формате "12:00" или nil если невалидно
+    func toTimeFormat() -> String? {
+        // Удаляем все нецифры
+        let cleanString = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        
+        // Проверяем длину
+        guard cleanString.count == 4 else { return nil }
+        
+        // Разделяем на часы и минуты
+        let hourString = String(cleanString.prefix(2))
+        let minuteString = String(cleanString.suffix(2))
+        
+        // Проверяем валидность
+        guard let hour = Int(hourString),
+              let minute = Int(minuteString),
+              (0...23).contains(hour),
+              (0...59).contains(minute) else {
+            return nil
+        }
+        
+        return "\(hourString):\(minuteString)"
+    }
+    
+    /// Проверяет валидность времени
+    var isValidTime: Bool {
+        return toTimeFormat() != nil
+    }
+    
+    /// Форматирует строку как время (автоматическая вставка двоеточия)
+    func formatAsTime() -> String {
+        let cleanString = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        
+        switch cleanString.count {
+        case 0: return ""
+        case 1: return cleanString
+        case 2: return cleanString
+        case 3:
+            let hour = String(cleanString.prefix(1))
+            let minute = String(cleanString.suffix(2))
+            return "\(hour):\(minute)"
+        case 4:
+            let hour = String(cleanString.prefix(2))
+            let minute = String(cleanString.suffix(2))
+            return "\(hour):\(minute)"
+        default:
+            let trimmed = String(cleanString.prefix(4))
+            let hour = String(trimmed.prefix(2))
+            let minute = String(trimmed.suffix(2))
+            return "\(hour):\(minute)"
+            
+        }
     }
 }

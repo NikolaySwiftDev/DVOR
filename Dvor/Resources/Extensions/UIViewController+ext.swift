@@ -8,6 +8,7 @@ extension UIViewController {
         case delete
     }
     
+    //MARK: - Add animation to View
     func hideLoadingView(with view: UIView, tag: Int, state: LoadingState) {
         switch state {
         case .add:
@@ -37,5 +38,33 @@ extension UIViewController {
                 loadingView.removeFromSuperview()
             }
         }
+    }
+    
+    //MARK: - Create TF View
+    func createTFView(text: String, tf: AuthTextFieldView) -> UIView {
+        let view = UIView()
+        
+        let label = UILabel(text: text, font: .poppins(weight: .medium, size: .small))
+        
+        view.addSubview(label)
+        view.addSubview(tf)
+        
+        label.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(5)
+        }
+
+        tf.snp.makeConstraints { make in
+            make.top.equalTo(label.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
+        
+        return view
+    }
+
+    //MARK: - Check TF Is Not Empty
+    func checkTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
+        text.count == 0 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
     }
 }

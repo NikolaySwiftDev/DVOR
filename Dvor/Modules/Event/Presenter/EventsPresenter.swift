@@ -10,13 +10,9 @@ protocol EventsPresenterProtocol: AnyObject {
     var filteredEvents: [EventModel]? { get set }
     
     func fetchEvents()
-    func writeEvent(model: EventModel)
     func filterEventsWithDate(date: Date)
     func sortEventsWithPredicate(predicate: SortPredicate)
-    
     func deleteEvent(eventId: String)
-    
-    func createNewEvent() //mock
     
     func showLocationOnMap(location: String)
     func pushDetailVC(model: EventModel)
@@ -86,21 +82,6 @@ final class EventsPresenter: EventsPresenterProtocol {
             self.handleEventsResult(result)
         })
         
-    }
-    
-    //MARK: - Записсь события в БД
-    func writeEvent(model: EventModel) {
-        network?.writeEvents(model: model, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let success):
-                break
-//                router?.showAlertWithTitle(success)
-            case .failure(let error):
-                router?.showAlertWithTitle("Ошибка сохранения")
-                view?.error(error: error)
-            }
-        })
     }
     
     //MARK: - фильтрация Событий по Дате
@@ -173,7 +154,11 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     //MARK: - Пуш в экран создания события
     func pushCreateEvent() {
-        router?.pushCreateEvent()
+        guard let orgID = userDefaults?.getIDUser() else {
+            router?.showAlertWithTitle("Для создания события необходимо зарегестрироваться")
+            return
+        }
+        router?.pushCreateEvent(date: lastFilterDate)
     }
 
     //MARK: - Deinit
@@ -181,57 +166,5 @@ final class EventsPresenter: EventsPresenterProtocol {
         print("Deinit HomePresenter")
 //        stopRealTimeObservation()
     }
-    
-    //MOCK
-    func createNewEvent() {
-        guard let orgID = userDefaults?.getIDUser() else {
-            router?.showAlertWithTitle("Зарегистрируйтесь")
-            return
-        }
-        
-        let model = EventModel(date: lastFilterDate,
-                               time: "18:00",
-                               name: "Товарка",
-                               format: 11,
-                               location: "Спб",
-                               address: "пр. Просвещения 25",
-                               namePlace: "Школа 555",
-                               price: 1000,
-                               ownerName: "Орг",
-                               timeGame: 120,
-//                               totalPeopleCount: 4,
-                               orgId: orgID)
-        
-        let model1 = EventModel(date: lastFilterDate,
-                               time: "17:00",
-                               name: "Игра",
-                               format: 8,
-                               location: "Спб",
-                               address: "пр. Энгелься 30",
-                               namePlace: "Школа 555",
-                               price: 1000,
-                               ownerName: "Орг",
-                               timeGame: 120,
-//                               totalPeopleCount: 8,
-                               orgId: orgID)
-        
-        let model2 = EventModel(date: lastFilterDate,
-                               time: "12:00",
-                               name: "Турнир",
-                               format: 5,
-                               location: "Спб",
-                               address: "пр. Новаторов 112",
-                               namePlace: "Школа 255",
-                               price: 1000,
-                               ownerName: "Орг",
-                               timeGame: 120,
-//                               totalPeopleCount: 8,
-                               orgId: orgID)
-        
-        writeEvent(model: model)
-        writeEvent(model: model1)
-        writeEvent(model: model2)
-        
-        
-    }
+
 }

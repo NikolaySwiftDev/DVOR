@@ -22,7 +22,7 @@ protocol RouterMainProtocol: RouterMain {
     func pushRegistVC()
     func pushTabBarVC()
     func pushProfileVC()
-    func pushCreateEvent()
+    func pushCreateEvent(date: Date)
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
     func pushDetailUserInfo(model: UserModel)
@@ -163,8 +163,8 @@ class Router: RouterMainProtocol {
     }
     
     //MARK: - Push Create Event VC
-    func pushCreateEvent() {
-        guard let detailVC = builder?.createCreateEventVC(router: self) else { return }
+    func pushCreateEvent(date: Date) {
+        guard let detailVC = builder?.createCreateEventVC(router: self, date: date) else { return }
         navigationController.pushViewController(detailVC, animated: true)
     }
 
