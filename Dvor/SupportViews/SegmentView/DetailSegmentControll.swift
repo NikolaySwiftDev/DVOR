@@ -4,16 +4,7 @@ import SnapKit
 final class DetailSegmentContainerView: UIView {
     
     // MARK: - UI Components
-    private let segmentedControl: UISegmentedControl = {
-        let items = DetailSegmentModel().items
-        let sc = UISegmentedControl(items: items)
-        sc.selectedSegmentIndex = 1
-        sc.selectedSegmentTintColor = .mediumGreen
-        sc.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
-        sc.setTitleTextAttributes([.foregroundColor: UIColor.mediumGreen], for: .normal)
-        return sc
-    }()
-
+    private let segmentControl = CustomSegmentView(items: DetailSegmentModel().items)
     let infoView = InfoView()
     let usersView = UsersView()
     private let commentsView = CommentsView()
@@ -34,12 +25,12 @@ final class DetailSegmentContainerView: UIView {
 
     // MARK: - Setup
     private func setupViews() {
-        addSubview(segmentedControl)
+        addSubview(segmentControl)
         addSubview(infoView)
         addSubview(usersView)
         addSubview(commentsView)
-
-        segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
+        
+        segmentControl.delegate = self
     }
     
     // MARK: - Public Configuration
@@ -53,7 +44,7 @@ final class DetailSegmentContainerView: UIView {
     }
 
     private func setupConstraints() {
-        segmentedControl.snp.makeConstraints { make in
+        segmentControl.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(40)
         }
@@ -61,21 +52,10 @@ final class DetailSegmentContainerView: UIView {
         let views = [infoView, usersView, commentsView]
         views.forEach { view in
             view.snp.makeConstraints { make in
-                make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+                make.top.equalTo(segmentControl.snp.bottom).offset(16)
                 make.leading.trailing.bottom.equalToSuperview()
             }
         }
-    }
-
-    // MARK: - Segment Changed
-    @objc private func segmentChanged() {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0: currentPosition = .info
-        case 1: currentPosition = .users
-        case 2: currentPosition = .comments
-        default: break
-        }
-        updateView(animated: true)
     }
 
     // MARK: - View Switching
@@ -138,11 +118,26 @@ final class DetailSegmentContainerView: UIView {
     // MARK: - External Control
     func configureInitialPosition(_ position: DetailSegmentViewPosition) {
         switch position {
-        case .info: segmentedControl.selectedSegmentIndex = 0
-        case .users: segmentedControl.selectedSegmentIndex = 1
-        case .comments: segmentedControl.selectedSegmentIndex = 2
+        case .info: segmentControl.selectedSegmentIndex = 0
+        case .users: segmentControl.selectedSegmentIndex = 1
+        case .comments: segmentControl.selectedSegmentIndex = 2
         }
         currentPosition = position
         updateView(animated: false)
     }
 }
+
+// MARK: - Segment Changed Delegate
+extension DetailSegmentContainerView: CustomSegmentViewDelegate {
+    func didTapSegment(index: Int) {
+        
+        switch index {
+        case 0: currentPosition = .info
+        case 1: currentPosition = .users
+        case 2: currentPosition = .comments
+        default: break
+        }
+        updateView(animated: true)
+    }
+}
+

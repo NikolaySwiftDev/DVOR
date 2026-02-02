@@ -4,18 +4,28 @@ import UIKit
 
 protocol SupportNavigationBarDelegate: AnyObject {
     func backButtonTapped()
+    func actionButtonTapped()
 }
 
 final class SupportNavigationBar: UIView {
     
-    var titleText: String?
     weak var delegate: SupportNavigationBarDelegate?
     
-    private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
-    private lazy var titleLabel = UILabel.init(text: titleText, font: .poppins(weight: .bold, size: 28))
+    private var state: SupportNavigationBarState
     
-    init(titleText: String? = nil) {
-        self.titleText = titleText
+    private let backButton = UIButton.createBackButton(target: self,
+                                                       action: #selector(backButtonTapped))
+    
+    private lazy var actionButton = UIButton.createBackButton(image: UIImage(systemName: "info.bubble") ?? UIImage(),
+                                                              target: self,
+                                                              action: #selector(actionButtonTapped))
+    
+    private lazy var titleLabel = UILabel.init(text: state.titleText,
+                                               font: .poppins(weight: .bold,
+                                                              size: 28))
+    
+    init(state: SupportNavigationBarState) {
+        self.state = state
         super.init(frame: .zero)
         setupView()
         
@@ -28,21 +38,47 @@ final class SupportNavigationBar: UIView {
     @objc private func backButtonTapped() {
         delegate?.backButtonTapped()
     }
+    
+    @objc private func actionButtonTapped() {
+        delegate?.actionButtonTapped()
+    }
 }
 
 extension SupportNavigationBar {
     func setupView() {
-       addSubview(backButton)
-       addSubview(titleLabel)
-        
-        backButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
-            make.centerY.equalToSuperview()
-            make.size.equalTo(Constants.Constraint.backButtonSize)
+        switch state {
+        case .createEvent:
+            addSubview(backButton)
+            addSubview(titleLabel)
+            addSubview(actionButton)
+            
+            backButton.snp.makeConstraints { make in
+                make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
+                make.centerY.equalToSuperview()
+                make.size.equalTo(Constants.Constraint.backButtonSize)
+            }
+            
+            actionButton.snp.makeConstraints { make in
+                make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+                make.centerY.equalToSuperview()
+                make.size.equalTo(Constants.Constraint.backButtonSize)
+            }
+            
+            titleLabel.snp.makeConstraints { make in
+                make.centerY.equalToSuperview()
+                make.leading.trailing.equalToSuperview().inset(60)
+            }
         }
-        
-        titleLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+    }
+}
+
+enum SupportNavigationBarState {
+    case createEvent
+    
+    var titleText: String {
+        switch self {
+        case .createEvent:
+            return "Создание события"
         }
     }
 }

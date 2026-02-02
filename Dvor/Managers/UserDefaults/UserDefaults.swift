@@ -72,5 +72,8 @@ final class UserDefaultsManager: UserDefaultsProtocol {
 //            completion(.failure(error))
 //        }
 //    }
+    deinit {
+        print("Deinit UserDefaultsManager")
+    }
 
 }

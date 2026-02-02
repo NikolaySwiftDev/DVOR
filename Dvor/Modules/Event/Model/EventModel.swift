@@ -1,6 +1,8 @@
 import Foundation
 
-
+struct SegmentViewModel {
+    static let model = ["Текущие", "Ваши"]
+}
 
 struct EventModel: Codable {
     let id: String

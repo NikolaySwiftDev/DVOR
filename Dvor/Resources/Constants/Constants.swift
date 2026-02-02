@@ -10,7 +10,7 @@ struct Constants {
         static let buttonHeight: CGFloat = 52
         static let cellHeight: CGFloat = 40
         static let backButtonSize: CGFloat = 24
-
+        static let segmentHeight: CGFloat = 40
     }
     
     enum Colors {
@@ -25,5 +25,8 @@ struct Constants {
         
         static let layerColor = UIColor(hexString: "#141414")
         static let inActiveColor = UIColor.lightGray
+        
+        static let segmentActive = UIColor.white
+        static let segmentInactive = UIColor(hexString: "#141414")
     }
 }

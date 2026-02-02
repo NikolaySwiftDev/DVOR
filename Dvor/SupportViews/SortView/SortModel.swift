@@ -26,6 +26,8 @@ struct SortCellModel {
 }
 
 enum SortPredicate: String {
+    case none
+    case personal
     case count
     case time
     case address

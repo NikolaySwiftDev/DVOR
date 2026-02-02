@@ -5,13 +5,16 @@ final class EventsViewController: BaseViewController {
     
     // MARK: - Properties
     var presenter: EventsPresenterProtocol?
+
+    //Segment
+    private let segmentView = CustomSegmentView(items: SegmentViewModel.model)
     
     //Label
-    private let titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small))
+    private let titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small), numberOfLines: 1)
 
     //Buttons
-    private let sortButton = UIButton.createStandartButton(title: "Сортировка", titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(sortButtonTapped))
-    private let filterButton = UIButton.createStandartButton(title: "Обновить", titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(filterButtonTapped))
+    private let sortButton = UIButton.createStandartButton(title: HomeConstants.titleSort, titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(sortButtonTapped))
+    private let fetchButton = UIButton.createStandartButton(title: HomeConstants.titleFetch, titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(fetchButtonTapped))
     
     //Collections
     private let calendarView = CustomCalendarView()
@@ -26,7 +29,7 @@ final class EventsViewController: BaseViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigationTitle("Матчи")
+        setNavigationTitle(HomeConstants.titleMatch)
         configure()
         setupView()
         setupConstraints()
@@ -56,7 +59,7 @@ final class EventsViewController: BaseViewController {
     }
     
     //MARK: - Fetch Button Action
-    @objc private func filterButtonTapped() {
+    @objc private func fetchButtonTapped() {
 //        filterView.showViewWithAnimation(isHidden: false)
         presenter?.fetchEvents()
     }
@@ -79,11 +82,11 @@ extension EventsViewController: EventsProtocol {
         
         guard  let model = presenter?.filteredEvents, model.count > 0 else {
             eventsTableView.events = []
-            filterButton.isHidden = false
+            fetchButton.isHidden = false
             return
         }
         
-        filterButton.isHidden = true
+        fetchButton.isHidden = true
         eventsTableView.events = model
     }
     
@@ -92,7 +95,22 @@ extension EventsViewController: EventsProtocol {
     }
 }
 
-// MARK: - Custom Calendar and Event Delegate
+    // MARK: - Segment View Delegate
+extension EventsViewController: CustomSegmentViewDelegate {
+    func didTapSegment(index: Int) {
+        switch index {
+        case 0:
+            presenter?.sortEventsWithPredicate(predicate: .none)
+        case 1:
+            presenter?.sortEventsWithPredicate(predicate: .personal)
+        default:
+            break
+        }
+    }
+}
+    
+
+    // MARK: - Custom Calendar and Event Delegate
 extension EventsViewController: CustomCalendarViewDelegate, EventsTableViewDelegate {
     //Calendar delegate
     func didSelectDate(_ date: Date) {
@@ -115,8 +133,8 @@ extension EventsViewController: CustomCalendarViewDelegate, EventsTableViewDeleg
     }
 }
 
+//MARK: -  FIlter + Sort Delegate
 extension EventsViewController: SupportEventsViewDelegate {
-
     func closeView(type: TypeView) {
         switch type {
         case .sort:
@@ -144,14 +162,14 @@ extension EventsViewController: EventTableViewCellProtocol {
 // MARK: - UI Setup
 private extension EventsViewController {
     private func setupView() {
+        view.addSubview(segmentView)
         view.addSubview(titleDate)
         view.addSubview(sortButton)
-        view.addSubview(filterButton)
+        view.addSubview(fetchButton)
         view.addSubview(calendarView)
         view.addSubview(eventsTableView)
         view.addSubview(filterView)
         view.addSubview(sortView)
-
     }
     
     private func configure() {
@@ -160,18 +178,17 @@ private extension EventsViewController {
         calendarView.delegate = self
         sortView.delegate = self
         filterView.delegate = self
+        segmentView.delegate = self
 
         var configurationFilter = UIButton.Configuration.plain()
-        configurationFilter.image = UIImage(systemName: "arrow.triangle.2.circlepath")
+        configurationFilter.image = UIImage(systemName: HomeConstants.imageFetch)
         configurationFilter.imagePadding = 8
-        configurationFilter.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: -4)
-        filterButton.configuration = configurationFilter
-        filterButton.tintColor = .black
+        fetchButton.configuration = configurationFilter
+        fetchButton.tintColor = .black
         
         var configurationSort = UIButton.Configuration.plain()
-        configurationSort.image = UIImage(named: "sortEvent")
+        configurationSort.image = UIImage(named: HomeConstants.imageSort)
         configurationSort.imagePadding = 8
-        configurationSort.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: -4)
         sortButton.configuration = configurationSort
         sortButton.tintColor = .black
         
@@ -181,8 +198,14 @@ private extension EventsViewController {
     }
     
     private func setupConstraints() {
-        titleDate.snp.makeConstraints { make in
+        segmentView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(HomeConstants.paddingTop)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.segmentHeight)
+        }
+        
+        titleDate.snp.makeConstraints { make in
+            make.top.equalTo(segmentView.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
@@ -192,20 +215,20 @@ private extension EventsViewController {
             make.height.equalTo(HomeConstants.heightCV)
         }
         
-        filterButton.snp.makeConstraints { make in
+        fetchButton.snp.makeConstraints { make in
             make.top.equalTo(calendarView.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
-            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.trailing.equalToSuperview()
             make.height.equalTo(HomeConstants.filterHeight)
         }
 
         sortButton.snp.makeConstraints { make in
             make.top.equalTo(calendarView.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
-            make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
+            make.leading.equalToSuperview()
             make.height.equalTo(HomeConstants.filterHeight)
         }
         
         eventsTableView.snp.makeConstraints { make in
-            make.top.equalTo(filterButton.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.top.equalTo(fetchButton.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -226,5 +249,12 @@ fileprivate struct HomeConstants {
     static let paddingTop: CGFloat = 65
     static let heightCV: CGFloat = 70
     static let filterHeight: CGFloat = 30
+    
+    static let imageSort = "sortEvent"
+    static let imageFetch = "arrow.triangle.2.circlepath"
+    
+    static let titleSort = "Cортировать"
+    static let titleFetch  = "Обновить"
+    static let titleMatch  = "Матчи"
 }
 

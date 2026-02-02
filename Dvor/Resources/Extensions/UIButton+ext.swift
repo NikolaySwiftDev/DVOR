@@ -9,7 +9,7 @@ extension UIButton {
     ) -> UIButton {
         let button = UIButton(type: .system)
         button.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
-        
+        button.tintColor = Constants.Colors.buttonActiveColor
         if let target = target, let action = action {
             button.addTarget(target, action: action, for: controlEvents)
         }
@@ -18,7 +18,7 @@ extension UIButton {
     }
     
     static func createStandartButton(
-        title: String,
+        title: String? = nil,
         titleColor: UIColor = Constants.Colors.titleColor,
         backgroundColor: UIColor = Constants.Colors.buttonInActiveColor,
         cornerRadius: CGFloat = Constants.Constraint.cornerRadius,

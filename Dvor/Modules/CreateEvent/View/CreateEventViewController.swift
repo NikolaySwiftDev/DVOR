@@ -9,20 +9,18 @@ final class CreateEventViewController: UIViewController {
     private var player = 0
     private var time = ""
     private var adress = ""
-    private var heightKeyboard: CGFloat = Constants.Constraint.verticalPadding
     
-    private let navigationBar = SupportNavigationBar(titleText: "Создание события")
+    private let navigationBar = SupportNavigationBar(state: .createEvent)
     private let subTitle = UILabel.init(text: "Введите данные")
     private let titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small), textAlignment: .center)
-    private let adressTF = AuthTextFieldView(placeholder: "Адрес")
-    private let playersTF = AuthTextFieldView(placeholder: "8x8")
-    private let timeTF = AuthTextFieldView(placeholder: "Время")
+    private let adressTF = AuthTextFieldView(placeholder: "ул. Любых, д.20, к1, (шк.01)")
+    private let playersTF = AuthTextFieldView(placeholder: "8")
+    private let timeTF = AuthTextFieldView(placeholder: "11:22")
     private let nextButton = UIButton.createStandartButton(title: "Создать", target: self, action: #selector(nextButtonTapped))
-
     
     init(date: Date) {
         self.date = date
-        titleDate.text = "Событие на - \(date.toString())"
+        titleDate.text = "Событие на \(date.toString())"
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -54,8 +52,13 @@ extension CreateEventViewController: SupportNavigationBarDelegate {
     func backButtonTapped() {
         presenter?.popVC()
     }
+    
+    func actionButtonTapped() {
+        print(#function)
+    }
 }
 
+//MARK: - UITextFieldDelegate
 extension CreateEventViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -79,37 +82,6 @@ extension CreateEventViewController: UITextFieldDelegate {
     
     @objc private func doneButtonTapped() {
         view.endEditing(true)
-    }
-    
-}
-
-//MARK: - Setup UI
-extension CreateEventViewController {
-    
-    private func setupView() {
-        view.backgroundColor = Constants.Colors.backgroungColor
-        view.addSubview(navigationBar)
-        view.addSubview(titleDate)
-        view.addSubview(subTitle)
-        view.addSubview(nextButton)
-    }
-    
-    private func config() {
-        navigationBar.delegate = self
-        
-        playersTF.textField.delegate = self
-        playersTF.textField.tag = 0
-        playersTF.textField.keyboardType = .numberPad
-        playersTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        
-        timeTF.textField.delegate = self
-        timeTF.textField.tag = 1
-        timeTF.textField.keyboardType = .numberPad
-        timeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        
-        adressTF.textField.delegate = self
-        adressTF.textField.tag = 2
-        adressTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
@@ -140,6 +112,38 @@ extension CreateEventViewController {
         guard player != 0, time.isValidTime,  adress != "" else { return false }
         return true
     }
+    
+}
+
+//MARK: - Setup UI + Configure
+extension CreateEventViewController {
+    
+    private func setupView() {
+        view.backgroundColor = Constants.Colors.backgroungColor
+        view.addSubview(navigationBar)
+        view.addSubview(titleDate)
+        view.addSubview(subTitle)
+        view.addSubview(nextButton)
+    }
+    
+    private func config() {
+        navigationBar.delegate = self
+        
+        playersTF.textField.delegate = self
+        playersTF.textField.tag = 0
+        playersTF.textField.keyboardType = .numberPad
+        playersTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        
+        timeTF.textField.delegate = self
+        timeTF.textField.tag = 1
+        timeTF.textField.keyboardType = .numberPad
+        timeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        
+        adressTF.textField.delegate = self
+        adressTF.textField.tag = 2
+        adressTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    }
+    
     
     private func setupConstraints() {
         navigationBar.snp.makeConstraints { make in
@@ -183,7 +187,7 @@ extension CreateEventViewController {
         }
         
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(heightKeyboard)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }

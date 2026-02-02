@@ -8,7 +8,7 @@ protocol EventsProtocol: AnyObject {
 protocol EventsPresenterProtocol: AnyObject {
     var events: [EventModel]? { get set }
     var filteredEvents: [EventModel]? { get set }
-    
+        
     func fetchEvents()
     func filterEventsWithDate(date: Date)
     func sortEventsWithPredicate(predicate: SortPredicate)
@@ -36,6 +36,15 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     private var lastFilterDate: Date = .now
     private var lastSortPredicate: SortPredicate = .count
+    private var personlaMode = false
+
+    private var title: String {
+        if personlaMode {
+            "Ваши события на " + lastFilterDate.toString()
+        } else {
+            lastFilterDate.toString()
+        }
+    }
 
     required init(view: EventsProtocol,
                   router: RouterMainProtocol,
@@ -68,7 +77,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         case .success(let events):
             self.events = events
             self.filterEventsWithDate(date: lastFilterDate)
-            self.sortEventsWithPredicate(predicate: lastSortPredicate)
+            self.sortEventsWithPredicate(predicate: personlaMode ? .personal : lastSortPredicate)
 //            view?.success(date: lastFilterDate.toString())
         case .failure(let error):
             self.view?.error(error: error)
@@ -81,19 +90,28 @@ final class EventsPresenter: EventsPresenterProtocol {
             guard let self = self else { return }
             self.handleEventsResult(result)
         })
-        
     }
     
     //MARK: - фильтрация Событий по Дате
     func filterEventsWithDate(date: Date) {
-//        fetchEvents()
         guard let events = events else { return }
-        let calendar = Calendar.current
-        filteredEvents = events.filter {
-            calendar.isDate($0.date, inSameDayAs: date)
+        if personlaMode {
+            let calendar = Calendar.current
+            filteredEvents = events.filter {
+                calendar.isDate($0.date, inSameDayAs: date)
+            }
+            guard let myID = userDefaults?.getIDUser() else { return }
+            filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
+            lastFilterDate = date
+            view?.success(date: title)
+        } else {
+            let calendar = Calendar.current
+            filteredEvents = events.filter {
+                calendar.isDate($0.date, inSameDayAs: date)
+            }
+            lastFilterDate = date
+            view?.success(date: lastFilterDate.toString())
         }
-        lastFilterDate = date
-        view?.success(date: lastFilterDate.toString())
     }
     
     //MARK: - фильтрация Событий по заданному параметру
@@ -103,18 +121,26 @@ final class EventsPresenter: EventsPresenterProtocol {
         case .count:
             let sortEvents = filteredEvents?.sorted { $0.peopleAllCountInt < $1.peopleAllCountInt }
             filteredEvents = sortEvents
+            view?.success(date: title)
         case .time:
             let sortEvents = filteredEvents?.sorted { $0.time < $1.time }
             filteredEvents = sortEvents
+            view?.success(date: title)
         case .address:
             let sortEvents = filteredEvents?.sorted { $0.address < $1.address }
             filteredEvents = sortEvents
+            view?.success(date: title)
+        case .personal:
+            guard let myID = userDefaults?.getIDUser() else { return }
+            personlaMode = true
+            filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
+            view?.success(date: title)
+        case .none:
+            personlaMode = false
+            filterEventsWithDate(date: lastFilterDate)
         }
-        view?.success(date: lastFilterDate.toString())
-
+        
     }
-    
-
 
     //MARK: - Удаление собитыя
     func deleteEvent(eventId: String) {
