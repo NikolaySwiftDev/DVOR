@@ -7,7 +7,7 @@ protocol Coordinator: AnyObject {
 
 protocol RegistrationCoordinatorProtocol: Coordinator {
     func showPhoneInput()
-    func showPhoneConfirmation(with phone: String)
+    func showPhoneConfirmation(email: String)
     func showInfoInput()
     func showUserDataInput()
     func createAvatar()
@@ -34,19 +34,23 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     
     // MARK: - Flow Methods
     func showPhoneInput() {
-        let vc = EnterPhoneViewController(presenter: presenter)
-        vc.setInfoForNavigationView(model: .phone)
+        let vc = EnterEmailViewController(presenter: presenter)
+        
+        vc.setInfoForNavigationView(model: .email)
         vc.configureEnadle(false)
-        vc.onNext = { [weak self] phone in
-            self?.registrationData.phone = phone
-            self?.showPhoneConfirmation(with: phone)
+        vc.onNext = { [weak self] email in
+            self?.registrationData.email = email
+            self?.showPhoneConfirmation(email: email)
+        }
+        if let registPresenter = presenter as? RegistPresenter {
+            registPresenter.view = vc
         }
         presenter?.pushViewController(vc)
     }
     
-    func showPhoneConfirmation(with phone: String) {
-        let vc = PhoneConfirmViewController(presenter: presenter)
-        vc.setTitleNumberText(with: phone)
+    func showPhoneConfirmation(email: String) {
+        let vc = EmailConfirmViewController(presenter: presenter)
+        vc.setTitleNumberText(with: email)
         vc.configureEnadle(false)
         vc.onNext = { [weak self] in
             self?.showInfoInput()
@@ -130,7 +134,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         vc.hideBackButton(true)
         presenter?.pushViewController(vc)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             guard let self = self else { return }
             self.presenter?.completeRegistration(model: registrationData)
             self.onRegistrationComplete?()
@@ -146,7 +150,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 
 // MARK: - Data Model
 struct RegistrationData: Codable {
-    var phone: String = ""
+    var email: String = ""
     var name: String = ""
     var surname: String = ""
     var dateBD: Date = Date()

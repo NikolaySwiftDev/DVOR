@@ -15,7 +15,7 @@ final class AuthViewController: UIViewController {
         
     private let skipButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("Пропустить", for: .normal)
+        btn.setTitle(AuthModel.skipButtonTitle, for: .normal)
         btn.setTitleColor(.white, for: .normal) // Временный явный цвет
         btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
         btn.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)
@@ -24,12 +24,23 @@ final class AuthViewController: UIViewController {
 
     private let enterButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("Войти", for: .normal)
+        btn.setTitle(AuthModel.enterButtonTitle, for: .normal)
         btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
         btn.backgroundColor = Constants.Colors.buttonActiveColor
         btn.layer.cornerRadius = Constants.Constraint.cornerRadius
         btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
         btn.addTarget(self, action: #selector(enterButtonTapped), for: .touchUpInside)
+        return btn
+    }()
+    
+    private let registrButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setTitle(AuthModel.registButtonTitle, for: .normal)
+        btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
+        btn.backgroundColor = Constants.Colors.buttonActiveColor
+        btn.layer.cornerRadius = Constants.Constraint.cornerRadius
+        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
+        btn.addTarget(self, action: #selector(registButtonTapped), for: .touchUpInside)
         return btn
     }()
     
@@ -49,6 +60,11 @@ final class AuthViewController: UIViewController {
     @objc private func enterButtonTapped() {
         presenter?.pushRegistVC()
     }
+    
+    //MARK: - Registr Button Tapped
+    @objc private func registButtonTapped() {
+        presenter?.pushRegistVC()
+    }
 }
 
 //MARK: - AuthProtocol
@@ -61,6 +77,7 @@ private extension AuthViewController {
         view.addSubview(backgroungImage)
         view.addSubview(skipButton)
         view.addSubview(enterButton)
+        view.addSubview(registrButton)
     }
     
     private func setupContraints() {
@@ -75,6 +92,12 @@ private extension AuthViewController {
             make.width.equalTo(Constants.Constraint.buttonHeight * 2)
         }
         
+        registrButton.snp.makeConstraints { make in
+            make.bottom.equalTo(enterButton.snp.top).inset(-Constants.Constraint.verticalPadding / 1.5)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
+        
         enterButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
@@ -83,3 +106,8 @@ private extension AuthViewController {
     }
 }
 
+fileprivate struct AuthModel {
+    static let skipButtonTitle = "Пропустить"
+    static let enterButtonTitle = "Войти"
+    static let registButtonTitle = "Регистрация"
+}

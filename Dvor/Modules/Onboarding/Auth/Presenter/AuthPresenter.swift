@@ -4,6 +4,7 @@ protocol AuthProtocol: AnyObject {
 
 protocol AuthPresenterProtocol: AnyObject {
     func pushRegistVC()
+    func pushAuthVC()
     func pushMainView()
     init(view: AuthProtocol, router: RouterMainProtocol, userDefaults: UserDefaultsProtocol)
 }
@@ -26,6 +27,12 @@ final class AuthPresenter: AuthPresenterProtocol {
     func pushRegistVC() {
         router?.pushRegistVC()
     }
+    
+    func pushAuthVC() {
+//        router?.pushAuthVC()
+        print("Create Auth")
+    }
+    
     
     deinit {
         print("Auth Presenter deinit")

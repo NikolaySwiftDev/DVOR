@@ -9,17 +9,15 @@ protocol RegistProtocol: AnyObject {
     func hideLoading()
     
     func updateAvatarImage(_ image: UIImage)
-    func updateTFText(_ code: String)
 }
 
 protocol RegistPresenterProtocol: AnyObject {
     func popVC()
 
-    func makeCodeRequest(with code: String)
-    
-    func repeatCodeRequest(with code: String)
-    func makePhoneRequest(with phone: String)
-    
+    func signUp(email: String, password: String)
+    func checkEmailVerification()
+    func resendVerificationEmail()
+        
     func pickPhoto()
     
     func appendNotification()
@@ -31,9 +29,9 @@ protocol RegistPresenterProtocol: AnyObject {
     
 
     init(router: RouterMainProtocol,
-//         firebase: FirebaseManagerProtocol,
+         firebase: FirebaseAuthManagerProtocol,
          network: FirebaseDataManager,
-         userDefaults: UserDefaultsProtocol,
+//         userDefaults: UserDefaultsProtocol,
          photoManager: PhotoManagerProtocol,
          notifManager: NotificationManagerProtocol)
 }
@@ -42,26 +40,23 @@ final class RegistPresenter: RegistPresenterProtocol {
 
 
     weak var view: RegistProtocol?
-    let userDefaults: UserDefaultsProtocol
+//    let userDefaults: UserDefaultsProtocol
     let router: RouterMainProtocol?
-//    let firebase: FirebaseManagerProtocol?
+    let firebase: FirebaseAuthManagerProtocol
     let network: FirebaseDataManager
     let photoManager: PhotoManagerProtocol
     let notifManager: NotificationManagerProtocol
     
-    private let mock = true
-    private var code = "12345"
-
     required init(router: RouterMainProtocol,
-//                  firebase: FirebaseManagerProtocol,
+                  firebase: FirebaseAuthManagerProtocol,
                   network: FirebaseDataManager,
-                  userDefaults: UserDefaultsProtocol,
+//                  userDefaults: UserDefaultsProtocol,
                   photoManager: PhotoManagerProtocol,
                   notifManager: NotificationManagerProtocol) {
         self.router = router
-//        self.firebase = firebase
+        self.firebase = firebase
         self.network = network
-        self.userDefaults = userDefaults
+//        self.userDefaults = userDefaults
         self.photoManager = photoManager
         self.notifManager = notifManager
     }
@@ -70,55 +65,51 @@ final class RegistPresenter: RegistPresenterProtocol {
         router?.popVC()
     }
     
-    func makeCodeRequest(with phone: String) {
-        if mock {
-            print("Request with phone \(phone)")
-            view?.showLoading()
-            view?.updateTFText(code)
-        } else {
-//            firebase?.sendVerificationCode(phoneNumber: phone, completion: { [weak self] result in
-//                 guard let self = self else { return }
-//                switch result {
-//                case .success(let code):
-//                    self.code = code
-//                    print("CODE -----", code)
-//                case .failure(let error):
-//                    router?.showAlertWithTitle(error.localizedDescription)
-//                }
-//            })
+    func signUp(email: String, password: String) {
+        view?.showLoading()
+        firebase.signUp(email: email, password: password) { [weak self] result in
+            guard let self = self else {return}
+            switch result {
+            case .success:
+                view?.hideLoading()
+                view?.showSuccess()
+            case .failure(let error):
+                view?.hideLoading()
+                view?.showError(error.localizedDescription)
+                router?.showAlertWithTitle(error.localizedDescription)
+
+            }
         }
     }
+
     
-    func repeatCodeRequest(with phone: String) {
-        if mock {
-            router?.showAlertWithTitle("Запрос отправлен")
-            view?.showLoading()
-            print("Request with phone \(phone)")
-        } else {
-//            router?.showAlertWithTitle("Запрос отправлен")
-//            view?.showLoading()
-//            firebase?.sendVerificationCode(phoneNumber: phone, completion: { [weak self] result in
-////                guard let self = self else { return }
-//                switch result {
-//                case .success(let code):
-//                    print("CODE -----", code)
-//                case .failure(let error):
-//                    print("Error -----", error.localizedDescription)
+    func checkEmailVerification() {
+//        Task {
+//            do {
+//                try await firebase.reloadUser()
+//                if firebase.isEmailVerified {
+//                    router?.showAlertWithTitle("Почта подтверждена", )
+//                } else {
+//                    view?.showError("Почта ещё не подтверждена")
 //                }
-//            })
-        }
+//            } catch {
+//                view?.showError(error.localizedDescription)
+//            }
+//        }
     }
+
     
-    func makePhoneRequest(with code: String) {
-        if code == self.code {
-            view?.showSuccess()
-        } else {
-            let error = "Неверный код"
-            print(self.code)
-            router?.showAlertWithTitle(error)
-            view?.showError(error)
-        }
+    func resendVerificationEmail() {
+//        Task {
+//            do {
+//                try await firebase.sendEmailVerification()
+//                router?.showAlertWithTitle("Письмо отправлено повторно")
+//            } catch {
+//                view?.showError(error.localizedDescription)
+//            }
+//        }
     }
+
     
     func pickPhoto() {
         view?.showLoading()
@@ -145,7 +136,6 @@ final class RegistPresenter: RegistPresenterProtocol {
                     self.router?.showAlertWithTitle(errorMessage)
                     
                 }
-            
             }
         }
     }
@@ -172,7 +162,7 @@ final class RegistPresenter: RegistPresenterProtocol {
                              name: model.name,
                              surname: model.surname,
                              dateBirthday: model.dateBD,
-                             mobile: model.phone,
+                             mobile: model.email,
                              experience: model.experience,
                              city: model.city,
                              position: model.position)
@@ -181,7 +171,7 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-                userDefaults.saveUser(model: data)
+//                userDefaults.saveUser(model: data)
                 router?.pushTabBarVC()
             case .failure(let error):
                 router?.showAlertConfigur(title: "Ошибка записи",

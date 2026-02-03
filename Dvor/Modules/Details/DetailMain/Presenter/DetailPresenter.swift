@@ -34,7 +34,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     //MARK: - Получение всех пользователей события
     func fetchAllUsers(usersID: [String], orgID: String) {
         view?.load()
-        network?.getAllUsersFromEvent(usersID: usersID, orgId: orgID, completion: { [weak self] result in
+        network?.fetchAllUsersFromEvent(usersID: usersID, orgId: orgID, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success((let users, let org)):
@@ -59,7 +59,7 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
                 
-        network?.addUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
+        network?.writeUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):

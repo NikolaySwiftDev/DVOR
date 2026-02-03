@@ -3,13 +3,20 @@ import FirebaseCore
 import FirebaseDatabase
 
 protocol FirebaseDataManagerProtocol: AnyObject {
+    //Fetch
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
     func fetchUser(idUser: String, completion: @escaping (Result<UserModel, Error>) -> Void)
+    func fetchAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void)
+    
+    //Write
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void)
     func writeUser(model: UserModel, completion: @escaping (Result<String, Error>) -> Void)
+    func writeUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void)
+
+    //Delete
     func deleteEvent(idEvent: String, completion: @escaping (Result<String, Error>) -> Void)
-    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void)
-    func getAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void)
+    
+    //Update
     func updateUserFollowers()
 
 //    func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
@@ -61,7 +68,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
     
     //MARK: - Общий метод получения всех участников ОДНОГО события + организатора
-    func getAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void) {
+    func fetchAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void) {
         let uniqueIDs = Array(Set(usersID)).filter { !$0.isEmpty }
         
         // Проверяем, есть ли хотя бы участники или организатор
@@ -186,7 +193,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
     
     //MARK: - Добавление пользоватля к событию в БД
-    func addUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
+    func writeUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
         let usersRef = database.child(eventsPath).child(idEvent).child("users")
         
         usersRef.observeSingleEvent(of: .value) { snapshot in

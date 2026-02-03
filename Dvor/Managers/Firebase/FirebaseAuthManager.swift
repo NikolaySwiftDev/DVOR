@@ -2,147 +2,78 @@ import Foundation
 import FirebaseAuth
 
 protocol FirebaseAuthManagerProtocol: AnyObject {
-    func sendVerificationCode(phoneNumber: String, completion: @escaping (Result<String, Error>) -> Void)
-    func validatePhoneNumber(_ phoneNumber: String) -> Bool
-    func isTestPhoneNumber(_ phoneNumber: String) -> Bool
+    var currentUser: User? { get }
+    var isAuthorized: Bool { get }
+    var isEmailVerified: Bool { get }
+
+    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
+    func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
+    func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void)
+    func reloadUser(completion: @escaping (Result<Void, Error>) -> Void)
+    func signOut() throws
 }
+
+
 
 final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
-    
-    private let userDefaults: UserDefaults
-    private let testPhoneNumbers: [String] = [
-        "+7 999 999-99-99"
-    ]
-    
-    init(userDefaults: UserDefaults = .standard) {
-        self.userDefaults = userDefaults
-        setupTestEnvironment()
-    }
-    
-    // MARK: - Настройка тестового окружения
-    private func setupTestEnvironment() {
-        #if DEBUG
-        // Включаем тестовый режим для Firebase Auth
-        Auth.auth().settings?.isAppVerificationDisabledForTesting = true
-        print("⚠️ Тестовый режим Firebase Auth активирован")
-        #endif
-    }
-    
-    // MARK: - Проверка тестового номера
-    func isTestPhoneNumber(_ phoneNumber: String) -> Bool {
-        let formattedNumber = phoneNumber.formatPhoneNumber()
-        return testPhoneNumbers.contains(formattedNumber)
-    }
-    
-    // MARK: - Валидация номера телефона
-    func validatePhoneNumber(_ phoneNumber: String) -> Bool {
-        let cleanedNumber = phoneNumber.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
-        return cleanedNumber.count >= 10 && cleanedNumber.count <= 15
-    }
-    
-    // MARK: - Отправка кода верификации
-    func sendVerificationCode(phoneNumber: String, completion: @escaping (Result<String, Error>) -> Void) {
-        
-        guard !phoneNumber.isEmpty else {
-            completion(.failure(NSError(domain: "FirebaseAuth", code: -1,
-                                      userInfo: [NSLocalizedDescriptionKey: "Номер телефона не может быть пустым"])))
-            return
-        }
-        
-        guard validatePhoneNumber(phoneNumber) else {
-            completion(.failure(NSError(domain: "FirebaseAuth", code: -3,
-                                      userInfo: [NSLocalizedDescriptionKey: "Неверный формат номера телефона"])))
-            return
-        }
-        
-        let formattedPhoneNumber = phoneNumber.formatPhoneNumber()
-        print("📱 Отправка кода на номер: \(formattedPhoneNumber)")
-        
-        // Проверяем тестовый номер
-        if isTestPhoneNumber(formattedPhoneNumber) {
-            print("✅ Используется тестовый номер")
-            handleTestPhoneNumber(formattedPhoneNumber, completion: completion)
-            return
-        }
-        
-        // Для реальных номеров - проверяем биллинг
-        checkBillingStatus { [weak self] hasBilling in
-            guard let self = self else { return }
-            
-            if !hasBilling {
-                completion(.failure(NSError(domain: "FirebaseAuth", code: 17999,
-                                          userInfo: [NSLocalizedDescriptionKey: "Биллинг не настроен. Перейдите в Firebase Console → Billing и настройте платежный аккаунт. Для тестирования используйте номера: +15555550123 до +15555550132"])))
-                return
+
+    var currentUser: User? { Auth.auth().currentUser }
+    var isAuthorized: Bool { currentUser != nil }
+    var isEmailVerified: Bool { currentUser?.isEmailVerified ?? false }
+
+    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
+        guard validateEmail(email) else { completion(.failure(AuthError.invalidEmail)); return }
+        guard password.count >= 6 else { completion(.failure(AuthError.weakPassword)); return }
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if let error = error as? NSError,
+               error.code == AuthErrorCode.emailAlreadyInUse.rawValue {
+                completion(.failure(AuthError.emailAlreadyInUse)); return
             }
-            
-            self.sendRealVerificationCode(phoneNumber: formattedPhoneNumber, completion: completion)
+            error != nil ? completion(.failure(error!)) : completion(.success(result!.user))
         }
-    }
-    
-    // MARK: - Обработка тестовых номеров
-    private func handleTestPhoneNumber(_ phoneNumber: String, completion: @escaping (Result<String, Error>) -> Void) {
-        // Для тестовых номеров используем стандартный механизм Firebase
-        DispatchQueue.global(qos: .userInitiated).async {
-            PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        completion(.failure(error))
-                        return
-                    }
-                    
-                    guard let verificationID = verificationID else {
-                        completion(.failure(NSError(domain: "FirebaseAuth", code: -2,
-                                                  userInfo: [NSLocalizedDescriptionKey: "Не удалось получить verification ID"])))
-                        return
-                    }
-                    
-                    print("✅ Тестовый код отправлен")
-                    self.userDefaults.set(verificationID, forKey: "authVerificationID")
-                    completion(.success(verificationID))
-                }
-            }
-        }
-    }
-    
-    // MARK: - Отправка реального SMS
-    private func sendRealVerificationCode(phoneNumber: String, completion: @escaping (Result<String, Error>) -> Void) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        completion(.failure(self.analyzeError(error)))
-                        return
-                    }
-                    
-                    guard let verificationID = verificationID else {
-                        completion(.failure(NSError(domain: "FirebaseAuth", code: -2,
-                                                  userInfo: [NSLocalizedDescriptionKey: "Не удалось получить verification ID"])))
-                        return
-                    }
-                    
-                    self.userDefaults.set(verificationID, forKey: "authVerificationID")
-                    completion(.success(verificationID))
-                }
-            }
-        }
-    }
-    
-    // MARK: - Проверка статуса биллинга (упрощенная)
-    private func checkBillingStatus(completion: @escaping (Bool) -> Void) {
-        // В реальном приложении здесь можно добавить API вызов для проверки статуса
-        // Для упрощения предполагаем, что биллинг включен после настройки
-        completion(true) // Измените на false для тестирования ошибки
     }
 
-    // MARK: - Анализ ошибок
-    private func analyzeError(_ error: Error) -> Error {
-        let nsError = error as NSError
-        
-        if nsError.domain == "FIRAuthErrorDomain" && nsError.code == 17999 {
-            return NSError(domain: "FirebaseAuth", code: nsError.code,
-                         userInfo: [NSLocalizedDescriptionKey: "Ошибка биллинга Firebase. Перейдите в Firebase Console → Billing и настройте платежный аккаунт. Для тестирования используйте тестовые номера: +15555550123 до +15555550132"])
+
+    func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            error != nil ? completion(.failure(error!)) : completion(.success(result!.user))
         }
-        
-        return error
+    }
+    
+
+    func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let user = currentUser else { completion(.failure(AuthError.noUser)); return }
+        user.sendEmailVerification { error in
+            error != nil ? completion(.failure(error!)) : completion(.success(()))
+        }
+    }
+
+    func reloadUser(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let user = currentUser else { completion(.failure(AuthError.noUser)); return }
+        user.reload { error in
+            error != nil ? completion(.failure(error!)) : completion(.success(()))
+        }
+    }
+
+    func signOut() throws { try Auth.auth().signOut() }
+
+    private func validateEmail(_ email: String) -> Bool {
+        email.range(of: #"^\S+@\S+\.\S+$"#, options: .regularExpression) != nil
     }
 }
+
+
+enum AuthError: LocalizedError {
+    case invalidEmail, weakPassword, emailAlreadyInUse, noUser
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidEmail: return "Некорректный email"
+        case .weakPassword: return "Пароль должен быть не короче 6 символов"
+        case .emailAlreadyInUse: return "Почта уже зарегистрирована"
+        case .noUser: return "Пользователь не найден"
+        }
+    }
+}
+
+

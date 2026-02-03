@@ -37,7 +37,6 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
 }
 
 extension CreateAvatarViewController: RegistProtocol {
-    func updateTFText(_ code: String) {}
     func showError(_ message: String) {}
     
     func showSuccess() {

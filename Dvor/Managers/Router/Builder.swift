@@ -55,17 +55,17 @@ class Builder: BuilderProtocol {
     }
     
     func createRegistrationCoordinator(router: RouterMainProtocol) {
-        let userDefaults = UserDefaultsManager()
-//        let firebase = FirebaseManager()
+//        let userDefaults = UserDefaultsManager()
+        let firebase = FirebaseAuthManager()
         let network = FirebaseDataManager()
         let photoManager = PhotoManager()
         let notifManager = NotificationManager()
         
         let presenter = RegistPresenter(
             router: router,
+            firebase: firebase,
             network: network,
-//            firebase: firebase,
-            userDefaults: userDefaults,
+//            userDefaults: userDefaults,
             photoManager: photoManager,
             notifManager: notifManager
         )

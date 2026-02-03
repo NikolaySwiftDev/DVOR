@@ -2,12 +2,12 @@
 import Foundation
 
 enum BaseRegistPosition {
-    case phone, info, experience, avatar, geo, pushNotif
+    case email, info, experience, avatar, geo, pushNotif
     
     var titleMain: String {
         switch self {
-        case .phone:
-            "Введите номер телефона"
+        case .email:
+            "Введите почту"
         case .info:
             "Профиль"
         case .experience:
@@ -23,7 +23,7 @@ enum BaseRegistPosition {
     
     var titleDesc: String {
         switch self {
-        case .phone:
+        case .email:
             "Чтобы войти в приложение"
         case .info:
             "Введите ваши данные"
@@ -40,7 +40,7 @@ enum BaseRegistPosition {
 
     var page: String {
         switch self {
-        case .phone:
+        case .email:
             ""
         case .info:
             "1/5"
@@ -57,7 +57,7 @@ enum BaseRegistPosition {
     
     var progress: Float {
         switch self {
-        case .phone:
+        case .email:
             0
         case .info:
             0.2
@@ -74,7 +74,7 @@ enum BaseRegistPosition {
     
     var showTitleView: Bool {
         switch self {
-        case .phone:
+        case .email:
             true
         default:
             false

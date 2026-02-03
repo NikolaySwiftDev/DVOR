@@ -2,13 +2,14 @@
 
 import UIKit
 
-final class PhoneConfirmViewController: BaseRegistrationViewController {
+final class EmailConfirmViewController: BaseRegistrationViewController {
     
     //MARK: - Properties
     var onNext: (() -> Void)?
     
     private var code = ""
-    private var phone = ""
+    private var email = ""
+    private var password = ""
     private var countdownTimer: Timer?
     private var remainingSeconds = 120
 
@@ -22,7 +23,7 @@ final class PhoneConfirmViewController: BaseRegistrationViewController {
         super.viewDidLoad()
         setupLayout()
         setupTextField()
-        presenter?.makeCodeRequest(with: phone)
+//        presenter?.checkEmailVerification()
     }
     
     //MARK: - Start Timer 
@@ -89,8 +90,8 @@ final class PhoneConfirmViewController: BaseRegistrationViewController {
     
     //MARK: - Set Title With Number
     func setTitleNumberText(with text: String) {
-        phone = text
-        numberLabel.text = "Код отправлен на номер \n \(phone.formattedAsRussianPhone())"
+        email = text
+        numberLabel.text = "Код отправлен на почту \n \(email)"
     }
     
     //MARK: - Setup Text Field
@@ -117,13 +118,13 @@ final class PhoneConfirmViewController: BaseRegistrationViewController {
 
     //MARK: -Next Button Action
     override func nextButtonTapped() {
-        presenter?.makePhoneRequest(with: code)
+        presenter?.checkEmailVerification()
     }
     
     //MARK: - Repaet Button Action
     @objc private func repaetButtonTapped() {
         guard remainingSeconds <= 0 else { return }
-        presenter?.makeCodeRequest(with: phone)
+        presenter?.resendVerificationEmail()
     }
 
     deinit {
@@ -132,21 +133,13 @@ final class PhoneConfirmViewController: BaseRegistrationViewController {
 }
 
     //MARK: - Regist Protocol
-extension PhoneConfirmViewController:  RegistProtocol {
-    func updateTFText(_ code: String) {
-        self.code = code
-        codeField.textField.text = code
-        
-        checkValidCode()
-    }
-    
+extension EmailConfirmViewController:  RegistProtocol {
     func updateAvatarImage(_ image: UIImage) {}
     
     func showError(_ message: String) {
         print("Error --- ", message)
         code = ""
         codeField.textField.text = ""
-        checkValidCode()
     }
     
     func showSuccess() {
@@ -163,7 +156,7 @@ extension PhoneConfirmViewController:  RegistProtocol {
 }
 
 //MARK: - UITextFieldDelegate
-extension PhoneConfirmViewController: UITextFieldDelegate {
+extension EmailConfirmViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Разрешаем только цифры и backspace
         let allowedCharacters = CharacterSet.decimalDigits

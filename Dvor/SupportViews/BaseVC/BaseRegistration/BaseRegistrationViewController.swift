@@ -157,7 +157,7 @@ private extension BaseRegistrationViewController {
 
 // MARK: - Auth Constants
 fileprivate struct BaseConstants {
-    static let bottomPaddingNumberPad: CGFloat = (UIScreen.main.bounds.height / 3.1)
+    static let bottomPaddingNumberPad: CGFloat = (UIScreen.main.bounds.height / 3)
     static let bottomPaddingKeyboard: CGFloat = (UIScreen.main.bounds.height / 2.7)
     static let progressHeight: CGFloat = 4
     static let backButtonSize: CGFloat = 24
