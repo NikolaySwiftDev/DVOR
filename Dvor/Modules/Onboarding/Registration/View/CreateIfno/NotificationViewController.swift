@@ -32,7 +32,8 @@ final class NotificationViewController: BaseRegistrationViewController {
 }
 
 //MARK: - Regist Protocol
-extension NotificationViewController: RegistProtocol {    
+extension NotificationViewController: RegistProtocol {
+    func showInfoInput() {}
     func showError(_ message: String) {
         print("Error ---", message)
         onNext?()

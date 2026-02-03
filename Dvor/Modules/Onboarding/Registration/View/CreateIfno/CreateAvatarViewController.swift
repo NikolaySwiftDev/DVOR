@@ -38,7 +38,8 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
 
 extension CreateAvatarViewController: RegistProtocol {
     func showError(_ message: String) {}
-    
+    func showInfoInput() {}
+
     func showSuccess() {
         updateNextButtonState()
     }

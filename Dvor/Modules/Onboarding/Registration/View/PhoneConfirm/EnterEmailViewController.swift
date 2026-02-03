@@ -5,6 +5,8 @@ final class EnterEmailViewController: BaseRegistrationViewController {
     
     //MARK: - Properties
     var onNext: ((String) -> Void)?
+    var pushCreateInfo: (() -> Void)?
+
 
     //MARK: - UI
     private let emailTF = AuthTextFieldView(placeholder: "dvor@gmail.com")
@@ -118,6 +120,10 @@ extension EnterEmailViewController: UITextFieldDelegate {
 
 extension EnterEmailViewController: RegistProtocol {
     func updateAvatarImage(_ image: UIImage) {}
+    
+    func showInfoInput() {
+        pushCreateInfo?()
+    }
 
     func showError(_ message: String) {
         emailTF.textField.text = ""
@@ -133,6 +139,7 @@ extension EnterEmailViewController: RegistProtocol {
         
     func showLoading() {
         hideLoadingView(with: view, tag: 120, state: .add)
+        
     }
 
     func hideLoading() {

@@ -42,6 +42,10 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.registrationData.email = email
             self?.showPhoneConfirmation(email: email)
         }
+        
+        vc.pushCreateInfo = { [weak self] in
+            self?.showInfoInput()
+        }
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
         }
@@ -150,6 +154,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 
 // MARK: - Data Model
 struct RegistrationData: Codable {
+    var id: String = UUID().uuidString
     var email: String = ""
     var name: String = ""
     var surname: String = ""

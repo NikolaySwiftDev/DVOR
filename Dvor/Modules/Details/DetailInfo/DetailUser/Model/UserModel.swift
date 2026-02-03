@@ -1,7 +1,7 @@
 import Foundation
 
 struct UserModel: Codable {
-    var id: String = UUID().uuidString
+    var id: String
     let image: Data?
     let name: String
     let surname: String
@@ -28,7 +28,7 @@ struct UserModel: Codable {
     var mvpNominations: Int = 0
     
     init(
-        id: String = UUID().uuidString,
+        id: String,
         image: Data? = nil,
         name: String,
         surname: String,

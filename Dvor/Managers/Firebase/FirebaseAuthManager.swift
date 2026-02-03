@@ -8,9 +8,11 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
 
     func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
     func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
+
     func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void)
     func reloadUser(completion: @escaping (Result<Void, Error>) -> Void)
-    func signOut() throws
+    
+    func signOut(completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 
@@ -55,7 +57,14 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
         }
     }
 
-    func signOut() throws { try Auth.auth().signOut() }
+    func signOut(completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            try Auth.auth().signOut()
+            completion(.success(()))
+        } catch {
+            completion(.failure(error))
+        }
+    }
 
     private func validateEmail(_ email: String) -> Bool {
         email.range(of: #"^\S+@\S+\.\S+$"#, options: .regularExpression) != nil

@@ -7,14 +7,10 @@ final class EmailConfirmViewController: BaseRegistrationViewController {
     //MARK: - Properties
     var onNext: (() -> Void)?
     
-    private var code = ""
-    private var email = ""
-    private var password = ""
     private var countdownTimer: Timer?
     private var remainingSeconds = 120
-
+    
     //MARK: - UI
-    private let codeField = AuthTextFieldView(placeholder: "Введите код")
     private let numberLabel = UILabel(font: .poppins(weight: .regular, size: .mid), textAlignment: .center)
     private let repeatCodeLabel = UILabel(text: "Отправить снова через 120 секунд", font: .poppins(weight: .regular, size: .mid), textAlignment: .center)
     
@@ -22,8 +18,8 @@ final class EmailConfirmViewController: BaseRegistrationViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        setupTextField()
-//        presenter?.checkEmailVerification()
+        configureEnadle(true)
+        startCountdown()
     }
     
     //MARK: - Start Timer 
@@ -64,7 +60,6 @@ final class EmailConfirmViewController: BaseRegistrationViewController {
     //MARK: - Setup Layout
     private func setupLayout() {
         view.addSubview(numberLabel)
-        view.addSubview(codeField)
         view.addSubview(repeatCodeLabel)
         
         repeatCodeLabel.isUserInteractionEnabled = true
@@ -72,48 +67,19 @@ final class EmailConfirmViewController: BaseRegistrationViewController {
         repeatCodeLabel.addGestureRecognizer(tapGesture)
         
         numberLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.centerY.equalToSuperview().offset(-120)
         }
         
-        codeField.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight)
-        }
-        
         repeatCodeLabel.snp.makeConstraints { make in
-            make.top.equalTo(codeField.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.top.equalTo(numberLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
     }
     
     //MARK: - Set Title With Number
     func setTitleNumberText(with text: String) {
-        email = text
-        numberLabel.text = "Код отправлен на почту \n \(email)"
-    }
-    
-    //MARK: - Setup Text Field
-    private func setupTextField() {
-        codeField.textField.delegate = self
-        codeField.textField.keyboardType = .numberPad
-        codeField.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-    }
-    
-    @objc private func textFieldDidChange() {
-        checkValidCode()
-    }
-    
-    //MARK: - Check Valid Code
-    private func checkValidCode() {
-        guard let text = codeField.textField.text else { return }
-        
-        let isValid = text.count > 4
-        configureEnadle(isValid)
-        code = text
-        
-        text.count == 0 ? codeField.updateBorderColor(.clear) : codeField.updateBorderColor()
+        numberLabel.text = "Письмо с подтверждением отправлено на почту \n \(text)"
     }
 
     //MARK: -Next Button Action
@@ -128,19 +94,16 @@ final class EmailConfirmViewController: BaseRegistrationViewController {
     }
 
     deinit {
-        print("Deinit ---- PhoneConfirmViewController")
+        print("Deinit ---- EmailConfirmViewController")
     }
 }
 
     //MARK: - Regist Protocol
 extension EmailConfirmViewController:  RegistProtocol {
+    func hideLoading() {}
+    func showInfoInput() {}
     func updateAvatarImage(_ image: UIImage) {}
-    
-    func showError(_ message: String) {
-        print("Error --- ", message)
-        code = ""
-        codeField.textField.text = ""
-    }
+    func showError(_ message: String) {}
     
     func showSuccess() {
         onNext?()
@@ -150,25 +113,4 @@ extension EmailConfirmViewController:  RegistProtocol {
         startCountdown()
     }
     
-    func hideLoading() {
-        print(#function)
-    }
-}
-
-//MARK: - UITextFieldDelegate
-extension EmailConfirmViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Разрешаем только цифры и backspace
-        let allowedCharacters = CharacterSet.decimalDigits
-        let characterSet = CharacterSet(charactersIn: string)
-        return allowedCharacters.isSuperset(of: characterSet) || string.isEmpty
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        configureBottomPaddingButtom(isActiveTF: true)
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        configureBottomPaddingButtom(isActiveTF: false)
-    }
 }

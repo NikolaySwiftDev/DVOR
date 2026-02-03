@@ -9,6 +9,7 @@ protocol RegistProtocol: AnyObject {
     func hideLoading()
     
     func updateAvatarImage(_ image: UIImage)
+    func showInfoInput()
 }
 
 protocol RegistPresenterProtocol: AnyObject {
@@ -71,43 +72,94 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else {return}
             switch result {
             case .success:
-                view?.hideLoading()
-                view?.showSuccess()
+                // Новый пользователь: отправляем письмо с подтверждением
+                self.firebase.sendEmailVerification { [weak self] sendResult in
+                    guard let self = self else { return }
+                    switch sendResult {
+                    case .success:
+                        self.view?.showSuccess()
+                    case .failure(let error):
+                        self.view?.showError(error.localizedDescription)
+                        self.router?.showAlertWithTitle(error.localizedDescription)
+                    }
+                }
             case .failure(let error):
-                view?.hideLoading()
-                view?.showError(error.localizedDescription)
-                router?.showAlertWithTitle(error.localizedDescription)
+                // Если почта уже занята, пробуем залогинить пользователя и продолжить регистрацию
+                if let authError = error as? AuthError, authError == .emailAlreadyInUse {
+                    self.firebase.signIn(email: email, password: password) { [weak self] signInResult in
+                        guard let self = self else { return }
+                        switch signInResult {
+                        case .success:
+                            // Пользователь уже существует: проверяем, верифицирован ли email
+                            self.firebase.reloadUser { [weak self] reloadResult in
+                                guard let self = self else { return }
+                                switch reloadResult {
+                                case .success:
+                                    if self.firebase.isEmailVerified {
+                                        // Почта уже подтверждена — просто продолжаем flow без повторной отправки письма
+                                        self.view?.showInfoInput()
+                                    } else {
+                                        // Почта не подтверждена — отправляем письмо и продолжаем как обычно
+                                        self.firebase.sendEmailVerification { [weak self] sendResult in
+                                            guard let self = self else { return }
+                                            switch sendResult {
+                                            case .success:
+                                                self.view?.showSuccess()
+                                            case .failure(let error):
+                                                self.view?.showError(error.localizedDescription)
+                                                self.router?.showAlertWithTitle(error.localizedDescription)
+                                            }
+                                        }
+                                    }
+                                case .failure(let reloadError):
+                                    self.view?.showError(reloadError.localizedDescription)
+                                    self.router?.showAlertWithTitle(reloadError.localizedDescription)
+                                }
+                            }
+                        case .failure(let signInError):
+                            self.view?.showError(signInError.localizedDescription)
+                            self.router?.showAlertWithTitle(signInError.localizedDescription)
+                        }
+                    }
+                } else {
+                    self.view?.showError(error.localizedDescription)
+                    self.router?.showAlertWithTitle(error.localizedDescription)
+                }
+            }
+        }
+    }
 
+    func checkEmailVerification() {
+        view?.showLoading()
+        firebase.reloadUser { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                if self.firebase.isEmailVerified {
+                    self.view?.showSuccess()
+                } else {
+                    self.router?.showAlertWithTitle("Почта ещё не подтверждена")
+                    self.view?.showError("Почта ещё не подтверждена")
+                }
+            case .failure(let error):
+                self.view?.showError(error.localizedDescription)
             }
         }
     }
 
     
-    func checkEmailVerification() {
-//        Task {
-//            do {
-//                try await firebase.reloadUser()
-//                if firebase.isEmailVerified {
-//                    router?.showAlertWithTitle("Почта подтверждена", )
-//                } else {
-//                    view?.showError("Почта ещё не подтверждена")
-//                }
-//            } catch {
-//                view?.showError(error.localizedDescription)
-//            }
-//        }
-    }
-
-    
     func resendVerificationEmail() {
-//        Task {
-//            do {
-//                try await firebase.sendEmailVerification()
-//                router?.showAlertWithTitle("Письмо отправлено повторно")
-//            } catch {
-//                view?.showError(error.localizedDescription)
-//            }
-//        }
+        view?.showLoading()
+        firebase.sendEmailVerification { [weak self] result in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+            switch result {
+            case .success:
+                self.router?.showAlertWithTitle("Письмо отправлено повторно")
+            case .failure(let error):
+                self.view?.showError(error.localizedDescription)
+            }
+        }
     }
 
     
@@ -157,8 +209,15 @@ final class RegistPresenter: RegistPresenterProtocol {
         }
     }
 
-    func completeRegistration(model: RegistrationData) {        
-        let data = UserModel(image: model.image,
+    func completeRegistration(model: RegistrationData) {
+        // Используем ID текущего пользователя из Firebase Auth, а не сгенерированный UUID
+        guard let userId = firebase.currentUser?.uid else {
+            router?.showAlertWithTitle("Ошибка: пользователь не авторизован")
+            return
+        }
+        
+        let data = UserModel(id: userId,
+                             image: model.image,
                              name: model.name,
                              surname: model.surname,
                              dateBirthday: model.dateBD,
