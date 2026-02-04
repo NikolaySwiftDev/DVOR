@@ -6,7 +6,10 @@ protocol DetailProtocol: AnyObject {
 }
 
 protocol DetailPresenterProtocol: AnyObject {
-    init(view: DetailProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol?, userDefaults: UserDefaultsProtocol?)
+    init(view: DetailProtocol,
+         router: RouterMainProtocol,
+         network: FirebaseDataManagerProtocol?,
+         firebase: FirebaseAuthManagerProtocol)
     var users: [UserModel]? { get set }
     func fetchAllUsers(usersID: [String], orgID: String)
     func addUserToEvent(idEvent: String)
@@ -22,13 +25,16 @@ final class DetailPresenter: DetailPresenterProtocol {
     var users: [UserModel]?
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
-    let userDefaults: UserDefaultsProtocol?
+    let firebase: FirebaseAuthManagerProtocol
 
-    required init(view: DetailProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol?, userDefaults: UserDefaultsProtocol?) {
+    required init(view: DetailProtocol,
+                  router: RouterMainProtocol,
+                  network: FirebaseDataManagerProtocol?,
+                  firebase: FirebaseAuthManagerProtocol) {
         self.view = view
         self.router = router
         self.network = network
-        self.userDefaults = userDefaults
+        self.firebase = firebase
     }
     
     //MARK: - Получение всех пользователей события
@@ -54,7 +60,7 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
         
-        guard let idUser = userDefaults?.getIDUser() else {
+        guard let idUser = firebase.currentUser?.uid else {
             router?.showAlertWithTitle("Добавьте аккаунт")
             return
         }

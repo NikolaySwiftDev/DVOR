@@ -50,8 +50,8 @@ final class EventsViewController: BaseViewController {
         presenter?.pushProfileVC()
     }
     
-    override func didTapMagnifyingglassButton() {
-//        presenter?.pushCreateEvent()
+    override func didTapSignOutButton() {
+        presenter?.signOut()
     }
     
     override func didTapAddTapped() {

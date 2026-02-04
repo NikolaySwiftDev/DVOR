@@ -67,16 +67,10 @@ final class EnterEmailViewController: BaseRegistrationViewController {
         emailTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         passwordTF.textField.delegate = self
-//        passwordTF.textField.textContentType = .password
         passwordTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     @objc private func textFieldDidChange() {
-        validateForm()
-    }
-    
-    //MARK: - Format phone number from TF and check Valid
-    private func validateForm() {
         let email = emailTF.textField.text ?? ""
         let password = passwordTF.textField.text ?? ""
         
@@ -89,7 +83,7 @@ final class EnterEmailViewController: BaseRegistrationViewController {
 
         configureEnadle(isEmailValid && isPasswordValid)
     }
-
+    
     
     override func nextButtonTapped() {
         guard

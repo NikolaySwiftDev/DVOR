@@ -6,6 +6,7 @@ protocol BuilderProtocol: AnyObject {
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController
     func createRegistrationCoordinator(router: RouterMainProtocol)
     func createAuthVC(router: RouterMainProtocol) -> UIViewController
+    func createMainCoordinateVC(router: RouterMainProtocol) -> UIViewController
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
@@ -20,6 +21,7 @@ protocol BuilderProtocol: AnyObject {
 class Builder: BuilderProtocol {
 
     var registrationCoordinator: RegistrationCoordinator?
+    private let firebase = FirebaseAuthManager()
 
     //MARK: - Tab bar Builder
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController {
@@ -55,8 +57,6 @@ class Builder: BuilderProtocol {
     }
     
     func createRegistrationCoordinator(router: RouterMainProtocol) {
-//        let userDefaults = UserDefaultsManager()
-        let firebase = FirebaseAuthManager()
         let network = FirebaseDataManager()
         let photoManager = PhotoManager()
         let notifManager = NotificationManager()
@@ -65,7 +65,6 @@ class Builder: BuilderProtocol {
             router: router,
             firebase: firebase,
             network: network,
-//            userDefaults: userDefaults,
             photoManager: photoManager,
             notifManager: notifManager
         )
@@ -85,21 +84,31 @@ class Builder: BuilderProtocol {
         return view
     }
     
-    //MARK: -  Auth Builder
-    func createAuthVC(router: RouterMainProtocol) -> UIViewController {
-        let view = AuthViewController()
-        let userDefaults = UserDefaultsManager()
-        let presenter = AuthPresenter(view: view, router: router, userDefaults: userDefaults)
+    //MARK: -  Main Coordinate Builder
+    func createMainCoordinateVC(router: RouterMainProtocol) -> UIViewController {
+        let view = MainCoordinateViewController()
+        let presenter = MainCoordinatePresenter(router: router)
         view.presenter = presenter
         return view
     }
     
+    //MARK: -  Auth Builder
+    func createAuthVC(router: RouterMainProtocol) -> UIViewController {
+        let view = AuthViewController()
+        let firebase = FirebaseAuthManager()
+        let presenter = AuthPresenter(router: router, firebase: firebase)
+        view.presenter = presenter
+        return view
+    }
+
     //MARK: -  Home Builder
     func createHomeVC(router: RouterMainProtocol) -> UIViewController {
         let view = EventsViewController()
         let network = FirebaseDataManager()
-        let userDefaults = UserDefaultsManager()
-        let presenter = EventsPresenter(view: view, router: router, network: network, userDefaults: userDefaults)
+        let presenter = EventsPresenter(view: view,
+                                       router: router,
+                                       network: network,
+                                       firebase: firebase)
         view.presenter = presenter
         return view
     }
@@ -107,9 +116,11 @@ class Builder: BuilderProtocol {
     //MARK: -  Profile Builder
     func createProfileVC(router: RouterMainProtocol) -> UIViewController {
         let view = ProfileViewController()
-        let userDefaults = UserDefaultsManager()
         let network = FirebaseDataManager()
-        let presenter = ProfilePresenter(view: view, router: router, network: network, userDefaults: userDefaults)
+        let presenter = ProfilePresenter(view: view,
+                                         router: router,
+                                         network: network,
+                                         firebase: firebase)
         view.presenter = presenter
         return view
     }
@@ -118,8 +129,10 @@ class Builder: BuilderProtocol {
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController {
         let view = DetailViewController(details: model)
         let network = FirebaseDataManager()
-        let userDefaults = UserDefaultsManager()
-        let presenter = DetailPresenter(view: view, router: router, network: network, userDefaults: userDefaults)
+        let presenter = DetailPresenter(view: view,
+                                        router: router,
+                                        network: network,
+                                        firebase: firebase)
         view.presenter = presenter
         return view
     }
@@ -152,9 +165,11 @@ class Builder: BuilderProtocol {
     //MARK: - Rating Builder
     func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController {
         let view = CreateEventViewController(date: date)
-        let userDefaults = UserDefaultsManager()
         let network = FirebaseDataManager()
-        let presenter = CreateEventPresenter(view: view, router: router, network: network, userDefaults: userDefaults)
+        let presenter = CreateEventPresenter(view: view,
+                                             router: router,
+                                             network: network,
+                                             firebase: firebase)
         view.presenter = presenter
         return view
     }

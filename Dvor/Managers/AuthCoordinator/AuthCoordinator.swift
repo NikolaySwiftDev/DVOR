@@ -142,7 +142,6 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             guard let self = self else { return }
             self.presenter?.completeRegistration(model: registrationData)
             self.onRegistrationComplete?()
-
         }
     }
 
@@ -154,7 +153,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 
 // MARK: - Data Model
 struct RegistrationData: Codable {
-    var id: String = UUID().uuidString
+    var id: String = ""
     var email: String = ""
     var name: String = ""
     var surname: String = ""

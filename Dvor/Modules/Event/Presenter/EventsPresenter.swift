@@ -19,20 +19,22 @@ protocol EventsPresenterProtocol: AnyObject {
     func pushProfileVC()
     func pushCreateEvent()
     
+    func signOut()
+    
     init(view: EventsProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         userDefaults: UserDefaultsProtocol
-    )
+         firebase: FirebaseAuthManagerProtocol)
 }
 
 final class EventsPresenter: EventsPresenterProtocol {
+
     weak var view: EventsProtocol?
     var events: [EventModel]?
     var filteredEvents: [EventModel]?
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
-    let userDefaults: UserDefaultsProtocol?
+    let firebase: FirebaseAuthManagerProtocol
     
     private var lastFilterDate: Date = .now
     private var lastSortPredicate: SortPredicate = .count
@@ -49,11 +51,11 @@ final class EventsPresenter: EventsPresenterProtocol {
     required init(view: EventsProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
-                  userDefaults: UserDefaultsProtocol) {
+                  firebase: FirebaseAuthManagerProtocol) {
         self.view = view
         self.router = router
         self.network = network
-        self.userDefaults = userDefaults
+        self.firebase = firebase
 //        setupRealTimeObservation()
     }
 
@@ -100,7 +102,8 @@ final class EventsPresenter: EventsPresenterProtocol {
             filteredEvents = events.filter {
                 calendar.isDate($0.date, inSameDayAs: date)
             }
-            guard let myID = userDefaults?.getIDUser() else { return }
+            
+            guard let myID = firebase.currentUser?.uid else { return }
             filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
             lastFilterDate = date
             view?.success(date: title)
@@ -131,7 +134,7 @@ final class EventsPresenter: EventsPresenterProtocol {
             filteredEvents = sortEvents
             view?.success(date: title)
         case .personal:
-            guard let myID = userDefaults?.getIDUser() else { return }
+            guard let myID = firebase.currentUser?.uid else { return }
             personlaMode = true
             filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
             view?.success(date: title)
@@ -180,12 +183,31 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     //MARK: - Пуш в экран создания события
     func pushCreateEvent() {
-        guard let orgID = userDefaults?.getIDUser() else {
+        guard firebase.currentUser?.uid != nil else {
             router?.showAlertWithTitle("Для создания события необходимо зарегестрироваться")
             return
         }
         router?.pushCreateEvent(date: lastFilterDate)
     }
+    
+    func signOut() {
+        firebase.signOut { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                router?.showAlertConfigur(title: "Выйти из аккаунта?",
+                                          message: "Вы действительно хотите выйти?",
+                                          titleActionButton: "Да", handelr:  { [weak self] in
+                    guard let self = self else {return}
+                    router?.initialViewController()
+                })
+                
+            case .failure(let failure):
+                router?.showAlertWithTitle(failure.localizedDescription)
+            }
+        }
+    }
+    
 
     //MARK: - Deinit
     deinit {

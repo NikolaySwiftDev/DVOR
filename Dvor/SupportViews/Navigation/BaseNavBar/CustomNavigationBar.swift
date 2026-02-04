@@ -3,7 +3,7 @@ import SnapKit
 
 // MARK: - Delegate Protocol
 protocol CustomNavigationBarDelegate: AnyObject {
-    func didTapMagnifyingglassButton()
+    func didTapSignOutButton()
     func didTapBellButton()
     func didTapPersonButton()
     func didTapAddTapped()
@@ -20,7 +20,7 @@ final class CustomNavigationBar: UIView {
     private let bellButton = UIButton(type: .system)
     private let personButton = UIButton(type: .system)
     private let addButton = UIButton(type: .system)
-    private lazy var stack = UIStackView(arrangedSubviews: [magnifyingglass, bellButton, personButton, addButton])
+    private lazy var stack = UIStackView(arrangedSubviews: [ bellButton, personButton, addButton, magnifyingglass])
     
     // MARK: - Init
     init(title: String) {
@@ -52,7 +52,7 @@ final class CustomNavigationBar: UIView {
             }
         }
         
-        magnifyingglass.setBackgroundImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        magnifyingglass.setBackgroundImage(UIImage(systemName: "arrowshape.turn.up.backward"), for: .normal)
         bellButton.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
         personButton.setBackgroundImage(UIImage(systemName: "person"), for: .normal)
         addButton.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
@@ -86,7 +86,7 @@ final class CustomNavigationBar: UIView {
     
     // MARK: - Actions
     @objc private func magnifyingglassTapped() {
-        delegate?.didTapMagnifyingglassButton()
+        delegate?.didTapSignOutButton()
     }
     
     @objc private func bellTapped() {

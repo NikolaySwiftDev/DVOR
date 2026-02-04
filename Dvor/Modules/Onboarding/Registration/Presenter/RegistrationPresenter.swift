@@ -32,7 +32,6 @@ protocol RegistPresenterProtocol: AnyObject {
     init(router: RouterMainProtocol,
          firebase: FirebaseAuthManagerProtocol,
          network: FirebaseDataManager,
-//         userDefaults: UserDefaultsProtocol,
          photoManager: PhotoManagerProtocol,
          notifManager: NotificationManagerProtocol)
 }
@@ -41,7 +40,6 @@ final class RegistPresenter: RegistPresenterProtocol {
 
 
     weak var view: RegistProtocol?
-//    let userDefaults: UserDefaultsProtocol
     let router: RouterMainProtocol?
     let firebase: FirebaseAuthManagerProtocol
     let network: FirebaseDataManager
@@ -51,13 +49,11 @@ final class RegistPresenter: RegistPresenterProtocol {
     required init(router: RouterMainProtocol,
                   firebase: FirebaseAuthManagerProtocol,
                   network: FirebaseDataManager,
-//                  userDefaults: UserDefaultsProtocol,
                   photoManager: PhotoManagerProtocol,
                   notifManager: NotificationManagerProtocol) {
         self.router = router
         self.firebase = firebase
         self.network = network
-//        self.userDefaults = userDefaults
         self.photoManager = photoManager
         self.notifManager = notifManager
     }

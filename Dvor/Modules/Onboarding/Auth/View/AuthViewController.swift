@@ -1,113 +1,148 @@
 
+
 import UIKit
-import SnapKit
 
 final class AuthViewController: UIViewController {
-
-    //MARK: - Properties
+    
     var presenter: AuthPresenterProtocol?
-    
-    private let backgroungImage: UIImageView = {
-        let view = UIImageView()
-        view.image = UIImage(resource: .onboard)
-        return view
-    }()
-        
-    private let skipButton: UIButton = {
-        let btn = UIButton(type: .system)
-        btn.setTitle(AuthModel.skipButtonTitle, for: .normal)
-        btn.setTitleColor(.white, for: .normal) // Временный явный цвет
-        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
-        btn.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)
-        return btn
-    }()
+    private var heightKeyboard: CGFloat = Constants.Constraint.verticalPadding
 
-    private let enterButton: UIButton = {
-        let btn = UIButton(type: .system)
-        btn.setTitle(AuthModel.enterButtonTitle, for: .normal)
-        btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
-        btn.backgroundColor = Constants.Colors.buttonActiveColor
-        btn.layer.cornerRadius = Constants.Constraint.cornerRadius
-        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
-        btn.addTarget(self, action: #selector(enterButtonTapped), for: .touchUpInside)
-        return btn
-    }()
     
-    private let registrButton: UIButton = {
-        let btn = UIButton(type: .system)
-        btn.setTitle(AuthModel.registButtonTitle, for: .normal)
-        btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
-        btn.backgroundColor = Constants.Colors.buttonActiveColor
-        btn.layer.cornerRadius = Constants.Constraint.cornerRadius
-        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
-        btn.addTarget(self, action: #selector(registButtonTapped), for: .touchUpInside)
-        return btn
-    }()
+    private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
+    private let nextButton = UIButton.createStandartButton(title: "Продолжить", target: self, action: #selector(nextButtonTapped))
+    private let emailTF = AuthTextFieldView(placeholder: "Почта")
+    private let passwordTF = AuthTextFieldView(placeholder: "Пароль")
+    private let titleLabel = UILabel(text: "Авторизация", font: .poppins(weight: .bold, size: .big))
     
-    //MARK: - ViewDidLoad
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupContraints()
-    }
-    
-    //MARK: - Skip Button Tapped
-    @objc private func skipButtonTapped() {
-        presenter?.pushMainView()
-    }
-
-    //MARK: - Enter Button Tapped
-    @objc private func enterButtonTapped() {
-        presenter?.pushRegistVC()
-    }
-    
-    //MARK: - Registr Button Tapped
-    @objc private func registButtonTapped() {
-        presenter?.pushRegistVC()
+        setupConstraints()
+        setupTextField()
     }
 }
 
-//MARK: - AuthProtocol
-extension AuthViewController: AuthProtocol {}
+extension AuthViewController {
+    @objc private func backButtonTapped() {
+        presenter?.popVC()
+    }
+    
+    // MARK: - Next Button Action
+    @objc private func nextButtonTapped() {
+        guard let email = emailTF.textField.text, let password = passwordTF.textField.text else { return }
+        presenter?.signIn(email: email, password: password)
+    }
+    
+    private func setupTextField() {
+        emailTF.textField.delegate = self
+        emailTF.textField.textContentType = .emailAddress
+        emailTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        
+        passwordTF.textField.delegate = self
+        passwordTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    }
+    
+    @objc private func textFieldDidChange() {
+        let email = emailTF.textField.text ?? ""
+        let password = passwordTF.textField.text ?? ""
+        
+        let isEmailValid = email.isValidEmail()
+        let isPasswordValid = password.count >= 6
+        
+        
+        isEmailValid ? emailTF.updateBorderColor() : emailTF.updateBorderColor(.clear)
+        isPasswordValid ? passwordTF.updateBorderColor() : passwordTF.updateBorderColor(.clear)
 
-//MARK: - Extension SetupView and SetupContraints
-private extension AuthViewController {
+        configureEnadle(isEmailValid && isPasswordValid)
+    }
+    
+    // MARK: - Configure Enable Next Buttom
+    func configureEnadle(_ isEnable: Bool) {
+        nextButton.backgroundColor = isEnable ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor
+        nextButton.isEnabled = isEnable
+    }
+    
+    // MARK: - Configure Bottom Padding Next Buttom
+    func configureBottomPaddingButtom(isActiveTF: Bool, isNumberPad: Bool = true) {
+        let newInset =  isActiveTF ?
+                        isNumberPad ? BaseConstants.bottomPaddingNumberPad
+                                    : BaseConstants.bottomPaddingKeyboard : Constants.Constraint.horizPadding
+        
+        UIView.animate(withDuration: 0.25,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState],
+                       animations: {
+            self.nextButton.snp.updateConstraints { make in
+                make.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(newInset)
+            }
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+    }
+    
+}
+
+extension AuthViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        configureBottomPaddingButtom(isActiveTF: true, isNumberPad: false)
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        configureBottomPaddingButtom(isActiveTF: false)
+    }
+}
+
+extension AuthViewController {
     private func setupView() {
+        view.backgroundColor = Constants.Colors.backgroungColor
         
-        view.addSubview(backgroungImage)
-        view.addSubview(skipButton)
-        view.addSubview(enterButton)
-        view.addSubview(registrButton)
+        configureEnadle(false)
+        
+        view.addSubview(backButton)
+        view.addSubview(titleLabel)
+        view.addSubview(emailTF)
+        view.addSubview(passwordTF)
+        view.addSubview(nextButton)
+        
     }
     
-    private func setupContraints() {
-        backgroungImage.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+    private func setupConstraints() {
+        backButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
+            make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
+            make.size.equalTo(24)
         }
         
-        skipButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(60)
-            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight)
-            make.width.equalTo(Constants.Constraint.buttonHeight * 2)
+       titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(backButton.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
-        registrButton.snp.makeConstraints { make in
-            make.bottom.equalTo(enterButton.snp.top).inset(-Constants.Constraint.verticalPadding / 1.5)
+        emailTF.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding * 2)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
         
-        enterButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
+        passwordTF.snp.makeConstraints { make in
+            make.top.equalTo(emailTF.snp.bottom).offset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
+        
+        nextButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(heightKeyboard)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
 }
 
-fileprivate struct AuthModel {
-    static let skipButtonTitle = "Пропустить"
-    static let enterButtonTitle = "Войти"
-    static let registButtonTitle = "Регистрация"
+fileprivate struct BaseConstants {
+    static let bottomPaddingNumberPad: CGFloat = (UIScreen.main.bounds.height / 3)
+    static let bottomPaddingKeyboard: CGFloat = (UIScreen.main.bounds.height / 2.7)
+    static let progressHeight: CGFloat = 4
+    static let backButtonSize: CGFloat = 24
+
 }

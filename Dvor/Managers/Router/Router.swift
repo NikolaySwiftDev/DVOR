@@ -19,6 +19,7 @@ protocol RouterMainProtocol: RouterMain {
     func pushVC(_ vc: UIViewController)
     
     func pushAuthVC()
+    func pushMainCoordinateVC()
     func pushRegistVC()
     func pushTabBarVC()
     func pushProfileVC()
@@ -36,30 +37,28 @@ protocol RouterMainProtocol: RouterMain {
 }
 
 class Router: RouterMainProtocol {
-    
+
     var navigationController: UINavigationController
-    var userDefaults: UserDefaultsProtocol
     var builder: BuilderProtocol?
+    private let firebase = FirebaseAuthManager()
     
     init(navigationController: UINavigationController,
-         builder: BuilderProtocol,
-         userDefaults: UserDefaultsProtocol) {
+         builder: BuilderProtocol) {
         
         self.navigationController = navigationController
         self.builder = builder
-        self.userDefaults = userDefaults
  
     }
     
     //MARK: - Initial View Controller
     func initialViewController() {
-        if userDefaults.getAuthorizationStatus() {
+        if firebase.isAuthorized {
             guard let mainVC = builder?.createHomeVC(router: self) else { return }
             navigationController.viewControllers = [mainVC]
             navigationController.setNavigationBarHidden(true, animated: true)
             
         } else {
-            guard let mainVC = builder?.createAuthVC(router: self) else { return }
+            guard let mainVC = builder?.createMainCoordinateVC(router: self) else { return }
             navigationController.setNavigationBarHidden(true, animated: true)
             navigationController.viewControllers = [mainVC]
         }
@@ -93,11 +92,11 @@ class Router: RouterMainProtocol {
         navigationController.pushViewController(vc, animated: true)
     }
 
-    //MARK: - Push Auth View Controller
-    func pushAuthVC() {
+    //MARK: - Push Main Coordinate View Controller
+    func pushMainCoordinateVC() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let sceneDelegate = windowScene.delegate as? SceneDelegate,
-              let tabbarVC = builder?.createAuthVC(router: self) else {
+              let tabbarVC = builder?.createMainCoordinateVC(router: self) else {
             return
         }
         
@@ -105,6 +104,13 @@ class Router: RouterMainProtocol {
         navigationController.setNavigationBarHidden(true, animated: true)
         sceneDelegate.window?.rootViewController = navigationController
         sceneDelegate.window?.makeKeyAndVisible()
+    }
+    
+    //MARK: - Push Auth View Controller
+
+    func pushAuthVC() {
+        guard let authVC = builder?.createAuthVC(router: self) else { return }
+        pushVC(authVC)
     }
     
     //MARK: - Push to Regist VC
@@ -115,7 +121,7 @@ class Router: RouterMainProtocol {
     //MARK: - Push to Detail VC
     func pushDetailVC(model: DetailModel) {
         guard let detailVC = builder?.createDetailVC(router: self, model: model) else { return }
-        navigationController.pushViewController(detailVC, animated: true)
+        pushVC(detailVC)
 //        if let tabBarController = navigationController.topViewController as? UITabBarController {
 //            if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
 //                selectedNavigationController.pushViewController(detailVC, animated: true)
@@ -125,22 +131,24 @@ class Router: RouterMainProtocol {
 
     //MARK: - Log Out
     func logOut() {
-        userDefaults.setAuthorizationStatus(false)
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let sceneDelegate = windowScene.delegate as? SceneDelegate,
-              let tabbarVC = builder?.createAuthVC(router: self) else {
-            return
+        firebase.signOut { [weak self] _ in
+            guard let self = self else { return }
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let sceneDelegate = windowScene.delegate as? SceneDelegate,
+                  let tabbarVC = builder?.createMainCoordinateVC(router: self) else {
+                return
+            }
+            
+            self.navigationController = UINavigationController(rootViewController: tabbarVC)
+            sceneDelegate.window?.rootViewController = self.navigationController
+            sceneDelegate.window?.makeKeyAndVisible()
         }
-        
-        navigationController = UINavigationController(rootViewController: tabbarVC)
-        sceneDelegate.window?.rootViewController = navigationController
-        sceneDelegate.window?.makeKeyAndVisible()
     }
     
     //MARK: - Push Profile User Info
     func pushProfileVC() {
         guard let detailVC = builder?.createProfileVC(router: self) else { return }
-        navigationController.pushViewController(detailVC, animated: true)
+        pushVC(detailVC)
     }
     
     //MARK: - Push Detail Organizator Info
@@ -153,19 +161,19 @@ class Router: RouterMainProtocol {
     //MARK: - Push Detail User Info
     func pushDetailUserInfo(model: UserModel) {
         guard let detailVC = builder?.createDetailUserInfo(router: self, model: model) else { return }
-        navigationController.pushViewController(detailVC, animated: true)
+        pushVC(detailVC)
     }
     
     //MARK: - Push Rating VC
     func pushRatingVC(model: UserModel) {
         guard let detailVC = builder?.createRatingVC(router: self, model: model) else { return }
-        navigationController.pushViewController(detailVC, animated: true)
+        pushVC(detailVC)
     }
     
     //MARK: - Push Create Event VC
     func pushCreateEvent(date: Date) {
         guard let detailVC = builder?.createCreateEventVC(router: self, date: date) else { return }
-        navigationController.pushViewController(detailVC, animated: true)
+        pushVC(detailVC)
     }
 
     //MARK: - Pop VC

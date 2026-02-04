@@ -39,7 +39,7 @@ class BaseViewController: UIViewController {
 }
 
 extension BaseViewController: CustomNavigationBarDelegate {
-    @objc open func didTapMagnifyingglassButton() {
+    @objc open func didTapSignOutButton() {
         print(" Кнопка нажата (по умолчанию)")
     }
 

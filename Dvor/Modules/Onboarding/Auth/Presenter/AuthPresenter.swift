@@ -1,41 +1,41 @@
+
 import Foundation
-protocol AuthProtocol: AnyObject {
-}
+
 
 protocol AuthPresenterProtocol: AnyObject {
-    func pushRegistVC()
-    func pushAuthVC()
-    func pushMainView()
-    init(view: AuthProtocol, router: RouterMainProtocol, userDefaults: UserDefaultsProtocol)
+    init(router: RouterMainProtocol, firebase: FirebaseAuthManagerProtocol)
+    
+    func signIn(email: String, password: String)
+    func popVC()
 }
 
 final class AuthPresenter: AuthPresenterProtocol {
-    weak var view: AuthProtocol?
-    let userDefaults: UserDefaultsProtocol?
-    let router: RouterMainProtocol?
 
-    required init(view: AuthProtocol, router: RouterMainProtocol, userDefaults: UserDefaultsProtocol) {
-        self.view = view
-        self.userDefaults = userDefaults
+    let router: RouterMainProtocol
+    let firebase: FirebaseAuthManagerProtocol
+    
+    init(router: RouterMainProtocol, firebase: FirebaseAuthManagerProtocol) {
         self.router = router
+        self.firebase = firebase
+    }
+
+    func signIn(email: String, password: String) {
+        firebase.signIn(email: email, password: password) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                router.pushTabBarVC()
+            case .failure(let failure):
+                router.showAlertWithTitle(failure.localizedDescription)
+            }
+        }
     }
     
-    func pushMainView() {
-        router?.pushTabBarVC()
+    func popVC() {
+        router.popVC()
     }
-    
-    func pushRegistVC() {
-        router?.pushRegistVC()
-    }
-    
-    func pushAuthVC() {
-//        router?.pushAuthVC()
-        print("Create Auth")
-    }
-    
-    
+
     deinit {
-        print("Auth Presenter deinit")
+        print("AuthPresenterProtocol deinit")
     }
 }
-

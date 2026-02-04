@@ -10,11 +10,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         let navigationController = UINavigationController()
         let builder = Builder()
-        let userDefaults = UserDefaultsManager()
 
         let router = Router(navigationController: navigationController,
-                            builder: builder,
-                            userDefaults: userDefaults)
+                            builder: builder)
         router.initialViewController()
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

@@ -22,13 +22,8 @@ class BaseRegistrationViewController: UIViewController {
     
     private let pageLabel = UILabel(font: .poppins(weight: .regular, size: .small))
     private let profileTitleLabel = UILabel(font: .poppins(weight: .bold, size: .big))
-    
-    let descTitleLabel: UILabel = {
-        let label = UILabel(font: .poppins(weight: .regular, size: .small))
-        return label
-    }()
-    
-    
+    let descTitleLabel = UILabel(font: .poppins(weight: .regular, size: .small))
+
     //MARK: - Init
     init(presenter: RegistPresenterProtocol?) {
         self.presenter = presenter

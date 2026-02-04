@@ -8,7 +8,10 @@ protocol ProfileProtocol: AnyObject {
 
 protocol ProfilePresenterProtocol: AnyObject {
     var user: UserModel? { get set }
-    init(view: ProfileProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol, userDefaults: UserDefaultsProtocol)
+    init(view: ProfileProtocol,
+         router: RouterMainProtocol,
+         network: FirebaseDataManagerProtocol,
+         firebase: FirebaseAuthManagerProtocol)
     
     func getProfileInto()
     func popVC()
@@ -21,17 +24,20 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     weak var view: ProfileProtocol?
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
-    let userDefaults: UserDefaultsProtocol?
+    let firebase: FirebaseAuthManagerProtocol
     
-    init(view: ProfileProtocol, router: RouterMainProtocol, network: FirebaseDataManagerProtocol, userDefaults: UserDefaultsProtocol) {
+    init(view: ProfileProtocol,
+         router: RouterMainProtocol,
+         network: FirebaseDataManagerProtocol,
+         firebase: FirebaseAuthManagerProtocol) {
         self.view = view
         self.router = router
         self.network = network
-        self.userDefaults = userDefaults
+        self.firebase = firebase
     }
     
     func getProfileInto() {
-        guard let idUser = userDefaults?.getIDUser() else {
+        guard let idUser = firebase.currentUser?.uid else {
             router?.showAlertWithTitle("Добавьте аккаунт")
             return
         }
