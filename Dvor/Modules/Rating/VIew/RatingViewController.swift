@@ -151,7 +151,7 @@ extension RatingViewController {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.leading.equalToSuperview().offset(20)
-            make.size.equalTo(40)
+//            make.size.equalTo(40)
         }
         
         titleLabel.snp.makeConstraints { make in

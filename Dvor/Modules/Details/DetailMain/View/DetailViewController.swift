@@ -130,7 +130,7 @@ private extension DetailViewController {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalToSuperview().offset(DetailConstants.paddingStandart)
-            make.height.width.equalTo(DetailConstants.heightBackBtn)
+//            make.height.width.equalTo(DetailConstants.heightBackBtn)
         }
         
         shareButton.snp.makeConstraints { make in

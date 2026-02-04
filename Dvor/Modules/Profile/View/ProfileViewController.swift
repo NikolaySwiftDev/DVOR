@@ -52,7 +52,7 @@ private extension ProfileViewController {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
             make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
-            make.size.equalTo(Constants.Constraint.backButtonSize)
+//            make.size.equalTo(Constants.Constraint.backButtonSize)
         }
         
         userCard.snp.makeConstraints { make in

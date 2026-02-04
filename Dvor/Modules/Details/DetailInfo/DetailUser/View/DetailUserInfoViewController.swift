@@ -58,7 +58,7 @@ private extension DetailUserInfoViewController {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalToSuperview().offset(DetailUserInfoConstants.paddingStandart)
-            make.size.equalTo(DetailUserInfoConstants.heightBackBtn)
+//            make.size.equalTo(DetailUserInfoConstants.heightBackBtn)
         }
         
         card.snp.makeConstraints { make in

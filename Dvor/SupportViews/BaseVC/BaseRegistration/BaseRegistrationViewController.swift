@@ -59,10 +59,8 @@ class BaseRegistrationViewController: UIViewController {
     
     // MARK: - Configure Enadle Next Button
     func configureEnadle(_ isEnable: Bool) {
-        nextButton.backgroundColor = isEnable ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor
-        nextButton.isEnabled = isEnable
+        setNextButtonState(nextButton, isEnabled: isEnable)
     }
-    
     
     func changeNextButtonView(title: String, titleColor: UIColor, backColor: UIColor = Constants.Colors.buttonActiveColor) {
         nextButton.setTitle(title, for: .normal)
@@ -73,19 +71,7 @@ class BaseRegistrationViewController: UIViewController {
     
     // MARK: - Configure Bottom Padding Next Buttom
     func configureBottomPaddingButtom(isActiveTF: Bool, isNumberPad: Bool = true) {
-        let newInset =  isActiveTF ?
-                        isNumberPad ? BaseConstants.bottomPaddingNumberPad
-                                    : BaseConstants.bottomPaddingKeyboard : Constants.Constraint.horizPadding
-        
-        UIView.animate(withDuration: 0.25,
-                       delay: 0,
-                       options: [.curveEaseInOut, .beginFromCurrentState],
-                       animations: {
-            self.nextButton.snp.updateConstraints { make in
-                make.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(newInset)
-            }
-            self.view.layoutIfNeeded()
-        }, completion: nil)
+        adjustNextButtonBottom(nextButton, in: view, isActiveTF: isActiveTF, isNumberPad: isNumberPad)
     }
     
     // MARK: - Back Button Action
@@ -116,7 +102,7 @@ private extension BaseRegistrationViewController {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
             make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
-            make.size.equalTo(BaseConstants.backButtonSize)
+//            make.size.equalTo(BaseConstants.backButtonSize)
         }
         
         pageLabel.snp.makeConstraints { make in
@@ -149,12 +135,3 @@ private extension BaseRegistrationViewController {
     }
 }
 
-
-// MARK: - Auth Constants
-fileprivate struct BaseConstants {
-    static let bottomPaddingNumberPad: CGFloat = (UIScreen.main.bounds.height / 3)
-    static let bottomPaddingKeyboard: CGFloat = (UIScreen.main.bounds.height / 2.7)
-    static let progressHeight: CGFloat = 4
-    static let backButtonSize: CGFloat = 24
-
-}

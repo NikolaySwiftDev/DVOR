@@ -14,6 +14,10 @@ extension UIButton {
             button.addTarget(target, action: action, for: controlEvents)
         }
         
+        button.snp.makeConstraints { make in
+            make.size.equalTo(BaseConstants.backButtonSize)
+        }
+        
         return button
     }
     

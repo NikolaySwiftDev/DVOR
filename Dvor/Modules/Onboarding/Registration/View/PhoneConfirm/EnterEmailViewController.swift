@@ -71,17 +71,9 @@ final class EnterEmailViewController: BaseRegistrationViewController {
     }
     
     @objc private func textFieldDidChange() {
-        let email = emailTF.textField.text ?? ""
-        let password = passwordTF.textField.text ?? ""
-        
-        let isEmailValid = email.isValidEmail()
-        let isPasswordValid = password.count >= 6
-        
-        
-        isEmailValid ? emailTF.updateBorderColor() : emailTF.updateBorderColor(.clear)
-        isPasswordValid ? passwordTF.updateBorderColor() : passwordTF.updateBorderColor(.clear)
-
-        configureEnadle(isEmailValid && isPasswordValid)
+        let isValid = validateEmailAndPassword(emailField: emailTF,
+                                               passwordField: passwordTF)
+        configureEnadle(isValid)
     }
     
     
