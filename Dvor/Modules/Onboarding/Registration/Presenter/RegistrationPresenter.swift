@@ -38,7 +38,6 @@ protocol RegistPresenterProtocol: AnyObject {
 
 final class RegistPresenter: RegistPresenterProtocol {
 
-
     weak var view: RegistProtocol?
     let router: RouterMainProtocol?
     let firebase: FirebaseAuthManagerProtocol
@@ -80,46 +79,42 @@ final class RegistPresenter: RegistPresenterProtocol {
                     }
                 }
             case .failure(let error):
-                // Если почта уже занята, пробуем залогинить пользователя и продолжить регистрацию
-                if let authError = error as? AuthError, authError == .emailAlreadyInUse {
-                    self.firebase.signIn(email: email, password: password) { [weak self] signInResult in
-                        guard let self = self else { return }
-                        switch signInResult {
-                        case .success:
-                            // Пользователь уже существует: проверяем, верифицирован ли email
-                            self.firebase.reloadUser { [weak self] reloadResult in
-                                guard let self = self else { return }
-                                switch reloadResult {
-                                case .success:
-                                    if self.firebase.isEmailVerified {
-                                        // Почта уже подтверждена — просто продолжаем flow без повторной отправки письма
-                                        self.view?.showInfoInput()
-                                    } else {
-                                        // Почта не подтверждена — отправляем письмо и продолжаем как обычно
-                                        self.firebase.sendEmailVerification { [weak self] sendResult in
-                                            guard let self = self else { return }
-                                            switch sendResult {
-                                            case .success:
-                                                self.view?.showSuccess()
-                                            case .failure(let error):
-                                                self.view?.showError(error.localizedDescription)
-                                                self.router?.showAlertWithTitle(error.localizedDescription)
-                                            }
+                // Пытаемся войти
+                self.firebase.signIn(email: email, password: password) { [weak self] signInResult in
+                    guard let self = self else { return }
+                    switch signInResult {
+                    case .success:
+                        // Пользователь уже существует: проверяем, верифицирован ли email
+                        self.firebase.reloadUser { [weak self] reloadResult in
+                            guard let self = self else { return }
+                            switch reloadResult {
+                            case .success:
+                                if self.firebase.isEmailVerified {
+                                    // Почта уже подтверждена — просто продолжаем flow без повторной отправки письма
+                                    
+                                    self.view?.showInfoInput()
+                                } else {
+                                    // Почта не подтверждена — отправляем письмо и продолжаем как обычно
+                                    self.firebase.sendEmailVerification { [weak self] sendResult in
+                                        guard let self = self else { return }
+                                        switch sendResult {
+                                        case .success:
+                                            self.view?.showSuccess()
+                                        case .failure(let error):
+                                            self.view?.showError(error.localizedDescription)
+                                            self.router?.showAlertWithTitle(error.localizedDescription)
                                         }
                                     }
-                                case .failure(let reloadError):
-                                    self.view?.showError(reloadError.localizedDescription)
-                                    self.router?.showAlertWithTitle(reloadError.localizedDescription)
                                 }
+                            case .failure(let reloadError):
+                                self.view?.showError(reloadError.localizedDescription)
+                                self.router?.showAlertWithTitle(reloadError.localizedDescription)
                             }
-                        case .failure(let signInError):
-                            self.view?.showError(signInError.localizedDescription)
-                            self.router?.showAlertWithTitle(signInError.localizedDescription)
                         }
+                    case .failure(let signInError):
+                        self.view?.showError(signInError.localizedDescription)
+                        self.router?.showAlertWithTitle(signInError.localizedDescription)
                     }
-                } else {
-                    self.view?.showError(error.localizedDescription)
-                    self.router?.showAlertWithTitle(error.localizedDescription)
                 }
             }
         }
@@ -226,7 +221,6 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-//                userDefaults.saveUser(model: data)
                 router?.pushTabBarVC()
             case .failure(let error):
                 router?.showAlertConfigur(title: "Ошибка записи",

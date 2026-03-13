@@ -155,11 +155,11 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 struct RegistrationData: Codable {
     var id: String = ""
     var email: String = ""
-    var name: String = ""
-    var surname: String = ""
+    var name: String = "Name"
+    var surname: String = "Surname"
     var dateBD: Date = Date()
-    var position: String = ""
-    var experience: String = ""
+    var position: String = "Вратарь"
+    var experience: String = "1 год"
     var image: Data?
-    var city: String = ""
+    var city: String = "Санкт-Петербург"
 }

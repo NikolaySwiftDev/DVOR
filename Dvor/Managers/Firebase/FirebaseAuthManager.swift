@@ -15,8 +15,6 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
     func signOut(completion: @escaping (Result<Void, Error>) -> Void)
 }
 
-
-
 final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
 
     var currentUser: User? { Auth.auth().currentUser }
@@ -35,14 +33,12 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
         }
     }
 
-
     func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             error != nil ? completion(.failure(error!)) : completion(.success(result!.user))
         }
     }
     
-
     func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void) {
         guard let user = currentUser else { completion(.failure(AuthError.noUser)); return }
         user.sendEmailVerification { error in
@@ -70,7 +66,6 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
         email.range(of: #"^\S+@\S+\.\S+$"#, options: .regularExpression) != nil
     }
 }
-
 
 enum AuthError: LocalizedError {
     case invalidEmail, weakPassword, emailAlreadyInUse, noUser

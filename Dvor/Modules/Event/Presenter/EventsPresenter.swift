@@ -191,21 +191,21 @@ final class EventsPresenter: EventsPresenterProtocol {
     }
     
     func signOut() {
-        firebase.signOut { [weak self] result in
+        router?.showAlertConfigur(title: "Выйти из аккаунта?",
+                                  message: "Вы действительно хотите выйти?",
+                                  titleActionButton: "Да", handelr: { [weak self] in
             guard let self = self else { return }
-            switch result {
-            case .success(let success):
-                router?.showAlertConfigur(title: "Выйти из аккаунта?",
-                                          message: "Вы действительно хотите выйти?",
-                                          titleActionButton: "Да", handelr:  { [weak self] in
-                    guard let self = self else {return}
-                    router?.initialViewController()
-                })
-                
-            case .failure(let failure):
-                router?.showAlertWithTitle(failure.localizedDescription)
+            
+            self.firebase.signOut { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    self.router?.initialViewController()
+                case .failure(let failure):
+                    self.router?.showAlertWithTitle(failure.localizedDescription)
+                }
             }
-        }
+        })
     }
     
 

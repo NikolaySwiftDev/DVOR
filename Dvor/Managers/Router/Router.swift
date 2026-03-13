@@ -202,7 +202,10 @@ class Router: RouterMainProtocol {
             handelr()
         }
         
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        
         alert.addAction(repeatAction)
+        alert.addAction(cancelAction)
         
         navigationController.present(alert, animated: true)
     }
