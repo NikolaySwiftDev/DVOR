@@ -5,23 +5,25 @@ final class DetailViewController: UIViewController {
     //MARK: - Properties
     var presenter: DetailPresenterProtocol?
     var details: DetailModel
-    var viewPosition: DetailSegmentViewPosition = .users
+    var viewPosition: DetailSegmentViewPosition = .info
 
     private let mapImage = UIImageView(systemImage: "photo.artframe")
     
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
 
-
     private let shareButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "link.circle.fill")
-        config.baseForegroundColor = .mediumGreen
-        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 28, weight: .regular)
-
-        let btn = UIButton(configuration: config, primaryAction: nil)
-        btn.layer.cornerRadius = DetailConstants.heightBackBtn / 2
-        btn.clipsToBounds = true
+        let btn = UIButton(type: .system)
+        btn.setBackgroundImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
+        btn.tintColor = .black
         btn.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
+        return btn
+    }()
+    
+    private let addUserButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setBackgroundImage(UIImage(systemName: "person.badge.plus"), for: .normal)
+        btn.tintColor = .black
+        btn.addTarget(self, action: #selector(addUserButtonTapped), for: .touchUpInside)
         return btn
     }()
 
@@ -60,6 +62,11 @@ final class DetailViewController: UIViewController {
 
     //MARK: - Share Button Tapped
     @objc private func shareButtonTapped() {
+        print("Share button tapped")
+    }
+    
+    //MARK: - Add User Button Tapped
+    @objc private func addUserButtonTapped() {
         presenter?.addUserToEvent(idEvent: details.id)
     }
  
@@ -116,6 +123,7 @@ private extension DetailViewController {
         
         view.addSubview(backButton)
         view.addSubview(shareButton)
+        view.addSubview(addUserButton)
         view.addSubview(titleAdress)
         view.addSubview(mapImage)
         view.addSubview(segmentView)
@@ -128,25 +136,29 @@ private extension DetailViewController {
     
     private func setupContraints() {
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             make.leading.equalToSuperview().offset(DetailConstants.paddingStandart)
-//            make.height.width.equalTo(DetailConstants.heightBackBtn)
         }
         
         shareButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.centerY.equalTo(backButton)
             make.trailing.equalToSuperview().inset(DetailConstants.paddingStandart)
             make.height.width.equalTo(DetailConstants.heightBackBtn)
         }
         
-        titleAdress.snp.makeConstraints { make in
+        addUserButton.snp.makeConstraints { make in
             make.centerY.equalTo(backButton)
-            make.leading.equalTo(backButton.snp.trailing).offset(DetailConstants.paddingHorizontal)
-            make.trailing.equalTo(shareButton.snp.leading).inset(-DetailConstants.paddingHorizontal)
+            make.trailing.equalTo(shareButton.snp.leading).offset(-10)
+            make.height.width.equalTo(DetailConstants.heightBackBtn)
+        }
+        
+        titleAdress.snp.makeConstraints { make in
+            make.top.equalTo(backButton.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview().inset(DetailConstants.paddingHorizontal)
         }
         
         mapImage.snp.makeConstraints { make in
-            make.top.equalTo(shareButton.snp.bottom).offset(DetailConstants.paddingStandart)
+            make.top.equalTo(titleAdress.snp.bottom).offset(DetailConstants.paddingStandart)
             make.leading.equalToSuperview().offset(DetailConstants.paddingHorizontal)
             make.trailing.equalToSuperview().inset(DetailConstants.paddingHorizontal)
             make.height.equalTo(DetailConstants.heightMapImg)
@@ -162,12 +174,11 @@ private extension DetailViewController {
 }
 
 fileprivate struct DetailConstants {
-    static let backColor: UIColor = .backgrDarkGreen
-    static let textColor: UIColor = .textDesc
+    static let textColor: UIColor = .black
     static let paddingStandart: CGFloat = 20
     static let paddingHorizontal: CGFloat = 20
     static let cornerRadius: CGFloat = 10
-    static let heightBackBtn: CGFloat = 40
+    static let heightBackBtn: CGFloat = 25
     static let heightTabbar: CGFloat = 90
     static let heightMapImg: CGFloat = UIScreen.main.bounds.height / 4.7
 }

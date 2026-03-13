@@ -56,22 +56,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         self.router = router
         self.network = network
         self.firebase = firebase
-//        setupRealTimeObservation()
     }
-
-    
-//    //MARK: - Настройка наблюдения в реальном времени
-//    private func setupRealTimeObservation() {
-//        network?.startObservingEvents(completion: { [weak self] result in
-//            guard let self = self else { return }
-//            self.handleEventsResult(result)
-//        })
-//    }
-//    
-//    //MARK: - Остановка наблюдения
-//    private func stopRealTimeObservation() {
-//        network?.stopObservingEvents()
-//    }
     
     //MARK: - Общая обработка результатов
     private func handleEventsResult(_ result: Result<[EventModel], Error>) {
@@ -155,7 +140,7 @@ final class EventsPresenter: EventsPresenterProtocol {
             guard let self = self else { return }
 
             switch result {
-            case .success(let success):
+            case .success(_):
                 fetchEvents()
 //                router?.showAlertWithTitle(success)
             case .failure(let error):

@@ -9,7 +9,7 @@ final class DetailSegmentContainerView: UIView {
     let usersView = UsersView()
     private let commentsView = CommentsView()
 
-    private var currentPosition: DetailSegmentViewPosition = .users
+    private var currentPosition: DetailSegmentViewPosition = .info
 
     // MARK: - Init
     override init(frame: CGRect) {
