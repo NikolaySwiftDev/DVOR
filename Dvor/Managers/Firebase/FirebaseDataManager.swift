@@ -5,6 +5,7 @@ import FirebaseDatabase
 protocol FirebaseDataManagerProtocol: AnyObject {
     //Fetch
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
+    func fetchEvent(idEvent: String, completion: @escaping (Result<EventModel, Error>) -> Void)
     func fetchUser(idUser: String, completion: @escaping (Result<UserModel, Error>) -> Void)
     func fetchAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void)
     
@@ -39,6 +40,31 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         database.child(eventsPath).observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let self = self else { return }
             self.processSnapshot(snapshot, completion: completion)
+        }
+    }
+    
+    //MARK: - Получение одного события по ID
+    func fetchEvent(idEvent: String, completion: @escaping (Result<EventModel, Error>) -> Void) {
+        guard !idEvent.isEmpty else {
+            completion(.failure(NSError(domain: "InvalidEventID", code: 400, userInfo: [NSLocalizedDescriptionKey: "ID события не может быть пустым"])))
+            return
+        }
+        
+        let eventRef = database.child(eventsPath).child(idEvent)
+        
+        eventRef.observeSingleEvent(of: .value) { snapshot in
+            guard snapshot.exists() else {
+                completion(.failure(NSError(domain: "EventNotFound", code: 404, userInfo: [NSLocalizedDescriptionKey: "Событие не найдено"])))
+                return
+            }
+            
+            guard let eventData = snapshot.value as? [String: Any],
+                  let event = EventModel(from: eventData) else {
+                completion(.failure(NSError(domain: "InvalidEventData", code: 500, userInfo: [NSLocalizedDescriptionKey: "Неверный формат данных события"])))
+                return
+            }
+            
+            completion(.success(event))
         }
     }
     

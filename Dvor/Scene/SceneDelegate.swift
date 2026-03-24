@@ -4,17 +4,19 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    let navigationController = UINavigationController()
-    let builder = Builder()
-
-
+    private let navigationController = UINavigationController()
+    private let builder = Builder()
+    private lazy var router = Router(navigationController: navigationController,
+                        builder: builder)
+    
+    private let firebaseDataManager = FirebaseDataManager()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
 
-        let router = Router(navigationController: navigationController,
-                            builder: builder)
+//        let router = Router(navigationController: navigationController,
+//                            builder: builder)
         router.initialViewController()
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
@@ -36,14 +38,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         switch screenQuery?.value {
         case "detail":
-            let router = Router(navigationController: navigationController,
-                                builder: builder)
-            router.pushProfileVC()
-            print("detail")
+            // Получаем ID события из параметров URL
+            guard let eventId = queryItems.first(where: { $0.name == "eventId" })?.value else {
+                print("⚠️ Event ID not found in deep link")
+                return
+            }
+            
+            // Загружаем конкретное событие по ID (более эффективно чем загрузка всех)
+            firebaseDataManager.fetchEvent(idEvent: eventId) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let event):
+                    // Используем встроенный метод конвертации
+                    let detailModel = event.toDetailModel()
+                    
+                    // Переходим на главный поток для навигации
+                    DispatchQueue.main.async {
+                        self.router.pushDetailVC(model: detailModel)
+                    }
+                    
+                case .failure(let error):
+                    print("❌ Failed to fetch event: \(error.localizedDescription)")
+                }
+            }
+            
         default:
             break
         }
     }
 }
 
-//dvor://openScreen?screen=detail&text=HelloWorld
+// Пример deep link:
+// dvor://openScreen?screen=detail&eventId=473DDA5A-2940-46FF-97AA-AA8CF31B624B
