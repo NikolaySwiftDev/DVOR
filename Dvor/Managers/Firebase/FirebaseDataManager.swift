@@ -19,8 +19,6 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     //Update
     func updateUserFollowers()
 
-//    func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
-//    func stopObservingEvents()
 }
 
 final class FirebaseDataManager: FirebaseDataManagerProtocol {
@@ -28,8 +26,6 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     private let database: DatabaseReference
     private let eventsPath = "events"
     private let usersPath = "users"
-//    private var observationHandle: DatabaseHandle?
-//    private var observationCompletion: ((Result<[EventModel], Error>) -> Void)?
     
     init() {
         let databaseURL = "https://dvor-496f1-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -37,27 +33,6 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         database = Database.database(url: databaseURL).reference()
 //        checkConnection()
     }
-    
-    //Для получения информации (тут события) в онлайне)
-//    // MARK: - Start Observation Methods
-//    func startObservingEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {
-//        stopObservingEvents()
-//        
-////        observationCompletion = completion
-//        observationHandle = database.child(eventsPath).observe(.value) { [weak self] snapshot in
-//            guard let self = self else { return }
-//            self.processSnapshot(snapshot, completion: completion)
-//        }
-//    }
-//    
-//    //MARK: - Stop Observing Events
-//    func stopObservingEvents() {
-//        if let handle = observationHandle {
-//            database.child(eventsPath).removeObserver(withHandle: handle)
-//            observationHandle = nil
-//        }
-//    }
-//    
     
     //MARK: - Общий метод получения всех событий
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {

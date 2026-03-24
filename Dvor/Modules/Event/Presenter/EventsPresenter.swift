@@ -136,6 +136,25 @@ final class EventsPresenter: EventsPresenterProtocol {
             router?.showAlertWithTitle("Выберите событие")
             return
         }
+        
+        // Проверяем, является ли текущий пользователь участником или организатором события
+        guard let currentUserId = firebase.currentUser?.uid else {
+            router?.showAlertWithTitle("Необходимо войти в систему")
+            return
+        }
+        
+        guard let event = events?.first(where: { $0.id == eventId }) else {
+            router?.showAlertWithTitle("Событие не найдено")
+            return
+        }
+        
+        let isOrganizer = event.orgId == currentUserId
+        
+        guard isOrganizer else {
+            router?.showAlertWithTitle("Вы не можете удалить это событие")
+            return
+        }
+        
         network?.deleteEvent(idEvent: eventId, completion: { [weak self] result in
             guard let self = self else { return }
 
