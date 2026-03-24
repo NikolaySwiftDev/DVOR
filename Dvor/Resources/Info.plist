@@ -7,9 +7,11 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Dvor.Dvor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>app-1-147980072569-ios-c9c433e390d88c8d3f86a8</string>
+				<string>dvor</string>
 			</array>
 		</dict>
 	</array>
