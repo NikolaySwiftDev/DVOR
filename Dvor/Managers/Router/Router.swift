@@ -32,6 +32,7 @@ protocol RouterMainProtocol: RouterMain {
     func showAlertWithTitle(_ title: String)
     func showBottomSheetAlertForUser(model: UserModel)
     func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping()->())
+    func showShareSheet(items: [Any])
     
     func showLocationOnMap(location: String)
 }
@@ -250,6 +251,28 @@ class Router: RouterMainProtocol {
         alert.addAction(cancel)
         
         navigationController.present(alert, animated: true)
+    }
+    
+    //MARK: - Show Share Sheet
+    func showShareSheet(items: [Any]) {
+        let activityViewController = UIActivityViewController(
+            activityItems: items,
+            applicationActivities: nil
+        )
+        
+        // For iPad support
+        if let popoverController = activityViewController.popoverPresentationController {
+            popoverController.sourceView = navigationController.view
+            popoverController.sourceRect = CGRect(
+                x: navigationController.view.bounds.midX,
+                y: navigationController.view.bounds.midY,
+                width: 0,
+                height: 0
+            )
+            popoverController.permittedArrowDirections = []
+        }
+        
+        navigationController.present(activityViewController, animated: true)
     }
     
     //MARK: - Show Location On Map

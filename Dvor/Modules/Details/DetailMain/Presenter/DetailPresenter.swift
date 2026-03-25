@@ -3,6 +3,7 @@ protocol DetailProtocol: AnyObject {
     func load()
     func updateUsers(model: [String])
     func error(error: String)
+    
 }
 
 protocol DetailPresenterProtocol: AnyObject {
@@ -12,6 +13,7 @@ protocol DetailPresenterProtocol: AnyObject {
          firebase: FirebaseAuthManagerProtocol)
     
     var users: [UserModel]? { get set }
+    var org: OrganizatorModel? { get set }
     
     func fetchAllUsers(usersID: [String], orgID: String)
     func addUserToEvent(idEvent: String)
@@ -28,6 +30,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     
     weak var view: DetailProtocol?
     var users: [UserModel]?
+    var org: OrganizatorModel?
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
     let firebase: FirebaseAuthManagerProtocol
@@ -50,7 +53,8 @@ final class DetailPresenter: DetailPresenterProtocol {
             switch result {
             case .success((let users, let org)):
                 self.users = users
-                view?.success(users: users, org: org ?? OrganizatorModel(id: "", image: nil, name: ""))
+                self.org = org
+                view?.success(users: users, org: org ?? OrganizatorModel())
             case .failure(let failure):
                 view?.error(error: failure.localizedDescription)
                 router?.showAlertWithTitle(failure.localizedDescription)
@@ -86,7 +90,9 @@ final class DetailPresenter: DetailPresenterProtocol {
     func shareEvent(eventID: String) {
         let shareURL = "dvor://openScreen?screen=detail&eventId="
         let fullURL = shareURL + eventID
-        print(fullURL)
+        view?.load()
+        router?.showShareSheet(items: [fullURL])
+//        view?.success(users: users ?? [], org: org ?? OrganizatorModel())
     }
     
     func showBottomAlertForUser(model: UserModel) {

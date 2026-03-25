@@ -15,13 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
 
-//        let router = Router(navigationController: navigationController,
-//                            builder: builder)
         router.initialViewController()
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         
-        // Обрабатываем deep link, если приложение запущено через него
         if let urlContext = connectionOptions.urlContexts.first {
             handleDeepLink(urlContext: urlContext)
         }
@@ -78,6 +75,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 }
-
-// Пример deep link:
-// dvor://openScreen?screen=detail&eventId=473DDA5A-2940-46FF-97AA-AA8CF31B624B
