@@ -10,7 +10,8 @@ final class DetailUserInfoViewController: UIViewController {
 
     //MARK: - Properties
     private let card = UserCardView()
-    private let profile = UserProfileView()
+//    private let profile = UserProfileView()
+    private let titleLabel = UILabel.init(text: "Информация", font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
     
     //MARK: - Init
@@ -50,48 +51,52 @@ private extension DetailUserInfoViewController {
     private func setupView() {
         view.backgroundColor = DetailUserInfoConstants.backColor
         view.addSubview(backButton)
+        view.addSubview(titleLabel)
         view.addSubview(card)
-        view.addSubview(profile)
+//        view.addSubview(profile)
     }
     
     private func setupConstraints() {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalToSuperview().offset(DetailUserInfoConstants.paddingStandart)
-//            make.size.equalTo(DetailUserInfoConstants.heightBackBtn)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(backButton.snp.centerY)
+            make.leading.trailing.equalToSuperview().inset(80)
         }
         
         card.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom).offset(10)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(350)
-            make.width.equalTo(300)
+            make.top.equalTo(backButton.snp.bottom).offset(30)
+            make.trailing.leading.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview().inset(70)
         }
             
-        profile.snp.makeConstraints { make in
-            make.top.equalTo(card.snp.bottom).offset(DetailUserInfoConstants.paddingStandart)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(170)
-            make.width.equalTo(DetailUserInfoConstants.widthScreen - 20)
-        }
+//        profile.snp.makeConstraints { make in
+//            make.top.equalTo(card.snp.bottom).offset(DetailUserInfoConstants.paddingStandart)
+//            make.centerX.equalToSuperview()
+//            make.height.equalTo(170)
+//            make.width.equalTo(DetailUserInfoConstants.widthScreen - 20)
+//        }
     }
     
     private func configure() {
         card.configure(with: model)
-        profile.configure(with: model)
-        profile.delegate = self
+//        profile.configure(with: model)
+//        profile.delegate = self
     }
 }
 
 //MARK: - User Profil eView Delegate follow
-extension DetailUserInfoViewController: UserProfileViewDelegate {
-    func followButtonDidTap() {
-        presenter?.followUser()
-    }
-}
+//extension DetailUserInfoViewController: UserProfileViewDelegate {
+//    func followButtonDidTap() {
+//        presenter?.followUser()
+//    }
+//}
 
 fileprivate struct DetailUserInfoConstants {
-    static let backColor: UIColor = .backgrDarkGreen
+    static let backColor: UIColor = Constants.Colors.backgroungColor
     static let cornerRadius: CGFloat = 10
     static let paddingStandart: CGFloat = 20
     static let heightBackBtn: CGFloat = 40

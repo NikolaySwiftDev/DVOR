@@ -4,17 +4,85 @@ import SnapKit
 final class UserCardView: UIView {
     
     // MARK: - UI Elements
-    private let avatarImageView = UIImageView(cornerRadius: 40)
-    private let usernameLabel = UILabel(textColor: .yellow)
-    private let eventsPlayedLabel = UILabel(textColor: .yellow)
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
     
+    // Avatar Section
+    private let avatarImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = UserCardViewConstan.avatarHeight / 2
+        imageView.backgroundColor = UserCardViewConstan.secondTextColor
+        return imageView
+    }()
+    
+    private let fullNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.poppins(weight: .bold, size: .big)
+        label.textColor = UserCardViewConstan.textColor
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let positionLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
+        label.textColor = UserCardViewConstan.secondTextColor
+        label.textAlignment = .center
+        return label
+    }()
+    
+    // Stats Section
     private let statsStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.alignment = .center
-        stack.spacing = 4
+        stack.spacing = 8
         return stack
+    }()
+    
+    private let separatorView1: UIView = {
+        let view = UIView()
+        view.backgroundColor = UserCardViewConstan.secondTextColor
+        return view
+    }()
+    
+    // Info Section
+    private let infoTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Личная информация"
+        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
+        label.textColor = UserCardViewConstan.textColor
+        return label
+    }()
+    
+    private let cityInfoView = InfoRowView(icon: "location.fill", title: "Город")
+    private let ageInfoView = InfoRowView(icon: "calendar", title: "Возраст")
+    private let experienceInfoView = InfoRowView(icon: "sportscourt.fill", title: "Опыт")
+
+    
+    private let separatorView2: UIView = {
+        let view = UIView()
+        view.backgroundColor = UserCardViewConstan.secondTextColor
+        return view
+    }()
+    
+    // Club Section
+    private let clubTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Клуб"
+        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
+        label.textColor = UserCardViewConstan.textColor
+        return label
+    }()
+    
+    private let clubLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
+        label.textColor = UserCardViewConstan.secondTextColor
+        return label
     }()
     
     // MARK: - Init
@@ -30,14 +98,27 @@ final class UserCardView: UIView {
     
     // MARK: - Configuration
     func configure(with model: UserModel) {
+        // Avatar and name
         if let imageData = model.image, let image = UIImage(data: imageData) {
             avatarImageView.image = image
         } else {
-            avatarImageView.image = UIImage(systemName: "person.and.background.dotted")
+            avatarImageView.image = UIImage(systemName: "person.circle.fill")
+            avatarImageView.tintColor = .gray
         }
-        usernameLabel.text = model.name
         
+        fullNameLabel.text = model.fullName
+        positionLabel.text = model.position
+        
+        // Stats
         setupStats(with: model)
+        
+        // Personal info
+        cityInfoView.setValue(model.city)
+        ageInfoView.setValue("\(model.age) лет")
+        experienceInfoView.setValue(model.experience)
+        
+        // Club
+        clubLabel.text = model.club.isEmpty ? "Не указан" : model.club
     }
     
     // MARK: - Private Methods
@@ -49,34 +130,91 @@ final class UserCardView: UIView {
         layer.shadowOffset = CGSize(width: 0, height: 2)
         layer.shadowRadius = 4
         
-        addSubview(avatarImageView)
-        addSubview(usernameLabel)
-        addSubview(eventsPlayedLabel)
-        addSubview(statsStackView)
+        addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        [avatarImageView, fullNameLabel, positionLabel, statsStackView,
+         separatorView1, infoTitleLabel, cityInfoView, ageInfoView,
+         experienceInfoView,
+         separatorView2, clubTitleLabel, clubLabel].forEach {
+            contentView.addSubview($0)
+        }
     }
     
     private func setupConstraints() {
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
         avatarImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(UserCardViewConstan.topPadding)
-            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-            make.height.equalTo(UserCardViewConstan.heightImage)
-        }
-        
-        usernameLabel.snp.makeConstraints { make in
-            make.top.equalTo(avatarImageView.snp.bottom).offset(UserCardViewConstan.topPadding)
+            make.top.equalToSuperview().offset(UserCardViewConstan.topPadding)
             make.centerX.equalToSuperview()
+            make.size.equalTo(UserCardViewConstan.avatarHeight)
         }
         
-        eventsPlayedLabel.snp.makeConstraints { make in
-            make.top.equalTo(usernameLabel.snp.bottom).offset(4)
-            make.leading.equalTo(usernameLabel)
-            make.trailing.equalTo(usernameLabel)
+        fullNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(avatarImageView.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+        }
+        
+        positionLabel.snp.makeConstraints { make in
+            make.top.equalTo(fullNameLabel.snp.bottom).offset(4)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
         
         statsStackView.snp.makeConstraints { make in
-            make.top.equalTo(eventsPlayedLabel.snp.bottom).offset(UserCardViewConstan.topPadding)
+            make.top.equalTo(positionLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-            make.bottom.equalToSuperview().inset(UserCardViewConstan.topPadding)
+            make.height.equalTo(60)
+        }
+        
+        separatorView1.snp.makeConstraints { make in
+            make.top.equalTo(statsStackView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.height.equalTo(1)
+        }
+        
+        infoTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(separatorView1.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+        }
+        
+        cityInfoView.snp.makeConstraints { make in
+            make.top.equalTo(infoTitleLabel.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+        }
+        
+        ageInfoView.snp.makeConstraints { make in
+            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+        }
+        
+        experienceInfoView.snp.makeConstraints { make in
+            make.top.equalTo(ageInfoView.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+        }
+        
+        
+        separatorView2.snp.makeConstraints { make in
+            make.top.equalTo(experienceInfoView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.height.equalTo(1)
+        }
+        
+        clubTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(separatorView2.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+        }
+        
+        clubLabel.snp.makeConstraints { make in
+            make.top.equalTo(clubTitleLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.bottom.equalToSuperview().offset(-UserCardViewConstan.topPadding)
         }
     }
     
@@ -84,49 +222,39 @@ final class UserCardView: UIView {
         // Очищаем предыдущие данные
         statsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        eventsPlayedLabel.text = "\(stats.plays) игр"
+        // Plays
+        let playsView = createStatView(title: "Игр", value: "\(stats.plays)")
+        statsStackView.addArrangedSubview(playsView)
         
         // LVL
-        let lvlView = createStatView(title: "LVL", value: "\(stats.level)")
+        let lvlView = createStatView(title: "Уровень", value: String(format: "%.0f", stats.level))
         statsStackView.addArrangedSubview(lvlView)
-        
-        // MVP
-        let mvpView = createStatView(title: "MVP", value: "\(stats.mvpCount)")
-        statsStackView.addArrangedSubview(mvpView)
-        
-        // MVP N
-        let mvpNominationsView = createStatView(title: "MVP N", value: "\(stats.mvpNominations)")
-        statsStackView.addArrangedSubview(mvpNominationsView)
-        
-        // ATT
-        let attView = createStatView(title: "ATT", value: "na")
-        statsStackView.addArrangedSubview(attView)
     }
     
     private func createStatView(title: String, value: String) -> UIView {
         let container = UIView()
         
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.font = .boldSystemFont(ofSize: 14)
-        titleLabel.textColor = .yellow
-        titleLabel.textAlignment = .center
-        
         let valueLabel = UILabel()
         valueLabel.text = value
-        valueLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        valueLabel.textColor = .yellow
+        valueLabel.font = UIFont.poppins(weight: .semiBold, size: .mid)
+        valueLabel.textColor = UserCardViewConstan.textColor
         valueLabel.textAlignment = .center
         
-        container.addSubview(titleLabel)
-        container.addSubview(valueLabel)
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = UIFont.poppins(weight: .regular, size: .mid)
+        titleLabel.textColor = UserCardViewConstan.secondTextColor
+        titleLabel.textAlignment = .center
         
-        titleLabel.snp.makeConstraints { make in
+        container.addSubview(valueLabel)
+        container.addSubview(titleLabel)
+        
+        valueLabel.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
         
-        valueLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(4)
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(valueLabel.snp.bottom).offset(4)
             make.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -134,9 +262,73 @@ final class UserCardView: UIView {
     }
 }
 
+// MARK: - Info Row View
+final class InfoRowView: UIView {
+    private let iconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = UserCardViewConstan.secondTextColor
+        return imageView
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.poppins(weight: .regular, size: .mid)
+        label.textColor = Constants.Colors.inActiveColor
+        return label
+    }()
+    
+    private let valueLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.poppins(weight: .regular, size: .mid)
+        label.textColor = .white
+        label.textAlignment = .right
+        return label
+    }()
+    
+    init(icon: String, title: String) {
+        super.init(frame: .zero)
+        iconImageView.image = UIImage(systemName: icon)
+        titleLabel.text = title
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setValue(_ value: String) {
+        valueLabel.text = value
+    }
+    
+    private func setupView() {
+        addSubview(iconImageView)
+        addSubview(titleLabel)
+        addSubview(valueLabel)
+        
+        iconImageView.snp.makeConstraints { make in
+            make.leading.centerY.equalToSuperview()
+            make.size.equalTo(UserCardViewConstan.padding)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalTo(iconImageView.snp.trailing).offset(12)
+            make.centerY.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+        }
+        
+        valueLabel.snp.makeConstraints { make in
+            make.leading.equalTo(titleLabel.snp.trailing).offset(12)
+            make.trailing.centerY.equalToSuperview()
+        }
+    }
+}
+
 fileprivate struct UserCardViewConstan {
-    static let cardColor: UIColor = .mediumGreen
-    static let padding: CGFloat = 10
-    static let topPadding: CGFloat = 10
-    static let heightImage: CGFloat = 220
+    static let cardColor: UIColor = Constants.Colors.layerColor
+    static let textColor: UIColor = .white
+    static let secondTextColor: UIColor = Constants.Colors.inActiveColor
+    static let padding: CGFloat = 20
+    static let topPadding: CGFloat = 20
+    static let avatarHeight: CGFloat = 180
 }
