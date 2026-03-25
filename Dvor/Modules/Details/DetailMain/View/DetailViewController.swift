@@ -82,16 +82,20 @@ extension DetailViewController: DetailProtocol {
     }
     
     func success(users: [UserModel], org: OrganizatorModel) {
-        hideLoadingView(with: view, tag: 33, state: .delete)
+        hideLoadingView(with: view, tag: DetailConstants.numberView, state: .delete)
         segmentView.configureAllViews(detail: details, users: users, org: org)
     }
     
     func load() {
-        hideLoadingView(with: view, tag: 33, state: .add)
+        hideLoadingView(with: view, tag: DetailConstants.numberView, state: .add)
     }
     
     func error(error: String) {
-        hideLoadingView(with: view, tag: 33, state: .delete)
+        hideLoadingView(with: view, tag: DetailConstants.numberView, state: .delete)
+    }
+    
+    func hideLoading() {
+        hideLoadingView(with: view, tag: DetailConstants.numberView, state: .delete)
     }
 }
 
@@ -181,6 +185,8 @@ fileprivate struct DetailConstants {
     static let heightBackBtn: CGFloat = 25
     static let heightTabbar: CGFloat = 90
     static let heightMapImg: CGFloat = UIScreen.main.bounds.height / 4.7
+    static let numberView: Int = 33
+    
 }
  
 

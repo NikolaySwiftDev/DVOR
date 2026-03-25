@@ -3,7 +3,7 @@ protocol DetailProtocol: AnyObject {
     func load()
     func updateUsers(model: [String])
     func error(error: String)
-    
+    func hideLoading()
 }
 
 protocol DetailPresenterProtocol: AnyObject {
@@ -91,8 +91,10 @@ final class DetailPresenter: DetailPresenterProtocol {
         let shareURL = "dvor://openScreen?screen=detail&eventId="
         let fullURL = shareURL + eventID
         view?.load()
-        router?.showShareSheet(items: [fullURL])
-//        view?.success(users: users ?? [], org: org ?? OrganizatorModel())
+        router?.showShareSheet(items: [fullURL]) { [weak self] completed in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+        }
     }
     
     func showBottomAlertForUser(model: UserModel) {

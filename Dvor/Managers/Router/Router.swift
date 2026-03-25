@@ -32,7 +32,7 @@ protocol RouterMainProtocol: RouterMain {
     func showAlertWithTitle(_ title: String)
     func showBottomSheetAlertForUser(model: UserModel)
     func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping()->())
-    func showShareSheet(items: [Any])
+    func showShareSheet(items: [Any], completion: @escaping (Bool) -> Void)
     
     func showLocationOnMap(location: String)
 }
@@ -254,7 +254,7 @@ class Router: RouterMainProtocol {
     }
     
     //MARK: - Show Share Sheet
-    func showShareSheet(items: [Any]) {
+    func showShareSheet(items: [Any], completion: @escaping (Bool) -> Void) {
         let activityViewController = UIActivityViewController(
             activityItems: items,
             applicationActivities: nil
@@ -270,6 +270,12 @@ class Router: RouterMainProtocol {
                 height: 0
             )
             popoverController.permittedArrowDirections = []
+        }
+        
+        // Handle completion when share sheet is dismissed
+        activityViewController.completionWithItemsHandler = { activityType, completed, returnedItems, error in
+            // Call completion handler with whether sharing was successful or cancelled
+            completion(completed)
         }
         
         navigationController.present(activityViewController, animated: true)
