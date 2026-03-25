@@ -62,7 +62,7 @@ final class DetailViewController: UIViewController {
 
     //MARK: - Share Button Tapped
     @objc private func shareButtonTapped() {
-        print("Share button tapped")
+        presenter?.shareEvent(eventID: details.id)
     }
     
     //MARK: - Add User Button Tapped

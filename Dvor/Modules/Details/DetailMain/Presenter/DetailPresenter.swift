@@ -10,9 +10,13 @@ protocol DetailPresenterProtocol: AnyObject {
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol?,
          firebase: FirebaseAuthManagerProtocol)
+    
     var users: [UserModel]? { get set }
+    
     func fetchAllUsers(usersID: [String], orgID: String)
     func addUserToEvent(idEvent: String)
+    func shareEvent(eventID: String)
+    
     func popVC()
     func showDetailOrgInfo(model: OrganizatorModel)
     func showBottomAlertForUser(model: UserModel)
@@ -20,6 +24,7 @@ protocol DetailPresenterProtocol: AnyObject {
 }
 
 final class DetailPresenter: DetailPresenterProtocol {
+
     
     weak var view: DetailProtocol?
     var users: [UserModel]?
@@ -77,7 +82,13 @@ final class DetailPresenter: DetailPresenterProtocol {
             }
         })
     }
-
+    
+    func shareEvent(eventID: String) {
+        let shareURL = "dvor://openScreen?screen=detail&eventId="
+        let fullURL = shareURL + eventID
+        print(fullURL)
+    }
+    
     func showBottomAlertForUser(model: UserModel) {
         router?.showBottomSheetAlertForUser(model: model)
     }
