@@ -22,11 +22,11 @@ protocol RouterMainProtocol: RouterMain {
     func pushMainCoordinateVC()
     func pushRegistVC()
     func pushTabBarVC()
-    func pushProfileVC()
+    func pushProfileVC(model: UserModel?)
     func pushCreateEvent(date: Date)
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
-    func pushDetailUserInfo(model: UserModel)
+//    func pushDetailUserInfo(model: UserModel)
     func pushRatingVC(model: UserModel)
  
     func showAlertWithTitle(_ title: String)
@@ -147,8 +147,8 @@ class Router: RouterMainProtocol {
     }
     
     //MARK: - Push Profile User Info
-    func pushProfileVC() {
-        guard let detailVC = builder?.createProfileVC(router: self) else { return }
+    func pushProfileVC(model: UserModel?) {
+        guard let detailVC = builder?.createProfileVC(router: self, model: model) else { return }
         pushVC(detailVC)
     }
     
@@ -159,11 +159,11 @@ class Router: RouterMainProtocol {
         navigationController.present(detailVC, animated: true)
     }
 
-    //MARK: - Push Detail User Info
-    func pushDetailUserInfo(model: UserModel) {
-        guard let detailVC = builder?.createDetailUserInfo(router: self, model: model) else { return }
-        pushVC(detailVC)
-    }
+//    //MARK: - Push Detail User Info
+//    func pushDetailUserInfo(model: UserModel) {
+//        guard let detailVC = builder?.createDetailUserInfo(router: self, model: model) else { return }
+//        pushVC(detailVC)
+//    }
     
     //MARK: - Push Rating VC
     func pushRatingVC(model: UserModel) {
@@ -234,7 +234,9 @@ class Router: RouterMainProtocol {
         let profile = UIAlertAction(title: "Профиль",
                                     style: .default) { [weak self] _ in
             guard let self = self else { return }
-            pushDetailUserInfo(model: model)
+//            pushDetailUserInfo(model: model)
+            pushProfileVC(model: model)
+
         }
         
         let events = UIAlertAction(title: "Оценка",

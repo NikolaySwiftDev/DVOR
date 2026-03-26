@@ -5,20 +5,35 @@ import SnapKit
 final class ProfileViewController: UIViewController {
     
     var presenter: ProfilePresenter?
+    var model: UserModel?
         
     //MARK: - Properties
     private let titleLabel = UILabel.init(text: "Профиль", font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
     private let userCard = UserCardView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
 
+    init(model: UserModel? = nil) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //MARK: - View did load
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        presenter?.getProfileInto()
-        
         setupView()
         setupConstraint()
+        
+        if let model = model {
+            // Если модель передана (профиль другого пользователя)
+            configureUserCard(with: model)
+        } else {
+            // Если модель не передана (свой профиль) - загружаем данные
+            presenter?.getProfileInto()
+        }
     }
     
     //MARK: -Back Button Tapped
@@ -35,7 +50,8 @@ final class ProfileViewController: UIViewController {
 //MARK: - Profile Protocol
 extension ProfileViewController: ProfileProtocol {
     func success(model: UserModel) {
-        userCard.configure(with: model)
+        self.model = model
+        configureUserCard(with: model)
     }
     
     func error(error: Error) {}
@@ -47,13 +63,11 @@ private extension ProfileViewController {
         view.backgroundColor = Constants.Colors.backgroungColor
         view.addSubview(backButton)
         view.addSubview(titleLabel)
-        view.addSubview(userCard)
-        
     }
     
     private func setupConstraint() {
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding / 1.5)
             make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
         }
         
@@ -61,12 +75,15 @@ private extension ProfileViewController {
             make.centerY.equalTo(backButton.snp.centerY)
             make.leading.trailing.equalToSuperview().inset(80)
         }
-        
+    }
+    
+    private func configureUserCard(with model: UserModel) {
+        userCard.configure(with: model)
+        view.addSubview(userCard)
         userCard.snp.makeConstraints { make in
             make.top.equalTo(backButton.snp.bottom).offset(20)
             make.leading.trailing.bottom.equalToSuperview()
         }
-        
     }
 }
 

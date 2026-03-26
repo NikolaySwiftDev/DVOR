@@ -9,13 +9,13 @@ protocol BuilderProtocol: AnyObject {
     func createMainCoordinateVC(router: RouterMainProtocol) -> UIViewController
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
-    func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
+//    func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController
     
     //Для отмены от таббара
     func createHomeVC(router: RouterMainProtocol) -> UIViewController
-    func createProfileVC(router: RouterMainProtocol) -> UIViewController
+    func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController
 }
 
 class Builder: BuilderProtocol {
@@ -38,15 +38,15 @@ class Builder: BuilderProtocol {
         let documentModel = TabBarModel(vc: createEmptyVC(.systemMint),
                                          selectedImage: "ticket")
         
-        let personModel = TabBarModel(vc: createProfileVC(router: router),
-                                    selectedImage: "person.circle")
+//        let personModel = TabBarModel(vc: createProfileVC(router: router, model: <#UserModel#>),
+//                                    selectedImage: "person.circle")
                                         
         
         let tabbarControllers = TabBarModels(cells: [marketModel,
                                                      walletModel,
                                                      homeModel,
                                                      documentModel,
-                                                     personModel
+//                                                     personModel
                                                     ])
         
         let view = TabBarViewController()
@@ -114,8 +114,8 @@ class Builder: BuilderProtocol {
     }
     
     //MARK: -  Profile Builder
-    func createProfileVC(router: RouterMainProtocol) -> UIViewController {
-        let view = ProfileViewController()
+    func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController {
+        let view = ProfileViewController(model: model)
         let network = FirebaseDataManager()
         let presenter = ProfilePresenter(view: view,
                                          router: router,
@@ -145,13 +145,13 @@ class Builder: BuilderProtocol {
         return view
     }
     
-    //MARK: -  Detail User Builder
-    func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController {
-        let view = DetailUserInfoViewController(model: model)
-        let presenter = DetailUserInfoPresenter(view: view, router: router)
-        view.presenter = presenter
-        return view
-    }
+//    //MARK: -  Detail User Builder
+//    func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController {
+//        let view = DetailUserInfoViewController(model: model)
+//        let presenter = DetailUserInfoPresenter(view: view, router: router)
+//        view.presenter = presenter
+//        return view
+//    }
     
     //MARK: - Rating Builder
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController {

@@ -10,9 +10,8 @@ final class UserCardView: UIView {
     // Avatar Section
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = UserCardViewConstan.avatarHeight / 2
+        imageView.layer.cornerRadius = 25
         imageView.backgroundColor = UserCardViewConstan.secondTextColor
         return imageView
     }()
@@ -154,7 +153,8 @@ final class UserCardView: UIView {
         avatarImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(UserCardViewConstan.topPadding)
             make.centerX.equalToSuperview()
-            make.size.equalTo(UserCardViewConstan.avatarHeight)
+            make.height.equalTo(UserCardViewConstan.avatarHeight)
+            make.width.equalTo(UserCardViewConstan.avatarHeight / 1.2)
         }
         
         fullNameLabel.snp.makeConstraints { make in
@@ -330,5 +330,5 @@ fileprivate struct UserCardViewConstan {
     static let secondTextColor: UIColor = Constants.Colors.inActiveColor
     static let padding: CGFloat = 20
     static let topPadding: CGFloat = 20
-    static let avatarHeight: CGFloat = 180
+    static let avatarHeight: CGFloat = 250
 }
