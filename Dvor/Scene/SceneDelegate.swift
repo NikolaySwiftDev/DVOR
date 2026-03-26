@@ -1,77 +1,53 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    // MARK: - Properties
     var window: UIWindow?
+    
     private let navigationController = UINavigationController()
     private let builder = Builder()
-    private lazy var router = Router(navigationController: navigationController,
-                        builder: builder)
-    
     private let firebaseDataManager = FirebaseDataManager()
+    
+    private lazy var router: Router = {
+        Router(navigationController: navigationController, builder: builder)
+    }()
+    
+    private lazy var deepLinkHandler: DeepLinkHandlerProtocol = {
+        DeepLinkHandler(router: router, firebaseDataManager: firebaseDataManager)
+    }()
 
+    // MARK: - Scene Lifecycle
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: windowScene)
-
-        router.initialViewController()
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
+        guard let windowScene = scene as? UIWindowScene else { return }
         
+        setupWindow(with: windowScene)
+        
+        // Handle deep link if app was opened with URL
         if let urlContext = connectionOptions.urlContexts.first {
-            handleDeepLink(urlContext: urlContext)
+            handleDeepLink(from: urlContext.url)
         }
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard let firstUrl = URLContexts.first else { return }
-        handleDeepLink(urlContext: firstUrl)
+        guard let url = URLContexts.first?.url else { return }
+        handleDeepLink(from: url)
     }
     
-    private func handleDeepLink(urlContext: UIOpenURLContext) {
-        guard let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: true) else { return }
+    // MARK: - Private Methods
+    private func setupWindow(with windowScene: UIWindowScene) {
+        let window = UIWindow(windowScene: windowScene)
         
-        switch components.host {
-        case "openScreen":
-            openDetailScreen(with: components.queryItems ?? [])
-        default:
-            break
-        }
+        router.initialViewController()
+        window.rootViewController = navigationController
+        window.makeKeyAndVisible()
+        
+        self.window = window
     }
     
-    func openDetailScreen(with queryItems: [URLQueryItem]) {
-        let screenQuery = queryItems.first(where: {$0.name == "screen"})
-        switch screenQuery?.value {
-        case "detail":
-            guard let eventId = queryItems.first(where: { $0.name == "eventId" })?.value else {
-                print("⚠️ Event ID not found in deep link")
-                DispatchQueue.main.async {
-                    self.router.showAlertWithTitle("⚠️ Event ID not found in deep link")
-                }
-                return
-            }
-            
-            firebaseDataManager.fetchEvent(idEvent: eventId) { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let event):
-                    let detailModel = event.toDetailModel()
-                    DispatchQueue.main.async {
-                        self.router.pushDetailVC(model: detailModel)
-                    }
-                    
-                case .failure(let error):
-                    DispatchQueue.main.async {
-                        self.router.showAlertWithTitle(error.localizedDescription)
-                    }
-                    print("❌ Failed to fetch event: \(error.localizedDescription)")
-                }
-            }
-            
-        default:
-            break
-        }
+    private func handleDeepLink(from url: URL) {
+        let deepLink = DeepLink.parse(from: url)
+        deepLinkHandler.handle(deepLink)
     }
 }
