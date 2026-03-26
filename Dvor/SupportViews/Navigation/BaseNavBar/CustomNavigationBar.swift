@@ -17,10 +17,10 @@ final class CustomNavigationBar: UIView {
     // MARK: - UI
     private let titleLabel = UILabel.init(font: .poppins(weight: .bold, size: 28))    
     private let magnifyingglass = UIButton(type: .system)
-    private let bellButton = UIButton(type: .system)
+//    private let bellButton = UIButton(type: .system)
     private let personButton = UIButton(type: .system)
     private let addButton = UIButton(type: .system)
-    private lazy var stack = UIStackView(arrangedSubviews: [ bellButton, personButton, addButton, magnifyingglass])
+    private lazy var stack = UIStackView(arrangedSubviews: [ /*bellButton,*/ personButton, addButton, magnifyingglass])
     
     // MARK: - Init
     init(title: String) {
@@ -45,7 +45,7 @@ final class CustomNavigationBar: UIView {
         addSubview(titleLabel)
         addSubview(stack)
         
-        [magnifyingglass, bellButton, personButton, addButton].forEach {
+        [magnifyingglass, /*bellButton,*/ personButton, addButton].forEach {
             $0.tintColor = .black
             $0.snp.makeConstraints { make in
                 make.size.equalTo(25)
@@ -53,7 +53,7 @@ final class CustomNavigationBar: UIView {
         }
         
         magnifyingglass.setBackgroundImage(UIImage(systemName: "arrowshape.turn.up.backward"), for: .normal)
-        bellButton.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
+//        bellButton.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
         personButton.setBackgroundImage(UIImage(systemName: "person"), for: .normal)
         addButton.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
         
@@ -79,7 +79,7 @@ final class CustomNavigationBar: UIView {
     
     private func setupActions() {
         magnifyingglass.addTarget(self, action: #selector(magnifyingglassTapped), for: .touchUpInside)
-        bellButton.addTarget(self, action: #selector(bellTapped), for: .touchUpInside)
+//        bellButton.addTarget(self, action: #selector(bellTapped), for: .touchUpInside)
         personButton.addTarget(self, action: #selector(personTapped), for: .touchUpInside)
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
     }
@@ -89,9 +89,9 @@ final class CustomNavigationBar: UIView {
         delegate?.didTapSignOutButton()
     }
     
-    @objc private func bellTapped() {
-        delegate?.didTapBellButton()
-    }
+//    @objc private func bellTapped() {
+//        delegate?.didTapBellButton()
+//    }
     
     @objc private func personTapped() {
         delegate?.didTapPersonButton()

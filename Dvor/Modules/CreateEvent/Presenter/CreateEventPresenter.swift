@@ -17,7 +17,9 @@ protocol CreateEventPresenterProtocol: AnyObject {
          firebase: FirebaseAuthManagerProtocol)
 
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String)
+    
     func popVC()
+    func showInfoAlert()
 
 }
 
@@ -68,15 +70,19 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let success):
-                router?.showAlertConfigur(title: success, message: nil, titleActionButton: "Вернуться") { [weak self] in
-                    guard let self = self else { return }
+//                router?.showAlertConfigur(title: success, message: nil, titleActionButton: "Вернуться") { [weak self] in
+//                    guard let self = self else { return }
                     self.router?.popVC()
-                }
+//                }
             case .failure(let error):
                 router?.showAlertWithTitle("Ошибка сохранения")
                 view?.error(error: error)
             }
         })
+    }
+    
+    func showInfoAlert() {
+        router?.showAlertWithTitle("Вы можете создать свое событие для проведения матча/турнира")
     }
     
     deinit {

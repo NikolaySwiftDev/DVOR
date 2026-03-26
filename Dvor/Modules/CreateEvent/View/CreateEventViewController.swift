@@ -56,7 +56,7 @@ extension CreateEventViewController: SupportNavigationBarDelegate {
     }
     
     func actionButtonTapped() {
-        print(#function)
+        presenter?.showInfoAlert()
     }
 }
 
@@ -163,12 +163,12 @@ extension CreateEventViewController {
         }
         
         titleDate.snp.makeConstraints { make in
-            make.top.equalTo(navigationBar.snp.bottom).offset(Constants.Constraint.verticalPadding * 2)
+            make.top.equalTo(navigationBar.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
         subTitle.snp.makeConstraints { make in
-            make.top.equalTo(titleDate.snp.bottom).offset(Constants.Constraint.verticalPadding * 2)
+            make.top.equalTo(titleDate.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding + 10)
         }
         
@@ -185,23 +185,23 @@ extension CreateEventViewController {
         
         view.addSubview(stack)
         stack.snp.makeConstraints { make in
-            make.top.equalTo(subTitle.snp.bottom).offset(Constants.Constraint.verticalPadding * 2)
+            make.top.equalTo(subTitle.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
+            make.height.equalTo(CreateEventConstants.supViewHeight)
         }
         
         view.addSubview(adressView)
         adressView.snp.makeConstraints { make in
             make.top.equalTo(stack.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
+            make.height.equalTo(CreateEventConstants.supViewHeight)
         }
         
         view.addSubview(placeView)
         placeView.snp.makeConstraints { make in
             make.top.equalTo(adressView.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
+            make.height.equalTo(CreateEventConstants.supViewHeight)
         }
         
         nextButton.snp.makeConstraints { make in
@@ -210,4 +210,8 @@ extension CreateEventViewController {
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
+}
+
+fileprivate struct CreateEventConstants {
+    static let supViewHeight = Constants.Constraint.buttonHeight * 1.8
 }
