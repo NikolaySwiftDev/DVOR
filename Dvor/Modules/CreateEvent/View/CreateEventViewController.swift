@@ -9,6 +9,7 @@ final class CreateEventViewController: UIViewController {
     private var player = 0
     private var time = ""
     private var adress = ""
+    private var place = ""
     
     private let navigationBar = SupportNavigationBar(state: .createEvent)
     private let subTitle = UILabel.init(text: "Введите данные")
@@ -16,6 +17,7 @@ final class CreateEventViewController: UIViewController {
     private let adressTF = AuthTextFieldView(placeholder: "ул. Любых, д.20, к1, (шк.01)")
     private let playersTF = AuthTextFieldView(placeholder: "8")
     private let timeTF = AuthTextFieldView(placeholder: "11:22")
+    private let placeTF = AuthTextFieldView(placeholder: "школа 1")
     private let nextButton = UIButton.createStandartButton(title: "Создать", target: self, action: #selector(nextButtonTapped))
     
     init(date: Date) {
@@ -37,7 +39,7 @@ final class CreateEventViewController: UIViewController {
     }
     
     @objc private func nextButtonTapped() {
-        presenter?.writeEvent(players: player, date: date, time: time, address: adress)
+        presenter?.writeEvent(players: player, date: date, time: time, address: adress, place: place)
     }
 }
 
@@ -99,6 +101,10 @@ extension CreateEventViewController: UITextFieldDelegate {
             adress = text
             checkTFIsNotEmpty(text: text, tf: adressTF)
             
+        case 3:
+            place = text
+            checkTFIsNotEmpty(text: text, tf: placeTF)
+            
         default:
             break
         }
@@ -109,7 +115,7 @@ extension CreateEventViewController: UITextFieldDelegate {
     
     //MARK: - Check Valid Button
     private func checkValidButton() -> Bool {
-        guard player != 0, time.isValidTime,  adress != "" else { return false }
+        guard player != 0, time.isValidTime, adress != "", place != "" else { return false }
         return true
     }
     
@@ -142,6 +148,10 @@ extension CreateEventViewController {
         adressTF.textField.delegate = self
         adressTF.textField.tag = 2
         adressTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        
+        placeTF.textField.delegate = self
+        placeTF.textField.tag = 3
+        placeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     
@@ -165,6 +175,7 @@ extension CreateEventViewController {
         let playersView = createTFView(text: "Игроков в команде", tf: playersTF)
         let timeView = createTFView(text: "Время начала игры", tf: timeTF)
         let adressView = createTFView(text: "Адресс", tf: adressTF)
+        let placeView = createTFView(text: "Место", tf: placeTF)
         
         let stack = UIStackView(arrangedSubviews: [playersView, timeView])
         stack.axis = .horizontal
@@ -182,6 +193,13 @@ extension CreateEventViewController {
         view.addSubview(adressView)
         adressView.snp.makeConstraints { make in
             make.top.equalTo(stack.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
+        }
+        
+        view.addSubview(placeView)
+        placeView.snp.makeConstraints { make in
+            make.top.equalTo(adressView.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight * 2)
         }

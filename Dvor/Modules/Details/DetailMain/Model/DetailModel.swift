@@ -13,4 +13,8 @@ struct DetailModel {
     let peopleAllCount: String
     let users: [String]
     let orgID: String
+    
+    var fullAdress: String {
+        "Санкт-Петербург, " + address
+    }
 }

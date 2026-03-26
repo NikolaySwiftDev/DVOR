@@ -16,6 +16,7 @@ protocol FirebaseDataManagerProtocol: AnyObject {
 
     //Delete
     func deleteEvent(idEvent: String, completion: @escaping (Result<String, Error>) -> Void)
+    func removeUserFromEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void)
     
     //Update
     func updateUserFollowers()
@@ -231,6 +232,32 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                 completion(.failure(error))
             } else {
                 completion(.success("Событие успешно удалено"))
+            }
+        }
+    }
+    
+    //MARK: - Удаление пользователя из события
+    func removeUserFromEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
+        let usersRef = database.child(eventsPath).child(idEvent).child("users")
+        
+        usersRef.observeSingleEvent(of: .value) { snapshot in
+            var currentUsers = snapshot.value as? [String] ?? []
+            
+            // Проверяем, есть ли пользователь в списке
+            guard let userIndex = currentUsers.firstIndex(of: idUser) else {
+                completion(.failure(NSError(domain: "UserNotInEvent", code: 404, userInfo: [NSLocalizedDescriptionKey: "Пользователь не найден в событии"])))
+                return
+            }
+            
+            // Удаляем пользователя
+            currentUsers.remove(at: userIndex)
+            
+            usersRef.setValue(currentUsers) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(currentUsers)) // Возвращаем обновленный список
+                }
             }
         }
     }

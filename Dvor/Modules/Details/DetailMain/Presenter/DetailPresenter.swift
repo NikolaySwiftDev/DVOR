@@ -16,10 +16,13 @@ protocol DetailPresenterProtocol: AnyObject {
     var org: OrganizatorModel? { get set }
     
     func fetchAllUsers(usersID: [String], orgID: String)
+    
     func addUserToEvent(idEvent: String)
-    func shareEvent(eventID: String)
+    
+    func removeUserFromEvent(idEvent: String)
     
     func popVC()
+    func shareEvent(eventID: String)
     func showDetailOrgInfo(model: OrganizatorModel)
     func showBottomAlertForUser(model: UserModel)
     func showLocationOnMap(location: String)
@@ -27,7 +30,6 @@ protocol DetailPresenterProtocol: AnyObject {
 
 final class DetailPresenter: DetailPresenterProtocol {
 
-    
     weak var view: DetailProtocol?
     var users: [UserModel]?
     var org: OrganizatorModel?
@@ -73,7 +75,13 @@ final class DetailPresenter: DetailPresenterProtocol {
             router?.showAlertWithTitle("Добавьте аккаунт")
             return
         }
-                
+        
+        // Проверка, есть ли пользователь уже в событии
+        if let users = users, users.contains(where: { $0.id == idUser }) {
+            router?.showAlertWithTitle("Вы уже участвуете в этом событии")
+            return
+        }
+        
         network?.writeUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -87,6 +95,37 @@ final class DetailPresenter: DetailPresenterProtocol {
         })
     }
     
+    //MARK: - Удаление участника
+    func removeUserFromEvent(idEvent: String) {
+        guard idEvent != "" else {
+            router?.showAlertWithTitle("Выберите событие")
+            return
+        }
+        
+        guard let idUser = firebase.currentUser?.uid else {
+            router?.showAlertWithTitle("Добавьте аккаунт")
+            return
+        }
+        
+        // Проверка, есть ли пользователь в событии
+        guard let users = users, users.contains(where: { $0.id == idUser }) else {
+            router?.showAlertWithTitle("Вы не участвуете в этом событии")
+            return
+        }
+        
+        network?.removeUserFromEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                view?.updateUsers(model: success)
+                router?.showAlertWithTitle("Вы отписались от события")
+            case .failure(let error):
+                router?.showAlertWithTitle("Ошибка при удалении")
+                view?.error(error: error.localizedDescription)
+            }
+        })
+    }
+
     func shareEvent(eventID: String) {
         let shareURL = "dvor://openScreen?screen=detail&eventId="
         let fullURL = shareURL + eventID

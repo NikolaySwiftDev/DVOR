@@ -26,6 +26,14 @@ final class DetailViewController: UIViewController {
         btn.addTarget(self, action: #selector(addUserButtonTapped), for: .touchUpInside)
         return btn
     }()
+    
+    private let removeUserButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setBackgroundImage(UIImage(systemName: "person.badge.minus"), for: .normal)
+        btn.tintColor = .black
+        btn.addTarget(self, action: #selector(removeUserButtonTapped), for: .touchUpInside)
+        return btn
+    }()
 
 
     private lazy var titleAdress = UILabel(text: details.address,
@@ -68,6 +76,11 @@ final class DetailViewController: UIViewController {
     //MARK: - Add User Button Tapped
     @objc private func addUserButtonTapped() {
         presenter?.addUserToEvent(idEvent: details.id)
+    }
+    
+    //MARK: - Remove User Button Tapped
+    @objc private func removeUserButtonTapped() {
+        presenter?.removeUserFromEvent(idEvent: details.id)
     }
  
     deinit {
@@ -115,7 +128,7 @@ extension DetailViewController: UserCellProtocol {
 //MARK: - Detail Info Protocol
 extension DetailViewController: InfoViewProtocol {
     func mapButtonTapped() {
-        presenter?.showLocationOnMap(location: details.address)
+        presenter?.showLocationOnMap(location: details.fullAdress)
     }
 }
 
@@ -128,6 +141,7 @@ private extension DetailViewController {
         view.addSubview(backButton)
         view.addSubview(shareButton)
         view.addSubview(addUserButton)
+        view.addSubview(removeUserButton)
         view.addSubview(titleAdress)
         view.addSubview(mapImage)
         view.addSubview(segmentView)
@@ -151,6 +165,12 @@ private extension DetailViewController {
         }
         
         addUserButton.snp.makeConstraints { make in
+            make.centerY.equalTo(backButton)
+            make.trailing.equalTo(removeUserButton.snp.leading).offset(-10)
+            make.height.width.equalTo(DetailConstants.heightBackBtn)
+        }
+        
+        removeUserButton.snp.makeConstraints { make in
             make.centerY.equalTo(backButton)
             make.trailing.equalTo(shareButton.snp.leading).offset(-10)
             make.height.width.equalTo(DetailConstants.heightBackBtn)

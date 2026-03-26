@@ -2,10 +2,10 @@
 import Foundation
 
 struct DetailSegmentModel {
-    let items = ["Инфо", "Участники", "Комментарии"]
+    let items = ["Инфо", "Участники", /*"Комментарии"*/]
 }
 
 enum DetailSegmentViewPosition: CaseIterable {
-    case info, users ,comments
+    case info, users /*,comments*/
 }
 

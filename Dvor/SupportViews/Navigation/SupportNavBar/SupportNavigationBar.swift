@@ -55,7 +55,6 @@ extension SupportNavigationBar {
             backButton.snp.makeConstraints { make in
                 make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
                 make.centerY.equalToSuperview()
-//                make.size.equalTo(Constants.Constraint.backButtonSize)
             }
             
             actionButton.snp.makeConstraints { make in

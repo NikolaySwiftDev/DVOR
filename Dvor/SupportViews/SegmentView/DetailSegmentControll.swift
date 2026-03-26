@@ -65,7 +65,7 @@ final class DetailSegmentContainerView: UIView {
         switch currentPosition {
         case .info: target = infoView
         case .users: target = usersView
-        case .comments: target = commentsView
+//        case .comments: target = commentsView
         }
 
         let direction: CGFloat = 1
@@ -120,7 +120,7 @@ final class DetailSegmentContainerView: UIView {
         switch position {
         case .info: segmentControl.selectedSegmentIndex = 0
         case .users: segmentControl.selectedSegmentIndex = 1
-        case .comments: segmentControl.selectedSegmentIndex = 2
+//        case .comments: segmentControl.selectedSegmentIndex = 2
         }
         currentPosition = position
         updateView(animated: false)
@@ -134,7 +134,7 @@ extension DetailSegmentContainerView: CustomSegmentViewDelegate {
         switch index {
         case 0: currentPosition = .info
         case 1: currentPosition = .users
-        case 2: currentPosition = .comments
+//        case 2: currentPosition = .comments
         default: break
         }
         updateView(animated: true)

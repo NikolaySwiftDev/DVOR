@@ -16,7 +16,7 @@ protocol CreateEventPresenterProtocol: AnyObject {
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol)
 
-    func writeEvent(players: Int, date: Date, time: String, address: String)
+    func writeEvent(players: Int, date: Date, time: String, address: String, place: String)
     func popVC()
 
 }
@@ -47,7 +47,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     }
     
     //MARK: - Записсь события в БД
-    func writeEvent(players: Int, date: Date, time: String, address: String) {
+    func writeEvent(players: Int, date: Date, time: String, address: String, place: String) {
         guard let orgID = firebase.currentUser?.uid else {
             router?.showAlertWithTitle("Зарегистрируйтесь")
             return
@@ -58,7 +58,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
                                format: players,
                                location: "",
                                address: address,
-                               namePlace: "",
+                               namePlace: place,
                                price: 0,
                                ownerName: "",
                                timeGame: 0,
