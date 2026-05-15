@@ -22,16 +22,16 @@ final class MainCoordinateViewController: UIViewController {
         return btn
     }()
 
-    private let enterButton: UIButton = {
-        let btn = UIButton(type: .system)
-        btn.setTitle(AuthModel.enterButtonTitle, for: .normal)
-        btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
-        btn.backgroundColor = Constants.Colors.buttonActiveColor
-        btn.layer.cornerRadius = Constants.Constraint.cornerRadius
-        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
-        btn.addTarget(self, action: #selector(enterButtonTapped), for: .touchUpInside)
-        return btn
-    }()
+//    private let enterButton: UIButton = {
+//        let btn = UIButton(type: .system)
+//        btn.setTitle(AuthModel.enterButtonTitle, for: .normal)
+//        btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
+//        btn.backgroundColor = Constants.Colors.buttonActiveColor
+//        btn.layer.cornerRadius = Constants.Constraint.cornerRadius
+//        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
+//        btn.addTarget(self, action: #selector(enterButtonTapped), for: .touchUpInside)
+//        return btn
+//    }()
     
     private let registrButton: UIButton = {
         let btn = UIButton(type: .system)
@@ -56,10 +56,10 @@ final class MainCoordinateViewController: UIViewController {
         presenter?.pushMainView()
     }
 
-    //MARK: - Enter Button Tapped
-    @objc private func enterButtonTapped() {
-        presenter?.pushAuthVC()
-    }
+//    //MARK: - Enter Button Tapped
+//    @objc private func enterButtonTapped() {
+//        presenter?.pushAuthVC()
+//    }
     
     //MARK: - Registr Button Tapped
     @objc private func registButtonTapped() {
@@ -74,7 +74,7 @@ private extension MainCoordinateViewController {
         
         view.addSubview(backgroungImage)
         view.addSubview(skipButton)
-        view.addSubview(enterButton)
+//        view.addSubview(enterButton)
         view.addSubview(registrButton)
     }
     
@@ -91,16 +91,16 @@ private extension MainCoordinateViewController {
         }
         
         registrButton.snp.makeConstraints { make in
-            make.bottom.equalTo(enterButton.snp.top).inset(-Constants.Constraint.verticalPadding / 1.5)
-            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight)
-        }
-        
-        enterButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
+        
+//        enterButton.snp.makeConstraints { make in
+//            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
+//            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+//            make.height.equalTo(Constants.Constraint.buttonHeight)
+//        }
     }
 }
 

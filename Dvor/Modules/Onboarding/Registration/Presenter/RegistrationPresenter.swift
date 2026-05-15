@@ -62,62 +62,62 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
     
     func signUp(email: String, password: String) {
-        view?.showLoading()
-        firebase.signUp(email: email, password: password) { [weak self] result in
-            guard let self = self else {return}
-            switch result {
-            case .success:
-                // Новый пользователь: отправляем письмо с подтверждением
-                self.firebase.sendEmailVerification { [weak self] sendResult in
-                    guard let self = self else { return }
-                    switch sendResult {
-                    case .success:
-                        self.view?.showSuccess()
-                    case .failure(let error):
-                        self.view?.showError(error.localizedDescription)
-                        self.router?.showAlertWithTitle(error.localizedDescription)
-                    }
-                }
-            case .failure(let error):
-                // Пытаемся войти
-                self.firebase.signIn(email: email, password: password) { [weak self] signInResult in
-                    guard let self = self else { return }
-                    switch signInResult {
-                    case .success:
-                        // Пользователь уже существует: проверяем, верифицирован ли email
-                        self.firebase.reloadUser { [weak self] reloadResult in
-                            guard let self = self else { return }
-                            switch reloadResult {
-                            case .success:
-                                if self.firebase.isEmailVerified {
-                                    // Почта уже подтверждена — просто продолжаем flow без повторной отправки письма
-                                    
-                                    self.view?.showInfoInput()
-                                } else {
-                                    // Почта не подтверждена — отправляем письмо и продолжаем как обычно
-                                    self.firebase.sendEmailVerification { [weak self] sendResult in
-                                        guard let self = self else { return }
-                                        switch sendResult {
-                                        case .success:
-                                            self.view?.showSuccess()
-                                        case .failure(let error):
-                                            self.view?.showError(error.localizedDescription)
-                                            self.router?.showAlertWithTitle(error.localizedDescription)
-                                        }
-                                    }
-                                }
-                            case .failure(let reloadError):
-                                self.view?.showError(reloadError.localizedDescription)
-                                self.router?.showAlertWithTitle(reloadError.localizedDescription)
-                            }
-                        }
-                    case .failure(let signInError):
-                        self.view?.showError(signInError.localizedDescription)
-                        self.router?.showAlertWithTitle(signInError.localizedDescription)
-                    }
-                }
-            }
-        }
+//        view?.showLoading()
+//        firebase.signUp(email: email, password: password) { [weak self] result in
+//            guard let self = self else {return}
+//            switch result {
+//            case .success:
+//                // Новый пользователь: отправляем письмо с подтверждением
+//                self.firebase.sendEmailVerification { [weak self] sendResult in
+//                    guard let self = self else { return }
+//                    switch sendResult {
+//                    case .success:
+//                        self.view?.showSuccess()
+//                    case .failure(let error):
+//                        self.view?.showError(error.localizedDescription)
+//                        self.router?.showAlertWithTitle(error.localizedDescription)
+//                    }
+//                }
+//            case .failure(_):
+//                // Пытаемся войти
+//                self.firebase.signIn(email: email, password: password) { [weak self] signInResult in
+//                    guard let self = self else { return }
+//                    switch signInResult {
+//                    case .success:
+//                        // Пользователь уже существует: проверяем, верифицирован ли email
+//                        self.firebase.reloadUser { [weak self] reloadResult in
+//                            guard let self = self else { return }
+//                            switch reloadResult {
+//                            case .success:
+//                                if self.firebase.isEmailVerified {
+//                                    // Почта уже подтверждена — просто продолжаем flow без повторной отправки письма
+//                                    
+//                                    self.view?.showInfoInput()
+//                                } else {
+//                                    // Почта не подтверждена — отправляем письмо и продолжаем как обычно
+//                                    self.firebase.sendEmailVerification { [weak self] sendResult in
+//                                        guard let self = self else { return }
+//                                        switch sendResult {
+//                                        case .success:
+//                                            self.view?.showSuccess()
+//                                        case .failure(let error):
+//                                            self.view?.showError(error.localizedDescription)
+//                                            self.router?.showAlertWithTitle(error.localizedDescription)
+//                                        }
+//                                    }
+//                                }
+//                            case .failure(let reloadError):
+//                                self.view?.showError(reloadError.localizedDescription)
+//                                self.router?.showAlertWithTitle(reloadError.localizedDescription)
+//                            }
+//                        }
+//                    case .failure(let signInError):
+//                        self.view?.showError(signInError.localizedDescription)
+//                        self.router?.showAlertWithTitle(signInError.localizedDescription)
+//                    }
+//                }
+//            }
+//        }
     }
 
     func checkEmailVerification() {
@@ -202,7 +202,11 @@ final class RegistPresenter: RegistPresenterProtocol {
 
     func completeRegistration(model: RegistrationData) {
         // Используем ID текущего пользователя из Firebase Auth, а не сгенерированный UUID
-        guard let userId = firebase.currentUser?.uid else {
+//        guard let userId = firebase.currentUser?.uid else {
+        
+        firebase.signUp()
+        
+        guard let userId = firebase.currentUserId else {
             router?.showAlertWithTitle("Ошибка: пользователь не авторизован")
             return
         }

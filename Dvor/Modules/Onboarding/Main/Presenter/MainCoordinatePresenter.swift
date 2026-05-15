@@ -3,7 +3,7 @@ import Foundation
 protocol MainCoordinatePresenterProtocol: AnyObject {
     init(router: RouterMainProtocol)
     func pushRegistVC()
-    func pushAuthVC()
+//    func pushAuthVC()
     func pushMainView()
 }
 
@@ -22,9 +22,9 @@ final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
         router?.pushRegistVC()
     }
     
-    func pushAuthVC() {
-        router?.pushAuthVC()
-    }
+//    func pushAuthVC() {
+//        router?.pushAuthVC()
+//    }
     
     deinit {
         print("Auth Presenter deinit")

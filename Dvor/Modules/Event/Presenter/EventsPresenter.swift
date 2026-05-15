@@ -88,7 +88,8 @@ final class EventsPresenter: EventsPresenterProtocol {
                 calendar.isDate($0.date, inSameDayAs: date)
             }
             
-            guard let myID = firebase.currentUser?.uid else { return }
+//            guard let myID = firebase.currentUser?.uid else { return }
+            guard let myID = firebase.currentUserId else { return }
             filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
             lastFilterDate = date
             view?.success(date: title)
@@ -119,7 +120,8 @@ final class EventsPresenter: EventsPresenterProtocol {
             filteredEvents = sortEvents
             view?.success(date: title)
         case .personal:
-            guard let myID = firebase.currentUser?.uid else { return }
+//            guard let myID = firebase.currentUser?.uid else { return }
+            guard let myID = firebase.currentUserId else { return }
             personlaMode = true
             filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
             view?.success(date: title)
@@ -138,7 +140,8 @@ final class EventsPresenter: EventsPresenterProtocol {
         }
         
         // Проверяем, является ли текущий пользователь участником или организатором события
-        guard let currentUserId = firebase.currentUser?.uid else {
+//        guard let currentUserId = firebase.currentUser?.uid else {
+        guard let currentUserId = firebase.currentUserId else {
             router?.showAlertWithTitle("Необходимо войти в систему")
             return
         }
@@ -151,7 +154,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         let isOrganizer = event.orgId == currentUserId
         
         guard isOrganizer else {
-            router?.showAlertWithTitle("Вы не можете удалить это событие, созданное не Вами")
+            router?.showAlertWithTitle("Вы не можете удалить событие, созданное не Вами")
             return
         }
         
@@ -187,7 +190,8 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     //MARK: - Пуш в экран создания события
     func pushCreateEvent() {
-        guard firebase.currentUser?.uid != nil else {
+//        guard firebase.currentUser?.uid != nil else {
+        guard firebase.currentUserId != nil else {
             router?.showAlertWithTitle("Для создания события необходимо зарегестрироваться")
             return
         }
@@ -200,15 +204,26 @@ final class EventsPresenter: EventsPresenterProtocol {
                                   titleActionButton: "Да", handelr: { [weak self] in
             guard let self = self else { return }
             
-            self.firebase.signOut { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success:
-                    self.router?.initialViewController()
-                case .failure(let failure):
-                    self.router?.showAlertWithTitle(failure.localizedDescription)
-                }
+            if let userID = firebase.currentUserId {
+                network?.removeUser(userID: userID, completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success():
+                        self.firebase.signOut { [weak self] result in
+                            guard let self = self else { return }
+                            switch result {
+                            case .success:
+                                self.router?.initialViewController()
+                            case .failure(let failure):
+                                self.router?.showAlertWithTitle(failure.localizedDescription)
+                            }
+                        }
+                    case .failure(let failure):
+                        self.router?.showAlertWithTitle(failure.localizedDescription)
+                    }
+                })
             }
+            
         })
     }
     

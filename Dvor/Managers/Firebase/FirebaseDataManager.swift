@@ -17,6 +17,7 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     //Delete
     func deleteEvent(idEvent: String, completion: @escaping (Result<String, Error>) -> Void)
     func removeUserFromEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void)
+    func removeUser(userID: String, completion: @escaping (Result<Void, Error>) -> Void)
     
     //Update
     func updateUserFollowers()
@@ -261,6 +262,18 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             }
         }
     }
+    
+    func removeUser(userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        database.child(usersPath).child(userID).removeValue { error, _ in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+    
+
 
     //MARK: - Проверка подключения
 //    func checkConnection() {

@@ -14,10 +14,10 @@ final class CreateEventViewController: UIViewController {
     private let navigationBar = SupportNavigationBar(state: .createEvent)
     private let subTitle = UILabel.init(text: "Введите данные")
     private let titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small), textAlignment: .center)
-    private let adressTF = AuthTextFieldView(placeholder: "ул. Любых, д.20, к1, (шк.01)")
+    private let adressTF = AuthTextFieldView(placeholder: "ул. Любых, д.20, к1")
     private let playersTF = AuthTextFieldView(placeholder: "8")
     private let timeTF = AuthTextFieldView(placeholder: "11:22")
-    private let placeTF = AuthTextFieldView(placeholder: "школа 1")
+    private let placeTF = AuthTextFieldView(placeholder: "школа № 29")
     private let nextButton = UIButton.createStandartButton(title: "Создать", target: self, action: #selector(nextButtonTapped))
     
     init(date: Date) {

@@ -71,7 +71,8 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
         
-        guard let idUser = firebase.currentUser?.uid else {
+//        guard let idUser = firebase.currentUser?.uid else {
+        guard let idUser = firebase.currentUserId else {
             router?.showAlertWithTitle("Добавьте аккаунт")
             return
         }
@@ -102,7 +103,8 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
         
-        guard let idUser = firebase.currentUser?.uid else {
+//        guard let idUser = firebase.currentUser?.uid else {
+        guard let idUser = firebase.currentUserId else {
             router?.showAlertWithTitle("Добавьте аккаунт")
             return
         }

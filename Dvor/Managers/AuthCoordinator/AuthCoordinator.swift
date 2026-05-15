@@ -29,7 +29,8 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     
     // MARK: - Start
     func start() {
-        showPhoneInput()
+//        showPhoneInput()
+        showInfoInput()
     }
     
     // MARK: - Flow Methods
@@ -69,7 +70,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         let vc = InfoInputViewController(presenter: presenter)
         vc.setInfoForNavigationView(model: .info)
         vc.configureEnadle(false)
-        vc.hideBackButton(true)
+//        vc.hideBackButton(true)
         vc.onNext = { [weak self] name, surname, dateBD in
             self?.registrationData.name = name
             self?.registrationData.surname = surname

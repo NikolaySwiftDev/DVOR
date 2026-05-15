@@ -25,6 +25,11 @@ final class EnterEmailViewController: BaseRegistrationViewController {
         setupTextField()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        hideLoading()
+    }
+    
     //MARK: - Setup Layout
     private func setupLayout() {
         view.backgroundColor = Constants.Colors.backgroungColor

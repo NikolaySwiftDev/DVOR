@@ -21,7 +21,8 @@ protocol BuilderProtocol: AnyObject {
 class Builder: BuilderProtocol {
 
     var registrationCoordinator: RegistrationCoordinator?
-    private let firebase = FirebaseAuthManager()
+//    private let firebase = FirebaseAuthManager()
+    private let firebase = MockFirebaseAuthManager()
 
     //MARK: - Tab bar Builder
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController {
@@ -95,7 +96,7 @@ class Builder: BuilderProtocol {
     //MARK: -  Auth Builder
     func createAuthVC(router: RouterMainProtocol) -> UIViewController {
         let view = AuthViewController()
-        let firebase = FirebaseAuthManager()
+        let firebase = MockFirebaseAuthManager()
         let presenter = AuthPresenter(router: router, firebase: firebase)
         view.presenter = presenter
         return view

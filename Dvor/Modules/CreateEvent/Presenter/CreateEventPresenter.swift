@@ -50,7 +50,8 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     
     //MARK: - Записсь события в БД
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String) {
-        guard let orgID = firebase.currentUser?.uid else {
+//        guard let orgID = firebase.currentUser?.uid else {
+        guard let orgID = firebase.currentUserId else {
             router?.showAlertWithTitle("Зарегистрируйтесь")
             return
         }

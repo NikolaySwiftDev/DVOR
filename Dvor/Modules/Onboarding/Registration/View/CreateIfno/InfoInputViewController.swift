@@ -9,8 +9,8 @@ final class InfoInputViewController: BaseRegistrationViewController {
     private var dateBD: Date? = nil
     
     //MARK: - UI
-    private let nameTF = AuthTextFieldView(placeholder: "Имя")
-    private let surnameTF = AuthTextFieldView(placeholder: "Фамилия")
+    private let nameTF = AuthTextFieldView(placeholder: "Никнейм")
+//    private let surnameTF = AuthTextFieldView(placeholder: "Фамилия")
     private let dateTF = AuthTextFieldView(placeholder: "ДД/ММ/ГГГГ")
 
     //MARK: - Life cycle
@@ -22,14 +22,14 @@ final class InfoInputViewController: BaseRegistrationViewController {
 
     //MARK: - Next Button Action
     override func nextButtonTapped() {
-        guard name != "", surname != "", let date = dateBD else { return }
+        guard name != "", /*surname != "",*/ let date = dateBD else { return }
         print(date)
         onNext?(name, surname, date)
     }
     
     //MARK: - Check Valid Button
     private func checkValidButton() -> Bool {
-        guard name != "", surname != "",  dateBD != nil else { return false }
+        guard name != "", /*surname != "", */ dateBD != nil else { return false }
         return true
     }
 }
@@ -76,9 +76,9 @@ private extension InfoInputViewController {
         nameTF.textField.tag = 0
         nameTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
-        surnameTF.textField.delegate = self
-        surnameTF.textField.tag = 1
-        surnameTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+//        surnameTF.textField.delegate = self
+//        surnameTF.textField.tag = 1
+//        surnameTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         dateTF.textField.delegate = self
         dateTF.textField.tag = 2
@@ -94,10 +94,10 @@ private extension InfoInputViewController {
             name = text
             configureEnadle(checkValidButton())
             checkTFIsNotEmpty(text: text, tf: nameTF)
-        case 1:
-            surname = text
-            configureEnadle(checkValidButton())
-            checkTFIsNotEmpty(text: text, tf: surnameTF)
+//        case 1:
+//            surname = text
+//            configureEnadle(checkValidButton())
+//            checkTFIsNotEmpty(text: text, tf: surnameTF)
         case 2:
             let formattedText = text.formattedAsBirthDate()
             if textField.text != formattedText {
@@ -121,11 +121,11 @@ private extension InfoInputViewController {
     //MARK: - Setup Layout
     private func setupLayout() {
         
-        let nameView = createTFView(text: "Имя", tf: nameTF)
-        let surnameView = createTFView(text: "Фамилия", tf: surnameTF)
+        let nameView = createTFView(text: "Никнейм", tf: nameTF)
+//        let surnameView = createTFView(text: "Фамилия", tf: surnameTF)
         let dateBDView = createTFView(text: "Дата рождения", tf: dateTF)
         
-        let stack = UIStackView(arrangedSubviews: [nameView, surnameView])
+        let stack = UIStackView(arrangedSubviews: [nameView/*, surnameView*/])
         stack.axis = .horizontal
         stack.spacing = 10
         stack.distribution = .fillEqually

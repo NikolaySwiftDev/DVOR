@@ -41,7 +41,8 @@ class Router: RouterMainProtocol {
 
     var navigationController: UINavigationController
     var builder: BuilderProtocol?
-    private let firebase = FirebaseAuthManager()
+//    private let firebase = FirebaseAuthManager()
+    private let firebase = MockFirebaseAuthManager()
     
     init(navigationController: UINavigationController,
          builder: BuilderProtocol) {
