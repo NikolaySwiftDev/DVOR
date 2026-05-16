@@ -5,7 +5,7 @@ struct UserModel: Codable {
     let image: Data?
     let name: String
     let surname: String
-    let dateBirthday: Date
+    let dateBirthday: Date?
     let mobile: String
     let experience: String
     let city: String
@@ -32,7 +32,7 @@ struct UserModel: Codable {
         image: Data? = nil,
         name: String,
         surname: String,
-        dateBirthday: Date,
+        dateBirthday: Date? = nil,
         mobile: String,
         experience: String,
         city: String,
@@ -79,7 +79,7 @@ struct UserModel: Codable {
             "image": image?.base64EncodedString() ?? "", // Конвертируем Data в Base64
             "name": name,
             "surname": surname,
-            "dateBirthday": dateBirthday.timeIntervalSince1970, // Дата в timestamp
+            "dateBirthday": dateBirthday?.timeIntervalSince1970 ?? 0,
             "mobile": mobile,
             "experience": experience,
             "city": city,
@@ -150,10 +150,11 @@ extension UserModel {
     }
     
     // Возраст пользователя
-    var age: Int {
+    var age: Int? {
+        guard let date = dateBirthday else { return nil }
         let calendar = Calendar.current
         let now = Date()
-        let ageComponents = calendar.dateComponents([.year], from: dateBirthday, to: now)
+        let ageComponents = calendar.dateComponents([.year], from: date, to: now)
         return ageComponents.year ?? 0
     }
 }

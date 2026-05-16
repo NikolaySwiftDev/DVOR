@@ -3,7 +3,7 @@ import UIKit
 final class InfoInputViewController: BaseRegistrationViewController {
     
     //MARK: - Properties
-    var onNext: ((String, String, Date) -> Void)?
+    var onNext: ((String, String, Date?) -> Void)?
     private var name = ""
     private var surname = ""
     private var dateBD: Date? = nil
@@ -11,7 +11,7 @@ final class InfoInputViewController: BaseRegistrationViewController {
     //MARK: - UI
     private let nameTF = AuthTextFieldView(placeholder: "Никнейм")
 //    private let surnameTF = AuthTextFieldView(placeholder: "Фамилия")
-    private let dateTF = AuthTextFieldView(placeholder: "ДД/ММ/ГГГГ")
+//    private let dateTF = AuthTextFieldView(placeholder: "ДД/ММ/ГГГГ")
 
     //MARK: - Life cycle
     override func viewDidLoad() {
@@ -22,14 +22,14 @@ final class InfoInputViewController: BaseRegistrationViewController {
 
     //MARK: - Next Button Action
     override func nextButtonTapped() {
-        guard name != "", /*surname != "",*/ let date = dateBD else { return }
-        print(date)
-        onNext?(name, surname, date)
+        guard name != "" /*,surname != "", let date = dateBD*/ else { return }
+//        print(date)
+        onNext?(name, surname, dateBD)
     }
     
     //MARK: - Check Valid Button
     private func checkValidButton() -> Bool {
-        guard name != "", /*surname != "", */ dateBD != nil else { return false }
+        guard name != ""/*, surname != "",  dateBD != nil*/ else { return false }
         return true
     }
 }
@@ -80,10 +80,10 @@ private extension InfoInputViewController {
 //        surnameTF.textField.tag = 1
 //        surnameTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
-        dateTF.textField.delegate = self
-        dateTF.textField.tag = 2
-        dateTF.textField.keyboardType = .numberPad
-        dateTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+//        dateTF.textField.delegate = self
+//        dateTF.textField.tag = 2
+//        dateTF.textField.keyboardType = .numberPad
+//        dateTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
@@ -98,20 +98,20 @@ private extension InfoInputViewController {
 //            surname = text
 //            configureEnadle(checkValidButton())
 //            checkTFIsNotEmpty(text: text, tf: surnameTF)
-        case 2:
-            let formattedText = text.formattedAsBirthDate()
-            if textField.text != formattedText {
-                textField.text = formattedText
-            }
-            
-            if formattedText.count == 10 {
-                parseBirthDate(formattedText)
-            } else {
-                dateBD = nil
-            }
-            
-            configureEnadle(checkValidButton())
-            checkTFIsNotEmpty(text: formattedText, tf: dateTF)
+//        case 2:
+//            let formattedText = text.formattedAsBirthDate()
+//            if textField.text != formattedText {
+//                textField.text = formattedText
+//            }
+//            
+//            if formattedText.count == 10 {
+//                parseBirthDate(formattedText)
+//            } else {
+//                dateBD = nil
+//            }
+//            
+//            configureEnadle(checkValidButton())
+//            checkTFIsNotEmpty(text: formattedText, tf: dateTF)
             
         default:
             break
@@ -123,7 +123,7 @@ private extension InfoInputViewController {
         
         let nameView = createTFView(text: "Никнейм", tf: nameTF)
 //        let surnameView = createTFView(text: "Фамилия", tf: surnameTF)
-        let dateBDView = createTFView(text: "Дата рождения", tf: dateTF)
+//        let dateBDView = createTFView(text: "Дата рождения", tf: dateTF)
         
         let stack = UIStackView(arrangedSubviews: [nameView/*, surnameView*/])
         stack.axis = .horizontal
@@ -138,30 +138,30 @@ private extension InfoInputViewController {
             make.height.equalTo(Constants.Constraint.buttonHeight * 2)
         }
         
-        view.addSubview(dateBDView)
-        dateBDView.snp.makeConstraints { make in
-            make.top.equalTo(stack.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
-            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
-        }
+//        view.addSubview(dateBDView)
+//        dateBDView.snp.makeConstraints { make in
+//            make.top.equalTo(stack.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+//            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+//            make.height.equalTo(Constants.Constraint.buttonHeight * 2)
+//        }
     }
     
     //MARK: - Parse Birth Date from string
-    private func parseBirthDate(_ dateString: String) {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy"
-        formatter.locale = Locale(identifier: "ru_RU")
-        
-        guard let date = formatter.date(from: dateString) else {
-            dateTF.layer.borderColor = UIColor.red.cgColor
-            return
-        }
-        
-        if date.isAdult() {
-            dateBD = date
-            dateTF.layer.borderColor = Constants.Colors.layerColor.cgColor
-        } else {
-            dateTF.layer.borderColor = UIColor.red.cgColor
-        }
-    }
+//    private func parseBirthDate(_ dateString: String) {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "dd.MM.yyyy"
+//        formatter.locale = Locale(identifier: "ru_RU")
+//        
+//        guard let date = formatter.date(from: dateString) else {
+//            dateTF.layer.borderColor = UIColor.red.cgColor
+//            return
+//        }
+//        
+//        if date.isAdult() {
+//            dateBD = date
+//            dateTF.layer.borderColor = Constants.Colors.layerColor.cgColor
+//        } else {
+//            dateTF.layer.borderColor = UIColor.red.cgColor
+//        }
+//    }
 }

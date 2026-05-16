@@ -222,6 +222,16 @@ final class EventsPresenter: EventsPresenterProtocol {
                         self.router?.showAlertWithTitle(failure.localizedDescription)
                     }
                 })
+            } else {
+                self.firebase.signOut { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success:
+                        self.router?.initialViewController()
+                    case .failure(let failure):
+                        self.router?.showAlertWithTitle(failure.localizedDescription)
+                    }
+                }
             }
             
         })

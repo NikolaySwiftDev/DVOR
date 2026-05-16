@@ -158,7 +158,7 @@ struct RegistrationData: Codable {
     var email: String = ""
     var name: String = "Name"
     var surname: String = "Surname"
-    var dateBD: Date = Date()
+    var dateBD: Date?
     var position: String = "Вратарь"
     var experience: String = "1 год"
     var image: Data?

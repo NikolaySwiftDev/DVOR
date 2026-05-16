@@ -58,7 +58,7 @@ final class UserCardView: UIView {
     }()
     
     private let cityInfoView = InfoRowView(icon: "location.fill", title: "Город")
-    private let ageInfoView = InfoRowView(icon: "calendar", title: "Возраст")
+//    private let ageInfoView = InfoRowView(icon: "calendar", title: "Возраст")
     private let experienceInfoView = InfoRowView(icon: "sportscourt.fill", title: "Опыт")
 
     
@@ -113,7 +113,7 @@ final class UserCardView: UIView {
         
         // Personal info
         cityInfoView.setValue(model.city)
-        ageInfoView.setValue("\(model.age) лет")
+//        ageInfoView.setValue("\(model.age) лет")
         experienceInfoView.setValue(model.experience)
         
         // Club
@@ -133,7 +133,7 @@ final class UserCardView: UIView {
         scrollView.addSubview(contentView)
         
         [avatarImageView, fullNameLabel, positionLabel, statsStackView,
-         separatorView1, infoTitleLabel, cityInfoView, ageInfoView,
+         separatorView1, infoTitleLabel, cityInfoView, /*ageInfoView,*/
          experienceInfoView,
          separatorView2, clubTitleLabel, clubLabel].forEach {
             contentView.addSubview($0)
@@ -189,13 +189,13 @@ final class UserCardView: UIView {
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
         
-        ageInfoView.snp.makeConstraints { make in
-            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
-            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-        }
+//        ageInfoView.snp.makeConstraints { make in
+//            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
+//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+//        }
         
         experienceInfoView.snp.makeConstraints { make in
-            make.top.equalTo(ageInfoView.snp.bottom).offset(12)
+            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
         
