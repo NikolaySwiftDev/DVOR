@@ -135,7 +135,7 @@ final class UserCardView: UIView {
         [avatarImageView, fullNameLabel, positionLabel, statsStackView,
          separatorView1, infoTitleLabel, /*cityInfoView,*/ /*ageInfoView,*/
          experienceInfoView,
-         separatorView2, /*clubTitleLabel,*/ /*clubLabel*/].forEach {
+         separatorView2].forEach {
             contentView.addSubview($0)
         }
     }
@@ -183,17 +183,7 @@ final class UserCardView: UIView {
             make.top.equalTo(separatorView1.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
-        
-//        cityInfoView.snp.makeConstraints { make in
-//            make.top.equalTo(infoTitleLabel.snp.bottom).offset(16)
-//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-//        }
-        
-//        ageInfoView.snp.makeConstraints { make in
-//            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
-//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-//        }
-        
+                
         experienceInfoView.snp.makeConstraints { make in
             make.top.equalTo(infoTitleLabel.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
@@ -205,17 +195,6 @@ final class UserCardView: UIView {
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
             make.height.equalTo(1)
         }
-        
-//        clubTitleLabel.snp.makeConstraints { make in
-//            make.top.equalTo(separatorView2.snp.bottom).offset(20)
-//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-//        }
-        
-//        clubLabel.snp.makeConstraints { make in
-//            make.top.equalTo(separatorView2.snp.bottom).offset(8)
-//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-//            make.bottom.equalToSuperview().offset(-UserCardViewConstan.topPadding)
-//        }
     }
     
     private func setupStats(with stats: UserModel) {

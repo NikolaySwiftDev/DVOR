@@ -53,12 +53,12 @@ final class InfoView: UIView {
     private let titleTime = UILabel.init(font: .poppins(weight: .semiBold, size: .small))
     
     // People Count Section
-    private let peopleSectionView = UIView()
-    private let peopleIconLabel = UILabel(text: "👥", font: .systemFont(ofSize: 20))
-    private let peopleStackView = UIStackView()
-    private let peopleTitleLabel = UILabel(text: "Участники", 
-                                           font: .poppins(weight: .semiBold, size: .mid))
-    private let titleCountPeop = UILabel()
+//    private let peopleSectionView = UIView()
+//    private let peopleIconLabel = UILabel(text: "👥", font: .systemFont(ofSize: 20))
+//    private let peopleStackView = UIStackView()
+//    private let peopleTitleLabel = UILabel(text: "Участники", 
+//                                           font: .poppins(weight: .semiBold, size: .mid))
+//    private let titleCountPeop = UILabel()
     
 //    private let titlePrice = UILabel.init()
 //    private let titleTimeGame = UILabel.init()
@@ -82,7 +82,7 @@ final class InfoView: UIView {
         titleTime.text = model.formattedTime
 //        titlePrice.text = model.priceString
 //        titleTimeGame.text = model.formattedTimeGame
-        titleCountPeop.text = model.peopleAllCount
+//        titleCountPeop.text = model.peopleAllCount
         
         // Apply accessibility
         applyAccessibility()
@@ -131,13 +131,13 @@ private extension InfoView {
         dateTimeStackView.addArrangedSubview(timeContainerView)
         
         // Setup People Section
-        peopleSectionView.addSubview(peopleIconLabel)
-        peopleSectionView.addSubview(peopleStackView)
-        peopleStackView.addArrangedSubview(peopleTitleLabel)
-        peopleStackView.addArrangedSubview(titleCountPeop)
+//        peopleSectionView.addSubview(peopleIconLabel)
+//        peopleSectionView.addSubview(peopleStackView)
+//        peopleStackView.addArrangedSubview(peopleTitleLabel)
+//        peopleStackView.addArrangedSubview(titleCountPeop)
         
         // Add all sections to main stack
-        [titleEvent, addressSectionView, placeSectionView, dateTimeSectionView, peopleSectionView].forEach { view in
+        [titleEvent, addressSectionView, placeSectionView, dateTimeSectionView, /*peopleSectionView*/].forEach { view in
             stackView.addArrangedSubview(view)
         }
     }
@@ -156,7 +156,7 @@ private extension InfoView {
         configureSectionView(addressSectionView)
         configureSectionView(placeSectionView)
         configureSectionView(dateTimeSectionView)
-        configureSectionView(peopleSectionView)
+//        configureSectionView(peopleSectionView)
         
         // Address Stack
         configureVerticalStack(addressStackView, spacing: 4)
@@ -185,9 +185,9 @@ private extension InfoView {
         configureLabel(titleTime, alpha: 1.0)
         
         // People Stack
-        configureVerticalStack(peopleStackView, spacing: 4)
-        configureLabel(peopleTitleLabel, alpha: 0.7)
-        configureLabel(titleCountPeop, alpha: 1.0)
+//        configureVerticalStack(peopleStackView, spacing: 4)
+//        configureLabel(peopleTitleLabel, alpha: 0.7)
+//        configureLabel(titleCountPeop, alpha: 1.0)
 
         // Map Button
         mapAdress.setTitle("Показать на карте", for: .normal)
@@ -231,8 +231,8 @@ private extension InfoView {
         titleDate.accessibilityLabel = "Дата: \(titleDate.text ?? "")"
         titleTime.accessibilityLabel = "Время: \(titleTime.text ?? "")"
         
-        peopleSectionView.isAccessibilityElement = false
-        titleCountPeop.accessibilityLabel = "Участники: \(titleCountPeop.text ?? "")"
+//        peopleSectionView.isAccessibilityElement = false
+//        titleCountPeop.accessibilityLabel = "Участники: \(titleCountPeop.text ?? "")"
         
         mapAdress.accessibilityLabel = "Показать на карте"
         mapAdress.accessibilityHint = "Откроет карту с местоположением события"
@@ -305,16 +305,16 @@ private extension InfoView {
         }
         
         // People Section Constraints
-        peopleIconLabel.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview().inset(InfoViewConstants.sectionPadding)
-            make.size.equalTo(InfoViewConstants.iconSize)
-        }
-        
-        peopleStackView.snp.makeConstraints { make in
-            make.leading.equalTo(peopleIconLabel.snp.trailing).offset(InfoViewConstants.iconSpacing)
-            make.trailing.equalToSuperview().inset(InfoViewConstants.sectionPadding)
-            make.top.bottom.equalToSuperview().inset(InfoViewConstants.sectionPadding)
-        }
+//        peopleIconLabel.snp.makeConstraints { make in
+//            make.leading.top.equalToSuperview().inset(InfoViewConstants.sectionPadding)
+//            make.size.equalTo(InfoViewConstants.iconSize)
+//        }
+//        
+//        peopleStackView.snp.makeConstraints { make in
+//            make.leading.equalTo(peopleIconLabel.snp.trailing).offset(InfoViewConstants.iconSpacing)
+//            make.trailing.equalToSuperview().inset(InfoViewConstants.sectionPadding)
+//            make.top.bottom.equalToSuperview().inset(InfoViewConstants.sectionPadding)
+//        }
     }
 }
 

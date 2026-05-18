@@ -4,7 +4,7 @@ final class DetailViewController: UIViewController {
         
     //MARK: - Properties
     var presenter: DetailPresenterProtocol?
-    var details: DetailModel
+    var detail: DetailModel
     var viewPosition: DetailSegmentViewPosition = .info
 
     private let mapImage = UIImageView(systemImage: "photo.artframe")
@@ -36,7 +36,7 @@ final class DetailViewController: UIViewController {
     }()
 
 
-    private lazy var titleAdress = UILabel(text: details.address,
+    private lazy var titleAdress = UILabel(text: detail.address,
                                            font: .poppins(weight: .medium, size: .mid),
                                            textColor: DetailConstants.textColor,
                                            textAlignment: .center)
@@ -46,7 +46,7 @@ final class DetailViewController: UIViewController {
     
     //MARK: - Init
     init(details: DetailModel) {
-        self.details = details
+        self.detail = details
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,7 +60,7 @@ final class DetailViewController: UIViewController {
         setupView()
         configure()
         setupContraints()
-        presenter?.fetchAllUsers(usersID: details.users, orgID: details.orgID)
+        presenter?.fetchAllUsers(usersID: detail.users, orgID: detail.orgID)
     }
     
     //MARK: - Back Button Tapped
@@ -70,17 +70,17 @@ final class DetailViewController: UIViewController {
 
     //MARK: - Share Button Tapped
     @objc private func shareButtonTapped() {
-        presenter?.shareEvent(eventID: details.id)
+        presenter?.shareEvent(eventID: detail.id)
     }
     
     //MARK: - Add User Button Tapped
     @objc private func addUserButtonTapped() {
-        presenter?.addUserToEvent(idEvent: details.id)
+        presenter?.addUserToEvent(idEvent: detail.id)
     }
     
     //MARK: - Remove User Button Tapped
     @objc private func removeUserButtonTapped() {
-        presenter?.removeUserFromEvent(idEvent: details.id)
+        presenter?.removeUserFromEvent(idEvent: detail.id)
     }
  
     deinit {
@@ -91,12 +91,12 @@ final class DetailViewController: UIViewController {
 //MARK: - Detail Protocol
 extension DetailViewController: DetailProtocol {
     func updateUsers(model: [String]) {
-        presenter?.fetchAllUsers(usersID: model, orgID: details.orgID)
+        presenter?.fetchAllUsers(usersID: model, orgID: detail.orgID)
     }
     
     func success(users: [UserModel], org: OrganizatorModel) {
         hideLoadingView(with: view, tag: DetailConstants.numberView, state: .delete)
-        segmentView.configureAllViews(detail: details, users: users, org: org)
+        segmentView.configureAllViews(detail: detail, users: users, org: org)
     }
     
     func load() {
@@ -128,7 +128,7 @@ extension DetailViewController: UserCellProtocol {
 //MARK: - Detail Info Protocol
 extension DetailViewController: InfoViewProtocol {
     func mapButtonTapped() {
-        presenter?.showLocationOnMap(location: details.address)
+        presenter?.showLocationOnMap(location: detail.address)
     }
 }
 
