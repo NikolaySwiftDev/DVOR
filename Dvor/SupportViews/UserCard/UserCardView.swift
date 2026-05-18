@@ -57,7 +57,7 @@ final class UserCardView: UIView {
         return label
     }()
     
-    private let cityInfoView = InfoRowView(icon: "location.fill", title: "Город")
+//    private let cityInfoView = InfoRowView(icon: "location.fill", title: "Город")
 //    private let ageInfoView = InfoRowView(icon: "calendar", title: "Возраст")
     private let experienceInfoView = InfoRowView(icon: "sportscourt.fill", title: "Опыт")
 
@@ -69,20 +69,20 @@ final class UserCardView: UIView {
     }()
     
     // Club Section
-    private let clubTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Клуб"
-        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
-        label.textColor = UserCardViewConstan.textColor
-        return label
-    }()
+//    private let clubTitleLabel: UILabel = {
+//        let label = UILabel()
+//        label.text = "Клуб"
+//        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
+//        label.textColor = UserCardViewConstan.textColor
+//        return label
+//    }()
     
-    private let clubLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
-        label.textColor = UserCardViewConstan.secondTextColor
-        return label
-    }()
+//    private let clubLabel: UILabel = {
+//        let label = UILabel()
+//        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
+//        label.textColor = UserCardViewConstan.secondTextColor
+//        return label
+//    }()
     
     // MARK: - Init
     override init(frame: CGRect) {
@@ -112,12 +112,12 @@ final class UserCardView: UIView {
         setupStats(with: model)
         
         // Personal info
-        cityInfoView.setValue(model.city)
+//        cityInfoView.setValue(model.city)
 //        ageInfoView.setValue("\(model.age) лет")
         experienceInfoView.setValue(model.experience)
         
         // Club
-        clubLabel.text = model.club.isEmpty ? "Не указан" : model.club
+//        clubLabel.text = model.club.isEmpty ? "Не указан" : model.club
     }
     
     // MARK: - Private Methods
@@ -133,9 +133,9 @@ final class UserCardView: UIView {
         scrollView.addSubview(contentView)
         
         [avatarImageView, fullNameLabel, positionLabel, statsStackView,
-         separatorView1, infoTitleLabel, cityInfoView, /*ageInfoView,*/
+         separatorView1, infoTitleLabel, /*cityInfoView,*/ /*ageInfoView,*/
          experienceInfoView,
-         separatorView2, clubTitleLabel, clubLabel].forEach {
+         separatorView2, /*clubTitleLabel,*/ /*clubLabel*/].forEach {
             contentView.addSubview($0)
         }
     }
@@ -184,10 +184,10 @@ final class UserCardView: UIView {
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
         
-        cityInfoView.snp.makeConstraints { make in
-            make.top.equalTo(infoTitleLabel.snp.bottom).offset(16)
-            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-        }
+//        cityInfoView.snp.makeConstraints { make in
+//            make.top.equalTo(infoTitleLabel.snp.bottom).offset(16)
+//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+//        }
         
 //        ageInfoView.snp.makeConstraints { make in
 //            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
@@ -195,7 +195,7 @@ final class UserCardView: UIView {
 //        }
         
         experienceInfoView.snp.makeConstraints { make in
-            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
+            make.top.equalTo(infoTitleLabel.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
         
@@ -206,16 +206,16 @@ final class UserCardView: UIView {
             make.height.equalTo(1)
         }
         
-        clubTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(separatorView2.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-        }
+//        clubTitleLabel.snp.makeConstraints { make in
+//            make.top.equalTo(separatorView2.snp.bottom).offset(20)
+//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+//        }
         
-        clubLabel.snp.makeConstraints { make in
-            make.top.equalTo(clubTitleLabel.snp.bottom).offset(8)
-            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
-            make.bottom.equalToSuperview().offset(-UserCardViewConstan.topPadding)
-        }
+//        clubLabel.snp.makeConstraints { make in
+//            make.top.equalTo(separatorView2.snp.bottom).offset(8)
+//            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+//            make.bottom.equalToSuperview().offset(-UserCardViewConstan.topPadding)
+//        }
     }
     
     private func setupStats(with stats: UserModel) {

@@ -39,14 +39,6 @@ class BaseViewController: UIViewController {
 }
 
 extension BaseViewController: CustomNavigationBarDelegate {
-    @objc open func didTapSignOutButton() {
-        print(" Кнопка нажата (по умолчанию)")
-    }
-
-    @objc open func didTapBellButton() {
-        print(" Кнопка нажата (по умолчанию)")
-    }
-
     @objc open func didTapPersonButton() {
         print(" Кнопка нажата (по умолчанию)")
     }

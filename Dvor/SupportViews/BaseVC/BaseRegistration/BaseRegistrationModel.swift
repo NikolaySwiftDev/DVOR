@@ -2,7 +2,7 @@
 import Foundation
 
 enum BaseRegistPosition {
-    case email, info, experience, avatar, geo, pushNotif
+    case email, info, experience, avatar, /*geo,*/ pushNotif
     
     var titleMain: String {
         switch self {
@@ -14,8 +14,8 @@ enum BaseRegistPosition {
             "Профиль"
         case .avatar:
             "Аватар"
-        case .geo:
-            "Город"
+//        case .geo:
+//            "Город"
         case .pushNotif:
             "Включите уведомления"
         }
@@ -31,8 +31,8 @@ enum BaseRegistPosition {
             "Выберите опыт игры и вашу позицию"
         case .avatar:
             "Выберите фотографию профиля"
-        case .geo:
-            "Выберите город в котором будете играть"
+//        case .geo:
+//            "Выберите город в котором будете играть"
         case .pushNotif:
             "Приложение ДВОР запрашивает доступ на отправку вам уведомлений"
         }
@@ -43,15 +43,15 @@ enum BaseRegistPosition {
         case .email:
             ""
         case .info:
-            "1/5"
+            "1/4"
         case .experience:
-            "2/5"
+            "2/4"
         case .avatar:
-            "3/5"
-        case .geo:
-            "4/5"
+            "3/4"
+//        case .geo:
+//            "4/5"
         case .pushNotif:
-            "5/5"
+            "4/4"
         }
     }
     
@@ -65,8 +65,8 @@ enum BaseRegistPosition {
             0.4
         case .avatar:
             0.6
-        case .geo:
-            0.8
+//        case .geo:
+//            0.8
         case .pushNotif:
             1
         }

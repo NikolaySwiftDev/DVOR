@@ -77,7 +77,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.registrationData.dateBD = dateBD
             self?.showUserDataInput()
         }
-        presenter?.setViewController(vc)
+        presenter?.pushViewController(vc)
     }
     
     func showUserDataInput() {
@@ -102,7 +102,8 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             if let imageData = avatar?.pngData() {
                 self?.registrationData.image = imageData
             }
-            self?.chooseCity()
+//            self?.chooseCity()
+            self?.acceptNotification()
         }
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
@@ -110,16 +111,16 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         presenter?.pushViewController(vc)
     }
     
-    func chooseCity() {
-        let vc = CityViewController(presenter: presenter)
-        vc.setInfoForNavigationView(model: .geo)
-        vc.configureEnadle(false)
-        vc.onNext = { [weak self] city in
-            self?.registrationData.city = city
-            self?.acceptNotification()
-        }
-        presenter?.pushViewController(vc)
-    }
+//    func chooseCity() {
+//        let vc = CityViewController(presenter: presenter)
+//        vc.setInfoForNavigationView(model: .geo)
+//        vc.configureEnadle(false)
+//        vc.onNext = { [weak self] city in
+//            self?.registrationData.city = city
+//            self?.acceptNotification()
+//        }
+//        presenter?.pushViewController(vc)
+//    }
     
     func acceptNotification() {
         let vc = NotificationViewController(presenter: presenter)
@@ -162,5 +163,5 @@ struct RegistrationData: Codable {
     var position: String = "Вратарь"
     var experience: String = "1 год"
     var image: Data?
-    var city: String = "Санкт-Петербург"
+    var city: String = ""
 }

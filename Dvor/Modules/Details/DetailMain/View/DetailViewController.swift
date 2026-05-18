@@ -128,7 +128,7 @@ extension DetailViewController: UserCellProtocol {
 //MARK: - Detail Info Protocol
 extension DetailViewController: InfoViewProtocol {
     func mapButtonTapped() {
-        presenter?.showLocationOnMap(location: details.fullAdress)
+        presenter?.showLocationOnMap(location: details.address)
     }
 }
 

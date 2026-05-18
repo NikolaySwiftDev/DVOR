@@ -40,31 +40,20 @@ final class EventsViewController: BaseViewController {
         presenter?.fetchEvents()
     }
   
-    //MARK: - Notification Button Action
-//    override func didTapBellButton() {
-//        presenter?.createNewEvent()
-//    }
-    
-    //MARK: - Person Button Action
+
+    //MARK: - Buttons Action
     override func didTapPersonButton() {
         presenter?.pushProfileVC()
-    }
-    
-    override func didTapSignOutButton() {
-        presenter?.signOut()
     }
     
     override func didTapAddTapped() {
         presenter?.pushCreateEvent()
     }
     
-    //MARK: - Fetch Button Action
     @objc private func fetchButtonTapped() {
-//        filterView.showViewWithAnimation(isHidden: false)
         presenter?.fetchEvents()
     }
     
-    //MARK: - Filter Button Action
     @objc private func sortButtonTapped() {
         sortView.showViewWithAnimation(isHidden: false)
     }
@@ -78,7 +67,7 @@ final class EventsViewController: BaseViewController {
 // MARK: - Home Protocol
 extension EventsViewController: EventsProtocol {
     func success(date: String) {
-        titleDate.text = "\(date), Санкт-Петербург"
+        titleDate.text = "\(date)"
         
         guard  let model = presenter?.filteredEvents, model.count > 0 else {
             eventsTableView.events = []

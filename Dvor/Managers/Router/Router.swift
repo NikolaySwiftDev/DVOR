@@ -240,17 +240,17 @@ class Router: RouterMainProtocol {
 
         }
         
-        let events = UIAlertAction(title: "Оценка",
-                                   style: .default) {[weak self] _ in
-            guard let self = self else { return }
-            pushRatingVC(model: model)
-        }
+//        let events = UIAlertAction(title: "Оценка",
+//                                   style: .default) {[weak self] _ in
+//            guard let self = self else { return }
+//            pushRatingVC(model: model)
+//        }
         
         let cancel = UIAlertAction(title: "Отмена",
                                    style: .destructive)
         
         alert.addAction(profile)
-        alert.addAction(events)
+//        alert.addAction(events)
         alert.addAction(cancel)
         
         navigationController.present(alert, animated: true)
