@@ -60,7 +60,7 @@ class Router: RouterMainProtocol {
             navigationController.setNavigationBarHidden(true, animated: true)
             
         } else {
-            guard let mainVC = builder?.createMainCoordinateVC(router: self) else { return }
+            guard let mainVC = builder?.createOnboardPageVC(router: self) else { return }
             navigationController.setNavigationBarHidden(true, animated: true)
             navigationController.viewControllers = [mainVC]
         }

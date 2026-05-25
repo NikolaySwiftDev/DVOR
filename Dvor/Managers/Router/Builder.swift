@@ -7,6 +7,7 @@ protocol BuilderProtocol: AnyObject {
     func createRegistrationCoordinator(router: RouterMainProtocol)
     func createAuthVC(router: RouterMainProtocol) -> UIViewController
     func createMainCoordinateVC(router: RouterMainProtocol) -> UIViewController
+    func createOnboardPageVC(router: RouterMainProtocol) -> UIViewController
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
 //    func createDetailUserInfo(router: RouterMainProtocol, model: UserModel) -> UIViewController
@@ -19,6 +20,7 @@ protocol BuilderProtocol: AnyObject {
 }
 
 class Builder: BuilderProtocol {
+
 
     var registrationCoordinator: RegistrationCoordinator?
 //    private let firebase = FirebaseAuthManager()
@@ -88,6 +90,14 @@ class Builder: BuilderProtocol {
     //MARK: -  Main Coordinate Builder
     func createMainCoordinateVC(router: RouterMainProtocol) -> UIViewController {
         let view = MainCoordinateViewController()
+        let presenter = MainCoordinatePresenter(router: router)
+        view.presenter = presenter
+        return view
+    }
+    
+    //MARK: -  Onboard Page Builder
+    func createOnboardPageVC(router: RouterMainProtocol) -> UIViewController {
+        let view = WelcomeOnboardingViewController()
         let presenter = MainCoordinatePresenter(router: router)
         view.presenter = presenter
         return view
