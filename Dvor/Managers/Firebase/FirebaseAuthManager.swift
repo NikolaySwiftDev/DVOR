@@ -98,11 +98,8 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
 
     // MARK: - Protocol Properties
 
-    /// FirebaseAuth.User нельзя создать вручную, поэтому всегда nil в mock-е.
-    /// Везде, где нужен currentUser, используй isAuthorized / isEmailVerified.
     var currentUserId: String? {
         guard isAuthorized else { return nil }
-        // Генерируем UUID один раз при первой авторизации и сохраняем
         if let saved = defaults.string(forKey: Keys.userId) { return saved }
         let newId = UUID().uuidString
         defaults.set(newId, forKey: Keys.userId)
@@ -152,19 +149,4 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
         defaults.removeObject(forKey: Keys.userId)
         completion(.success(()))
     }
-
-    // MARK: - Private
-
-    private func validateEmail(_ email: String) -> Bool {
-        email.range(of: #"^\S+@\S+\.\S+$"#, options: .regularExpression) != nil
-    }
-}
-
-// MARK: - AuthError extension
-
-extension AuthError {
-    /// Сигнал успеха для signUp/signIn, где нельзя вернуть реальный FirebaseAuth.User.
-    /// В ViewModel обрабатывай его как успех:
-    ///   if case .failure(AuthError.mockSuccess) = result { /* treat as success */ }
-    static var mockSuccess: AuthError { .noUser }   // переиспользуем кейс или добавь новый ниже
 }

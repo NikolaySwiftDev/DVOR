@@ -99,8 +99,8 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         vc.setInfoForNavigationView(model: .avatar)
         vc.changeNextButtonView(title: "Пропустить", titleColor: Constants.Colors.textColor)
         vc.onNext = { [weak self] avatar in
-            if let imageData = avatar?.pngData() {
-                self?.registrationData.image = imageData
+            if let image = avatar {
+                self?.registrationData.image = image.jpegData(compressionQuality: 0.3)
             }
 //            self?.chooseCity()
             self?.acceptNotification()

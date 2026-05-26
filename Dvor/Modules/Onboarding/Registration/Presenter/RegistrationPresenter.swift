@@ -156,7 +156,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     
     func pickPhoto() {
         view?.showLoading()
-        photoManager.pickPhoto(from: router, maxSize: SizeLimits.mb3) { [weak self] result in
+        photoManager.pickPhoto(from: router, maxSize: SizeLimits.mb6) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let image):
@@ -173,7 +173,7 @@ final class RegistPresenter: RegistPresenterProtocol {
                     self.router?.showAlertWithTitle(errorMessage)
                 }
                 
-                if error == .sizeExceeded(maxSize: SizeLimits.mb3) {
+                if error == .sizeExceeded(maxSize: SizeLimits.mb6) {
                     let errorMessage = error.errorDescription ?? "Ошибка выбора фото"
                     self.view?.showError(errorMessage)
                     self.router?.showAlertWithTitle(errorMessage)

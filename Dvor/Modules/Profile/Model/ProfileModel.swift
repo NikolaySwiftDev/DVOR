@@ -113,7 +113,6 @@ struct UserModel: Codable {
         
         self.id = id
         
-        // Обрабатываем опциональные поля
         if let imageString = dictionary["image"] as? String, !imageString.isEmpty {
             self.image = Data(base64Encoded: imageString)
         } else {

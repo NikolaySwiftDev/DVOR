@@ -273,20 +273,6 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         }
     }
     
-
-
-    //MARK: - Проверка подключения
-//    func checkConnection() {
-//        let connectedRef = database.database.reference(withPath: ".info/connected")
-//        connectedRef.observe(.value) { snapshot in
-//            if let connected = snapshot.value as? Bool, connected {
-//                print("✅ Connected to Firebase!")
-//            } else {
-//                print("❌ Not connected to Firebase")
-//            }
-//        }
-//    }
-    
     deinit {
         print("Deinit Firebase real data base")
     }
