@@ -4,7 +4,6 @@ import SnapKit
 final class OnboardingPageViewController: UIViewController {
 
     // MARK: - UI
-
     private let emojiLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 72)
@@ -152,7 +151,6 @@ final class WelcomeOnboardingViewController: UIViewController {
         view.addSubview(pageControl)
         view.addSubview(actionButton)
 
-        // PageVC fills between logo and controls
         pageVC.view.snp.makeConstraints { make in
             make.top.equalTo(logoLabel.snp.bottom)
             make.leading.trailing.equalToSuperview()
@@ -249,7 +247,6 @@ extension WelcomeOnboardingViewController: UIPageViewControllerDataSource {
 }
 
 // MARK: - UIPageViewControllerDelegate
-
 extension WelcomeOnboardingViewController: UIPageViewControllerDelegate {
 
     func pageViewController(_ pageViewController: UIPageViewController,
@@ -263,31 +260,3 @@ extension WelcomeOnboardingViewController: UIPageViewControllerDelegate {
     }
 }
 
-
-import UIKit
-
-struct OnboardingPage {
-    let emoji: String
-    let title: String
-    let subtitle: String
-}
-
-extension OnboardingPage {
-    static let pages: [OnboardingPage] = [
-        OnboardingPage(
-            emoji: "⚽️",
-            title: "Твой матч\nв пару кликов",
-            subtitle: "Создавай события, зови друзей\nи находи игроков рядом"
-        ),
-        OnboardingPage(
-            emoji: "🤝",
-            title: "Записывайся\nна чужие игры",
-            subtitle: "Видишь матч — жми «Участвую».\nОрганизатор получит уведомление"
-        ),
-        OnboardingPage(
-            emoji: "🏆",
-            title: "Расти\nкак игрок",
-            subtitle: "После матча оцениваете друг друга.\nСобирай MVP и повышай уровень"
-        )
-    ]
-}
