@@ -140,10 +140,12 @@ class Builder: BuilderProtocol {
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController {
         let view = DetailViewController(details: model)
         let network = FirebaseDataManager()
+        let notification = NotificationManager()
         let presenter = DetailPresenter(view: view,
                                         router: router,
                                         network: network,
-                                        firebase: firebase)
+                                        firebase: firebase,
+                                        notification: notification)
         view.presenter = presenter
         return view
     }

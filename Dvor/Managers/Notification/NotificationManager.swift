@@ -5,14 +5,11 @@ protocol NotificationManagerProtocol: AnyObject {
     func requestAuthorization(completion: @escaping (Bool, Error?) -> Void)
     
     // Создание и отправка уведомлений
-    func scheduleNotification(identifier: String,title: String,body: String,timeInterval: TimeInterval,repeats: Bool)
-    func scheduleNotification(identifier: String,title: String,body: String,date: Date,repeats: Bool )
+    func createNotification(identifier: String, title: String, body: String, date: Date)
     
     // Управление уведомлениями
     func cancelNotification(identifier: String)
-    func cancelAllNotifications()
-    func getPendingNotifications(completion: @escaping ([UNNotificationRequest]) -> Void)
-    
+
     // Проверка статуса разрешений
     func getAuthorizationStatus(completion: @escaping (UNAuthorizationStatus) -> Void)
 }
@@ -34,15 +31,15 @@ final class NotificationManager: NotificationManagerProtocol {
     }
     
     // MARK: - Schedule Notifications
-    func scheduleNotification(
-        identifier: String,
-        title: String,
-        body: String,
-        timeInterval: TimeInterval,
-        repeats: Bool
-    ) {
+    func createNotification(identifier: String, title: String, body: String, date: Date) {
         let content = createNotificationContent(title: title, body: body)
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: repeats)
+        
+        // Отнимаем 1 день и ставим 12:34
+        let dayBefore = Calendar.current.date(byAdding: .day, value: -1, to: date)!
+        let notificationDate = Calendar.current.date(bySettingHour: 13, minute: 10, second: 0, of: dayBefore)!
+        
+        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
         center.add(request) { error in
@@ -50,25 +47,7 @@ final class NotificationManager: NotificationManagerProtocol {
                 print("Error scheduling notification: \(error.localizedDescription)")
             }
         }
-    }
-    
-    func scheduleNotification(
-        identifier: String,
-        title: String,
-        body: String,
-        date: Date,
-        repeats: Bool
-    ) {
-        let content = createNotificationContent(title: title, body: body)
-        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: repeats)
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        
-        center.add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
-            }
-        }
+        print(notificationDate.description)
     }
     
     // MARK: - Manage Notifications

@@ -25,6 +25,10 @@ final class RegistrationViewController: BaseRegistrationViewController {
         super.viewDidLoad()
         setupView()
     }
+    
+    deinit {
+        print("RegistrationViewController deinit")
+    }
 }
 
 

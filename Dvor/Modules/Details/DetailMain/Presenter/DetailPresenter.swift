@@ -1,3 +1,5 @@
+import Foundation
+
 protocol DetailProtocol: AnyObject {
     func success(users: [UserModel], org: OrganizatorModel)
     func load()
@@ -10,14 +12,16 @@ protocol DetailPresenterProtocol: AnyObject {
     init(view: DetailProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol?,
-         firebase: FirebaseAuthManagerProtocol)
+         firebase: FirebaseAuthManagerProtocol,
+         notification: NotificationManagerProtocol
+    )
     
     var users: [UserModel]? { get set }
     var org: OrganizatorModel? { get set }
     
     func fetchAllUsers(usersID: [String], orgID: String)
     
-    func addUserToEvent(idEvent: String)
+    func addUserToEvent(idEvent: String, date: Date)
     
     func removeUserFromEvent(idEvent: String)
     
@@ -36,15 +40,19 @@ final class DetailPresenter: DetailPresenterProtocol {
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
     let firebase: FirebaseAuthManagerProtocol
+    let notification: NotificationManagerProtocol
 
     required init(view: DetailProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol?,
-                  firebase: FirebaseAuthManagerProtocol) {
+                  firebase: FirebaseAuthManagerProtocol,
+                  notification: NotificationManagerProtocol
+    ) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
+        self.notification = notification
     }
     
     //MARK: - Получение всех пользователей события
@@ -65,7 +73,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
     
     //MARK: - Добавление участника
-    func addUserToEvent(idEvent: String) {
+    func addUserToEvent(idEvent: String, date: Date) {
         guard idEvent != "" else {
             router?.showAlertWithTitle("Выберите событие")
             return
@@ -89,6 +97,12 @@ final class DetailPresenter: DetailPresenterProtocol {
             case .success(let success):
                 view?.updateUsers(model: success)
                 router?.showAlertWithTitle("Пользователь добавлен")
+                
+                let hours = Calendar.current.component(.hour, from: date)
+                notification.createNotification(identifier: idEvent,
+                                                title: "Напоминание о матче",
+                                                body: "Завтра состоится событие в \(hours)ч.",
+                                                date: date)
             case .failure(let error):
                 router?.showAlertWithTitle("Ошибка сохранения")
                 view?.error(error: error.localizedDescription)
