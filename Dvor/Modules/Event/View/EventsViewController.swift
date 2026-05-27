@@ -66,6 +66,8 @@ final class EventsViewController: BaseViewController {
 
 // MARK: - Home Protocol
 extension EventsViewController: EventsProtocol {
+
+    
     func success(date: String) {
         titleDate.text = "\(date)"
         
@@ -77,6 +79,11 @@ extension EventsViewController: EventsProtocol {
         
         fetchButton.isHidden = true
         eventsTableView.events = model
+    }
+    
+    func updateAvatars(_ avatars: [String: Data]) {
+        let images = avatars.compactMapValues { UIImage(data: $0) }
+        eventsTableView.userAvatars = images
     }
     
     func error(error: Error) {

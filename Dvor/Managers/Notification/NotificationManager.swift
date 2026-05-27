@@ -34,9 +34,13 @@ final class NotificationManager: NotificationManagerProtocol {
     func createNotification(identifier: String, title: String, body: String, date: Date) {
         let content = createNotificationContent(title: title, body: body)
         
-        // Отнимаем 1 день и ставим 12:34
         let dayBefore = Calendar.current.date(byAdding: .day, value: -1, to: date)!
-        let notificationDate = Calendar.current.date(bySettingHour: 13, minute: 10, second: 0, of: dayBefore)!
+        let notificationDate = Calendar.current.date(bySettingHour: 12, minute: 34, second: 0, of: dayBefore)!
+        
+        guard !Calendar.current.isDateInToday(notificationDate) else {
+            print("Notification skipped: date is today")
+            return
+        }
         
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)

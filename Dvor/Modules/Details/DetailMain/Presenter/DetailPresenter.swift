@@ -135,6 +135,7 @@ final class DetailPresenter: DetailPresenterProtocol {
             case .success(let success):
                 view?.updateUsers(model: success)
                 router?.showAlertWithTitle("Вы отписались от события")
+                notification.cancelNotification(identifier: idEvent)
             case .failure(let error):
                 router?.showAlertWithTitle("Ошибка при удалении")
                 view?.error(error: error.localizedDescription)

@@ -18,6 +18,12 @@ final class EventsTableView: UIView {
         }
     }
 
+    var userAvatars: [String: UIImage] = [:] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+
     private let tableView = UITableView()
     private let refreshControl = UIRefreshControl()
     
@@ -84,8 +90,18 @@ extension EventsTableView: UITableViewDataSource, UITableViewDelegate {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: EventTableViewCell.identifier, for: indexPath) as? EventTableViewCell else {
             return UITableViewCell()
         }
-        cell.configure(with: events[indexPath.row])
+        let event = events[indexPath.row]
+        cell.configure(with: event)
         cell.delegate = cellDelegate
+
+        // Аватарки участников (не более 3, только у кого есть фото)
+        let avatarImages: [UIImage?] = event.users
+            .prefix(3)
+            .compactMap { userID -> UIImage? in
+                userAvatars[userID]  // nil если нет фото — ячейка сама покажет placeholder
+            }
+        cell.configureAvatars(avatarImages)
+
         return cell
     }
 

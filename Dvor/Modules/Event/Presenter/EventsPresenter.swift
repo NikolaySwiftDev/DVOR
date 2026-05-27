@@ -3,10 +3,12 @@ import Foundation
 protocol EventsProtocol: AnyObject {
     func success(date: String)
     func error(error: Error)
+    func updateAvatars(_ avatars: [String: Data])
 }
 
 protocol EventsPresenterProtocol: AnyObject {
     var events: [EventModel]? { get set }
+    var userAvatars: [String: Data] { get }
     var filteredEvents: [EventModel]? { get set }
         
     func fetchEvents()
@@ -36,6 +38,7 @@ final class EventsPresenter: EventsPresenterProtocol {
     let network: FirebaseDataManagerProtocol?
     let firebase: FirebaseAuthManagerProtocol
     
+    private(set) var userAvatars: [String: Data] = [:]
     private var lastFilterDate: Date = .now
     private var lastSortPredicate: SortPredicate = .count
     private var personlaMode = false
@@ -65,6 +68,7 @@ final class EventsPresenter: EventsPresenterProtocol {
             self.events = events
             self.filterEventsWithDate(date: lastFilterDate)
             self.sortEventsWithPredicate(predicate: personlaMode ? .personal : lastSortPredicate)
+            self.fetchAvatarsForEvents(events)
 //            view?.success(date: lastFilterDate.toString())
         case .failure(let error):
             self.view?.error(error: error)
@@ -77,6 +81,34 @@ final class EventsPresenter: EventsPresenterProtocol {
             guard let self = self else { return }
             self.handleEventsResult(result)
         })
+    }
+    
+    private func fetchAvatarsForEvents(_ events: [EventModel]) {
+        // Все уникальные ID участников по всем событиям
+        let allUserIDs = Set(events.flatMap { $0.users })
+        
+        // Пропускаем тех, кого уже загрузили (кэш)
+        let idsToFetch = allUserIDs.filter { userAvatars[$0] == nil }
+        guard !idsToFetch.isEmpty else { return }
+        
+        let group = DispatchGroup()
+        
+        for userID in idsToFetch {
+            group.enter()
+            network?.fetchUser(idUser: userID) { [weak self] result in
+                defer { group.leave() }
+                guard let self = self else { return }
+                
+                if case .success(let user) = result, let data = user.image {
+                    self.userAvatars[userID] = data  // просто Data, без UIImage
+                }
+            }
+        }
+        
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.view?.updateAvatars(self.userAvatars)
+        }
     }
     
     //MARK: - фильтрация Событий по Дате

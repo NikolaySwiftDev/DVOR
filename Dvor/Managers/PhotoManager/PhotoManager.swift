@@ -233,6 +233,6 @@ extension PhotoManager: UIAdaptivePresentationControllerDelegate {
         static let mb1 = 1024 * 1024 // 1 MB
         static let mb2 = 2 * 1024 * 1024 // 2 MB
         static let mb3 = 3 * 1024 * 1024 // 3 MB
-        static let mb6 = 6 * 1024 * 1024 // 3 MB
+        static let mb8 = 8 * 1024 * 1024 // 10 MB
     }
 
