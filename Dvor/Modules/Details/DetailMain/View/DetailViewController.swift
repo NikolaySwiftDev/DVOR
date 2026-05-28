@@ -7,8 +7,7 @@ final class DetailViewController: UIViewController {
     var detail: DetailModel
     var viewPosition: DetailSegmentViewPosition = .info
 
-    private let mapImage = UIImageView(systemImage: "photo.artframe")
-    
+    private let mapView = DetailMapView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
 
     private let shareButton: UIButton = {
@@ -126,7 +125,7 @@ extension DetailViewController: UserCellProtocol {
 }
 
 //MARK: - Detail Info Protocol
-extension DetailViewController: InfoViewProtocol {
+extension DetailViewController: DetailViewDelegate {
     func mapButtonTapped() {
         presenter?.showLocationOnMap(location: detail.address)
     }
@@ -143,13 +142,14 @@ private extension DetailViewController {
         view.addSubview(addUserButton)
         view.addSubview(removeUserButton)
         view.addSubview(titleAdress)
-        view.addSubview(mapImage)
+        view.addSubview(mapView)
         view.addSubview(segmentView)
     }
     
     private func configure() {
         segmentView.usersView.delegate = self
-        segmentView.infoView.delegate = self
+        mapView.delegate = self
+        mapView.configure(with: detail.address)
     }
     
     private func setupContraints() {
@@ -181,7 +181,7 @@ private extension DetailViewController {
             make.horizontalEdges.equalToSuperview().inset(DetailConstants.paddingHorizontal)
         }
         
-        mapImage.snp.makeConstraints { make in
+        mapView.snp.makeConstraints { make in
             make.top.equalTo(titleAdress.snp.bottom).offset(DetailConstants.paddingStandart)
             make.leading.equalToSuperview().offset(DetailConstants.paddingHorizontal)
             make.trailing.equalToSuperview().inset(DetailConstants.paddingHorizontal)
@@ -189,7 +189,7 @@ private extension DetailViewController {
         }
         
         segmentView.snp.makeConstraints { make in
-            make.top.equalTo(mapImage.snp.bottom).offset(DetailConstants.paddingStandart)
+            make.top.equalTo(mapView.snp.bottom).offset(DetailConstants.paddingStandart)
             make.leading.equalToSuperview().offset(DetailConstants.paddingHorizontal)
             make.trailing.equalToSuperview().inset(DetailConstants.paddingHorizontal)
             make.bottom.equalToSuperview().inset(DetailConstants.heightTabbar)

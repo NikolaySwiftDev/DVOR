@@ -37,7 +37,7 @@ final class NotificationManager: NotificationManagerProtocol {
         let dayBefore = Calendar.current.date(byAdding: .day, value: -1, to: date)!
         let notificationDate = Calendar.current.date(bySettingHour: 12, minute: 34, second: 0, of: dayBefore)!
         
-        guard !Calendar.current.isDateInToday(notificationDate) else {
+        guard Calendar.current.isDateInToday(notificationDate) else {
             print("Notification skipped: date is today")
             return
         }

@@ -84,10 +84,8 @@ final class EventsPresenter: EventsPresenterProtocol {
     }
     
     private func fetchAvatarsForEvents(_ events: [EventModel]) {
-        // Все уникальные ID участников по всем событиям
         let allUserIDs = Set(events.flatMap { $0.users })
         
-        // Пропускаем тех, кого уже загрузили (кэш)
         let idsToFetch = allUserIDs.filter { userAvatars[$0] == nil }
         guard !idsToFetch.isEmpty else { return }
         

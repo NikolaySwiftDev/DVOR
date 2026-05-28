@@ -1,14 +1,9 @@
 import UIKit
 import SnapKit
 
-protocol InfoViewProtocol: AnyObject {
-    func mapButtonTapped()
-}
 
 final class InfoView: UIView {
-    
-    weak var delegate: InfoViewProtocol?
-    
+        
     // MARK: - UI Elements
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -24,7 +19,6 @@ final class InfoView: UIView {
     private let addressTitleLabel = UILabel(text: "Адрес", 
                                             font: .poppins(weight: .semiBold, size: .mid))
     private let titleAddress = UILabel()
-    private let mapAdress = UIButton(type: .custom)
     
     // Place Section
     private let placeSectionView = UIView()
@@ -87,10 +81,6 @@ final class InfoView: UIView {
         // Apply accessibility
         applyAccessibility()
     }
-    
-    @objc private func mapButtonTapped() {
-        delegate?.mapButtonTapped()
-    }
 }
 
 private extension InfoView {
@@ -105,7 +95,6 @@ private extension InfoView {
         addressSectionView.addSubview(addressStackView)
         addressStackView.addArrangedSubview(addressTitleLabel)
         addressStackView.addArrangedSubview(titleAddress)
-        addressStackView.addArrangedSubview(mapAdress)
         
         // Setup Place Section
         placeSectionView.addSubview(placeIconLabel)
@@ -183,19 +172,6 @@ private extension InfoView {
         configureVerticalStack(timeStackView, spacing: 4)
         configureLabel(timeTitleLabel, alpha: 0.7)
         configureLabel(titleTime, alpha: 1.0)
-        
-        // People Stack
-//        configureVerticalStack(peopleStackView, spacing: 4)
-//        configureLabel(peopleTitleLabel, alpha: 0.7)
-//        configureLabel(titleCountPeop, alpha: 1.0)
-
-        // Map Button
-        mapAdress.setTitle("Показать на карте", for: .normal)
-        mapAdress.setTitleColor(Constants.Colors.textColor.withAlphaComponent(0.8), for: .normal)
-        mapAdress.titleLabel?.font = .poppins(weight: .medium, size: .small)
-        mapAdress.contentHorizontalAlignment = .leading
-        mapAdress.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
-        mapAdress.addTarget(self, action: #selector(mapButtonTapped), for: .touchUpInside)
     }
     
     private func configureSectionView(_ view: UIView) {
@@ -230,12 +206,6 @@ private extension InfoView {
         dateTimeSectionView.isAccessibilityElement = false
         titleDate.accessibilityLabel = "Дата: \(titleDate.text ?? "")"
         titleTime.accessibilityLabel = "Время: \(titleTime.text ?? "")"
-        
-//        peopleSectionView.isAccessibilityElement = false
-//        titleCountPeop.accessibilityLabel = "Участники: \(titleCountPeop.text ?? "")"
-        
-        mapAdress.accessibilityLabel = "Показать на карте"
-        mapAdress.accessibilityHint = "Откроет карту с местоположением события"
     }
     
     private func setupConstraints() {
