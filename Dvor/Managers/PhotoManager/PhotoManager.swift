@@ -75,7 +75,7 @@ extension PhotoManager: PhotoManagerProtocol {
                                                 width: 0, height: 0)
         }
         
-        router.present(alert)
+        router.presentVC(alert)
     }
 }
 
@@ -120,7 +120,7 @@ private extension PhotoManager {
         picker.allowsEditing = allowsEditing
         picker.cameraDevice = .front
         
-        router?.present(picker)
+        router?.presentVC(picker)
     }
     
     //MARK: - Gallery
@@ -133,7 +133,7 @@ private extension PhotoManager {
         picker.delegate = self
         setupPickerDismissHandler(picker)
         
-        router?.present(picker)
+        router?.presentVC(picker)
     }
     
     //MARK: - Selected error

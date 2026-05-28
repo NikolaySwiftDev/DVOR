@@ -71,6 +71,7 @@ final class EventsPresenter: EventsPresenterProtocol {
             self.fetchAvatarsForEvents(events)
 //            view?.success(date: lastFilterDate.toString())
         case .failure(let error):
+            self.router?.showAlertWithTitle(error.localizedDescription)
             self.view?.error(error: error)
         }
     }

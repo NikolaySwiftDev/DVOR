@@ -34,7 +34,6 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         let databaseURL = "https://dvor-496f1-default-rtdb.europe-west1.firebasedatabase.app/"
         Database.database().isPersistenceEnabled = true
         database = Database.database(url: databaseURL).reference()
-//        checkConnection()
     }
     
     //MARK: - Общий метод получения всех событий

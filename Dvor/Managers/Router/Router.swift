@@ -14,7 +14,7 @@ protocol RouterMainProtocol: RouterMain {
     func dismiss()
     func logOut()
     
-    func present(_ vc: UIViewController)
+    func presentVC(_ vc: UIViewController)
     func setVC(_ vc: UIViewController)
     func pushVC(_ vc: UIViewController)
     
@@ -82,7 +82,7 @@ class Router: RouterMainProtocol {
     }
     
     //MARK: - Custom VC presentation
-    func present(_ vc: UIViewController) {
+    func presentVC(_ vc: UIViewController) {
         navigationController.present(vc, animated: true)
     }
     
@@ -150,7 +150,7 @@ class Router: RouterMainProtocol {
     //MARK: - Push Profile User Info
     func pushProfileVC(model: UserModel?) {
         guard let detailVC = builder?.createProfileVC(router: self, model: model) else { return }
-        present(detailVC)
+        pushVC(detailVC)
     }
     
     //MARK: - Push Detail Organizator Info

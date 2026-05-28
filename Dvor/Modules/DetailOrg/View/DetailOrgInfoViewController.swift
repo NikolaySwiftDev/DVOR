@@ -52,7 +52,7 @@ final class DetailOrgInfoViewController: UIViewController {
     
     // MARK: - Setup UI
     private func setupUI() {
-        view.backgroundColor = .darkGray
+        view.backgroundColor = .black
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
         mainStackView.alignment = .leading
