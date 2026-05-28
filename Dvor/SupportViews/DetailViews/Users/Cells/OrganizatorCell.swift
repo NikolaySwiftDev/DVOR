@@ -9,11 +9,10 @@ final class OrganizatorTableViewCell: UITableViewCell {
     
     private let avatarImageView = UIImageView(cornerRadius: 20)
     
-    private let nameLabel = UILabel.init()
+    private let nameLabel = UILabel.init(font: .poppins(weight: .bold, size: .mid))
     private let orgLabel = UILabel(text: "Организатор")
     
-    private let checkmarkImageView = UIImageView(systemImage: "soccerball.inverse")
-    private let rightArrowImageView = UIImageView(systemImage: "chevron.right")
+    private let personImage = UIImageView(systemImage: "person.fill")
 
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -35,8 +34,7 @@ final class OrganizatorTableViewCell: UITableViewCell {
         contentView.addSubview(avatarImageView)
         contentView.addSubview(nameLabel)
         contentView.addSubview(orgLabel)
-        contentView.addSubview(checkmarkImageView)
-        contentView.addSubview(rightArrowImageView)
+        contentView.addSubview(personImage)
     }
 
     private func setupConstraints() {
@@ -47,9 +45,9 @@ final class OrganizatorTableViewCell: UITableViewCell {
         }
 
         nameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(4)
             make.leading.equalTo(avatarImageView.snp.trailing).offset(12)
-            make.trailing.lessThanOrEqualTo(rightArrowImageView.snp.leading).offset(-12)
+            make.trailing.lessThanOrEqualTo(personImage.snp.leading).offset(-12)
         }
 
 
@@ -60,16 +58,10 @@ final class OrganizatorTableViewCell: UITableViewCell {
         }
 
 
-        checkmarkImageView.snp.makeConstraints { make in
-            make.trailing.equalTo(rightArrowImageView.snp.leading).offset(-8)
-            make.centerY.equalToSuperview()
-            make.size.equalTo(20)
-        }
-
-        rightArrowImageView.snp.makeConstraints { make in
+        personImage.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(12)
             make.centerY.equalToSuperview()
-            make.size.equalTo(12)
+            make.size.equalTo(25)
         }
     }
 

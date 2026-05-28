@@ -7,20 +7,19 @@ final class UserTableViewCell: UITableViewCell {
 
     // MARK: - UI Elements
     private let indexLabel = UILabel.init()
-    private let nameLabel = UILabel.init()
+    private let nameLabel = UILabel.init(font: .poppins(weight: .bold, size: .mid))
     private let positionLabel = UILabel.init()
     private let avatarImageView = UIImageView.init(cornerRadius: 20)
     private let ticketImageView = UIImageView(systemImage: "ticket.fill")
-    private let checkmarkImageView = UIImageView(systemImage: "checkmark.circle.fill")
-    private let rightArrowImageView = UIImageView(systemImage: "chevron.right")
+    private let soccerImage = UIImageView(systemImage: "soccerball.inverse")
     
-    private let progressView: UIProgressView = {
-        let progress = UIProgressView(progressViewStyle: .default)
-        progress.trackTintColor = UIColor.darkGray
-        progress.layer.cornerRadius = 2
-        progress.clipsToBounds = true
-        return progress
-    }()
+//    private let progressView: UIProgressView = {
+//        let progress = UIProgressView(progressViewStyle: .default)
+//        progress.trackTintColor = UIColor.darkGray
+//        progress.layer.cornerRadius = 2
+//        progress.clipsToBounds = true
+//        return progress
+//    }()
 
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -42,11 +41,10 @@ final class UserTableViewCell: UITableViewCell {
         contentView.addSubview(indexLabel)
         contentView.addSubview(avatarImageView)
         contentView.addSubview(nameLabel)
-        contentView.addSubview(progressView)
+//        contentView.addSubview(progressView)
         contentView.addSubview(positionLabel)
         contentView.addSubview(ticketImageView)
-        contentView.addSubview(checkmarkImageView)
-        contentView.addSubview(rightArrowImageView)
+        contentView.addSubview(soccerImage)
     }
 
     private func setupConstraints() {
@@ -62,40 +60,34 @@ final class UserTableViewCell: UITableViewCell {
         }
 
         nameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(7)
             make.leading.equalTo(avatarImageView.snp.trailing).offset(12)
             make.trailing.lessThanOrEqualTo(ticketImageView.snp.leading).offset(-8)
         }
 
-        progressView.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(4)
-            make.leading.equalTo(nameLabel)
-            make.trailing.equalTo(nameLabel)
-            make.height.equalTo(4)
-        }
+//        progressView.snp.makeConstraints { make in
+//            make.top.equalTo(nameLabel.snp.bottom).offset(4)
+//            make.leading.equalTo(nameLabel)
+//            make.trailing.equalTo(nameLabel)
+//            make.height.equalTo(4)
+//        }
 
         positionLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(6)
+            make.top.equalTo(nameLabel.snp.bottom).offset(4)
             make.leading.equalTo(nameLabel)
             make.bottom.equalToSuperview().inset(8)
         }
 
         ticketImageView.snp.makeConstraints { make in
-            make.trailing.equalTo(checkmarkImageView.snp.leading).offset(-8)
+            make.trailing.equalTo(soccerImage.snp.leading).offset(-8)
             make.centerY.equalToSuperview()
             make.size.equalTo(20)
         }
 
-        checkmarkImageView.snp.makeConstraints { make in
-            make.trailing.equalTo(rightArrowImageView.snp.leading).offset(-8)
-            make.centerY.equalToSuperview()
-            make.size.equalTo(20)
-        }
-
-        rightArrowImageView.snp.makeConstraints { make in
+        soccerImage.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(12)
             make.centerY.equalToSuperview()
-            make.size.equalTo(12)
+            make.size.equalTo(25)
         }
     }
 
@@ -106,8 +98,9 @@ final class UserTableViewCell: UITableViewCell {
         
         positionLabel.text = model.position
         ticketImageView.isHidden = !model.hasTicket
-        checkmarkImageView.isHidden = !model.isChecked
-        progressView.progress = model.progress
+        
+//        progressView.isHidden = true
+//        progressView.progress = model.progress
         
         if let data = model.image {
             avatarImageView.image = UIImage(data: data)
@@ -115,15 +108,15 @@ final class UserTableViewCell: UITableViewCell {
             avatarImageView.image = UIImage(systemName: "photo.circle")
         }
         
-        switch model.progress {
-        case 0...0.3:
-            progressView.progressTintColor = .red
-        case 0.3...0.6:
-            progressView.progressTintColor = .yellow
-        case 0.6...1:
-            progressView.progressTintColor = .green
-        default:
-            progressView.progressTintColor = .blue
-        }
+//        switch model.progress {
+//        case 0...0.3:
+//            progressView.progressTintColor = .red
+//        case 0.3...0.6:
+//            progressView.progressTintColor = .yellow
+//        case 0.6...1:
+//            progressView.progressTintColor = .green
+//        default:
+//            progressView.progressTintColor = .blue
+//        }
     }
 }
