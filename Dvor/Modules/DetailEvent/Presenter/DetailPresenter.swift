@@ -20,9 +20,7 @@ protocol DetailPresenterProtocol: AnyObject {
     var org: OrganizatorModel? { get set }
     
     func fetchAllUsers(usersID: [String], orgID: String)
-    
-    func addUserToEvent(idEvent: String, date: Date)
-    
+    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool)
     func removeUserFromEvent(idEvent: String)
     
     func popVC()
@@ -73,7 +71,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
     
     //MARK: - Добавление участника
-    func addUserToEvent(idEvent: String, date: Date) {
+    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool) {
         guard idEvent != "" else {
             router?.showAlertWithTitle("Выберите событие")
             return
@@ -85,24 +83,30 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
         
-        // Проверка, есть ли пользователь уже в событии
         if let users = users, users.contains(where: { $0.id == idUser }) {
             router?.showAlertWithTitle("Вы уже участвуете в этом событии")
             return
         }
+        
+
         
         network?.writeUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):
                 view?.updateUsers(model: success)
-                router?.showAlertWithTitle("Пользователь добавлен")
+                
                 
                 let hours = Calendar.current.component(.hour, from: date)
                 notification.createNotification(identifier: idEvent,
                                                 title: "Напоминание о матче",
                                                 body: "Завтра состоится событие в \(hours)ч.",
                                                 date: date)
+                if isComplete {
+                    router?.showAlertWithTitle("Вы добавлены в очередь. Список участников уже полон, мест может не хватить на всех!")
+                } else {
+                    router?.showAlertWithTitle("Пользователь добавлен")
+                }
             case .failure(let error):
                 router?.showAlertWithTitle("Ошибка сохранения")
                 view?.error(error: error.localizedDescription)

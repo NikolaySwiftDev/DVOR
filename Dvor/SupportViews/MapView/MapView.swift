@@ -101,4 +101,8 @@ final class DetailMapView: UIView {
             }
         }
     }
+    
+    deinit {
+        print("Deinit map view")
+    }
 }

@@ -150,7 +150,7 @@ class Router: RouterMainProtocol {
     //MARK: - Push Profile User Info
     func pushProfileVC(model: UserModel?) {
         guard let detailVC = builder?.createProfileVC(router: self, model: model) else { return }
-        pushVC(detailVC)
+        present(detailVC)
     }
     
     //MARK: - Push Detail Organizator Info

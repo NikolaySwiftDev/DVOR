@@ -74,7 +74,7 @@ final class DetailViewController: UIViewController {
     
     //MARK: - Add User Button Tapped
     @objc private func addUserButtonTapped() {
-        presenter?.addUserToEvent(idEvent: detail.id, date: detail.date)
+        presenter?.addUserToEvent(idEvent: detail.id, date: detail.date, isComplete: detail.peopleAllCountInt > 1)
     }
     
     //MARK: - Remove User Button Tapped
