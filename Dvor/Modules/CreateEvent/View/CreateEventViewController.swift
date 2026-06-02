@@ -20,6 +20,17 @@ final class CreateEventViewController: UIViewController {
     private let placeTF = AuthTextFieldView(placeholder: "школа № 29")
     private let nextButton = UIButton.createStandartButton(title: "Создать", target: self, action: #selector(nextButtonTapped))
     
+    private let datePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .inline
+        picker.minimumDate = Date()
+        picker.maximumDate = Calendar.current.date(byAdding: .day, value: 14, to: Date())
+        picker.isHidden = true
+        picker.backgroundColor = Constants.Colors.backgroungColor
+        return picker
+    }()
+    
     init(date: Date) {
         self.date = date
         titleDate.text = "Событие на \(date.toString())"
@@ -40,6 +51,10 @@ final class CreateEventViewController: UIViewController {
     
     @objc private func nextButtonTapped() {
         presenter?.writeEvent(players: player, date: date, time: time, address: adress, place: place)
+    }
+    
+    deinit {
+        print("deinit CreateEventViewController")
     }
 }
 
@@ -92,11 +107,12 @@ extension CreateEventViewController: UITextFieldDelegate {
         switch textField.tag {
         case 0:
             player = Int(text) ?? 0
-            checkTFIsNotEmpty(text: text, tf: playersTF)
+            checkCountTFIsNotEmpty(text: text, tf: playersTF)
         case 1:
             let formattedTime = text.formatAsTime()
             timeTF.textField.text = formattedTime
             time = formattedTime.toTimeFormat() ?? ""
+            checkTimeTFIsNotEmpty(text: formattedTime, tf: timeTF)
         case 2:
             adress = text
             checkTFIsNotEmpty(text: text, tf: adressTF)
@@ -135,6 +151,12 @@ extension CreateEventViewController {
     private func config() {
         navigationBar.delegate = self
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(titleDateTapped))
+        titleDate.isUserInteractionEnabled = true
+        titleDate.addGestureRecognizer(tapGesture)
+
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        
         playersTF.textField.delegate = self
         playersTF.textField.tag = 0
         playersTF.textField.keyboardType = .numberPad
@@ -154,6 +176,36 @@ extension CreateEventViewController {
         placeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
+    @objc private func titleDateTapped() {
+        let isHidden = !datePicker.isHidden
+        
+        if !isHidden {
+            datePicker.isHidden = false
+            datePicker.alpha = 0
+            datePicker.date = date
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
+                self.datePicker.alpha = 1
+            }
+        } else {
+            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn) {
+                self.datePicker.alpha = 0
+            } completion: { _ in
+                self.datePicker.isHidden = true
+            }
+        }
+    }
+
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
+        date = sender.date
+        titleDate.text = "Событие на \(sender.date.toString())"
+        
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn) {
+            self.datePicker.alpha = 0
+        } completion: { _ in
+            self.datePicker.isHidden = true
+            self.datePicker.alpha = 1
+        }
+    }
     
     private func setupConstraints() {
         navigationBar.snp.makeConstraints { make in
@@ -204,6 +256,13 @@ extension CreateEventViewController {
             make.height.equalTo(CreateEventConstants.supViewHeight)
         }
         
+        view.addSubview(datePicker)
+        datePicker.snp.makeConstraints { make in
+            make.top.equalTo(titleDate.snp.bottom).offset(4)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(CreateEventConstants.datePickerHeight)
+        }
+        
         nextButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
@@ -214,4 +273,5 @@ extension CreateEventViewController {
 
 fileprivate struct CreateEventConstants {
     static let supViewHeight = Constants.Constraint.buttonHeight * 1.8
+    static let datePickerHeight = 450
 }

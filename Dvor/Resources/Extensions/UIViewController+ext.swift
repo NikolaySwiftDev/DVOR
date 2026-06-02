@@ -71,8 +71,20 @@ extension UIViewController {
     }
 
     //MARK: - Check TF Is Not Empty
-    func checkTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
+    func checkCountTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
         text.count == 0 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
+    }
+    
+    func checkTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
+        text.count < 4 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
+    }
+    
+    func checkTimeTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
+        if text.isValidTime {
+            text.count == 4 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
+        } else {
+            tf.updateBorderColor(.clear)
+        }
     }
 
     //MARK: - Common email + password validation for Auth / Registration
