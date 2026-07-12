@@ -119,7 +119,7 @@ extension CreateEventViewController: UITextFieldDelegate {
             
         case 3:
             place = text
-            checkTFIsNotEmpty(text: text, tf: placeTF)
+            checkCountTFIsNotEmpty(text: text, tf: placeTF)
             
         default:
             break

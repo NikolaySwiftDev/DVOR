@@ -16,7 +16,7 @@
 		</dict>
 	</array>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>Уведомления могут содержать напоминания, звуки и наклейки значков. Их конфигурирование возможно в Настройках.</string>
+	<string>Notifications may include alerts, sounds, and badges. These can be configured in Settings.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Bold.ttf</string>

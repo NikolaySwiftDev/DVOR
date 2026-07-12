@@ -70,7 +70,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         network?.writeEvents(model: model, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let success):
+            case .success(_):
 //                router?.showAlertConfigur(title: success, message: nil, titleActionButton: "Вернуться") { [weak self] in
 //                    guard let self = self else { return }
                     self.router?.popVC()
