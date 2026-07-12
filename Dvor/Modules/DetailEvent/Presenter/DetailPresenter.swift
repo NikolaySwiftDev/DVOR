@@ -53,7 +53,7 @@ final class DetailPresenter: DetailPresenterProtocol {
         self.notification = notification
     }
     
-    //MARK: - Получение всех пользователей события
+    //MARK: - Fetch all users
     func fetchAllUsers(usersID: [String], orgID: String) {
         view?.load()
         network?.fetchAllUsersFromEvent(usersID: usersID, orgId: orgID, completion: { [weak self] result in
@@ -70,25 +70,23 @@ final class DetailPresenter: DetailPresenterProtocol {
         })
     }
     
-    //MARK: - Добавление участника
+    //MARK: - Add user
     func addUserToEvent(idEvent: String, date: Date, isComplete: Bool) {
         guard idEvent != "" else {
-            router?.showAlertWithTitle("Выберите событие")
+            router?.showAlertWithTitle(DetailPresenterConstants.selectEvent)
             return
         }
         
 //        guard let idUser = firebase.currentUser?.uid else {
         guard let idUser = firebase.currentUserId else {
-            router?.showAlertWithTitle("Добавьте аккаунт")
+            router?.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
         }
         
         if let users = users, users.contains(where: { $0.id == idUser }) {
-            router?.showAlertWithTitle("Вы уже участвуете в этом событии")
+            router?.showAlertWithTitle(DetailPresenterConstants.alreadyParticipating)
             return
         }
-        
-
         
         network?.writeUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
             guard let self = self else { return }
@@ -98,38 +96,40 @@ final class DetailPresenter: DetailPresenterProtocol {
                 
                 
                 let hours = Calendar.current.component(.hour, from: date)
-                notification.createNotification(identifier: idEvent,
-                                                title: "Напоминание о матче",
-                                                body: "Завтра состоится событие в \(hours)ч.",
-                                                date: date)
+                notification.createNotification(
+                    identifier: idEvent,
+                    title: DetailPresenterConstants.matchReminder,
+                    body: "\(DetailPresenterConstants.eventTomorrowAt) \(hours)",
+                    date: date
+                )
+                
                 if isComplete {
-                    router?.showAlertWithTitle("Вы добавлены в очередь. Список участников уже полон, мест может не хватить на всех!")
+                    router?.showAlertWithTitle(DetailPresenterConstants.queueAdded)
                 } else {
-                    router?.showAlertWithTitle("Пользователь добавлен")
+                    router?.showAlertWithTitle(DetailPresenterConstants.userAdded)
                 }
             case .failure(let error):
-                router?.showAlertWithTitle("Ошибка сохранения")
+                router?.showAlertWithTitle(DetailPresenterConstants.saveError)
                 view?.error(error: error.localizedDescription)
             }
         })
     }
     
-    //MARK: - Удаление участника
+    //MARK: - Remove user
     func removeUserFromEvent(idEvent: String) {
         guard idEvent != "" else {
-            router?.showAlertWithTitle("Выберите событие")
+            router?.showAlertWithTitle(DetailPresenterConstants.selectEvent)
             return
         }
         
 //        guard let idUser = firebase.currentUser?.uid else {
         guard let idUser = firebase.currentUserId else {
-            router?.showAlertWithTitle("Добавьте аккаунт")
+            router?.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
         }
         
-        // Проверка, есть ли пользователь в событии
         guard let users = users, users.contains(where: { $0.id == idUser }) else {
-            router?.showAlertWithTitle("Вы не участвуете в этом событии")
+            router?.showAlertWithTitle(DetailPresenterConstants.notParticipating)
             return
         }
         
@@ -138,10 +138,10 @@ final class DetailPresenter: DetailPresenterProtocol {
             switch result {
             case .success(let success):
                 view?.updateUsers(model: success)
-                router?.showAlertWithTitle("Вы отписались от события")
+                router?.showAlertWithTitle(DetailPresenterConstants.unsubscribed)
                 notification.cancelNotification(identifier: idEvent)
             case .failure(let error):
-                router?.showAlertWithTitle("Ошибка при удалении")
+                router?.showAlertWithTitle(DetailPresenterConstants.deleteError)
                 view?.error(error: error.localizedDescription)
             }
         })

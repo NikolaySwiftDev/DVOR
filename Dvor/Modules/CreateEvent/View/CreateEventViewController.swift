@@ -12,13 +12,13 @@ final class CreateEventViewController: UIViewController {
     private var place = ""
     
     private let navigationBar = SupportNavigationBar(state: .createEvent)
-    private let subTitle = UILabel.init(text: "Введите данные")
+    private let subTitle = UILabel(text: CreateEventConstants.enterData)
     private let titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small), textAlignment: .center)
-    private let adressTF = AuthTextFieldView(placeholder: "ул. Любых, д.20, к1")
-    private let playersTF = AuthTextFieldView(placeholder: "8")
-    private let timeTF = AuthTextFieldView(placeholder: "11:22")
-    private let placeTF = AuthTextFieldView(placeholder: "школа № 29")
-    private let nextButton = UIButton.createStandartButton(title: "Создать", target: self, action: #selector(nextButtonTapped))
+    private let adressTF = AuthTextFieldView(placeholder: CreateEventConstants.addressPlaceholder)
+    private let playersTF = AuthTextFieldView(placeholder: CreateEventConstants.playersPlaceholder)
+    private let timeTF = AuthTextFieldView(placeholder: CreateEventConstants.timePlaceholder)
+    private let placeTF = AuthTextFieldView(placeholder: CreateEventConstants.placePlaceholder)
+    private let nextButton = UIButton.createStandartButton(title: CreateEventConstants.createButton, target: self, action: #selector(nextButtonTapped))
     
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -33,7 +33,7 @@ final class CreateEventViewController: UIViewController {
     
     init(date: Date) {
         self.date = date
-        titleDate.text = "Событие на \(date.toString())"
+        titleDate.text = "\(CreateEventConstants.eventDate) \(date.toString())"
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -91,7 +91,7 @@ extension CreateEventViewController: UITextFieldDelegate {
         toolbar.sizeToFit()
         
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let doneButton = UIBarButtonItem(title: "Готово", style: .done, target: self, action: #selector(doneButtonTapped))
+        let doneButton = UIBarButtonItem(title: CreateEventConstants.done, style: .done, target: self, action: #selector(doneButtonTapped))
         
         toolbar.items = [flexibleSpace, doneButton]
         textField.inputAccessoryView = toolbar
@@ -197,8 +197,8 @@ extension CreateEventViewController {
 
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         date = sender.date
-        titleDate.text = "Событие на \(sender.date.toString())"
-        
+        titleDate.text = "\(CreateEventConstants.eventDate) \(date.toString())"
+
         UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn) {
             self.datePicker.alpha = 0
         } completion: { _ in
@@ -224,10 +224,10 @@ extension CreateEventViewController {
             make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding + 10)
         }
         
-        let playersView = createTFView(text: "Игроков в команде", tf: playersTF)
-        let timeView = createTFView(text: "Время начала игры", tf: timeTF)
-        let adressView = createTFView(text: "Адресс", tf: adressTF)
-        let placeView = createTFView(text: "Место", tf: placeTF)
+        let playersView = createTFView(text: CreateEventConstants.playersTitle, tf: playersTF)
+        let timeView = createTFView(text: CreateEventConstants.startTimeTitle, tf: timeTF)
+        let adressView = createTFView(text: CreateEventConstants.addressTitle, tf: adressTF)
+        let placeView = createTFView(text: CreateEventConstants.placeTitle, tf: placeTF)
         
         let stack = UIStackView(arrangedSubviews: [playersView, timeView])
         stack.axis = .horizontal
@@ -274,4 +274,18 @@ extension CreateEventViewController {
 fileprivate struct CreateEventConstants {
     static let supViewHeight = Constants.Constraint.buttonHeight * 1.8
     static let datePickerHeight = 450
+
+    static let enterData = "create_event.enter_data".loc
+    static let addressPlaceholder = "create_event.address_placeholder".loc
+    static let playersPlaceholder = "create_event.players_placeholder".loc
+    static let timePlaceholder = "create_event.time_placeholder".loc
+    static let placePlaceholder = "create_event.place_placeholder".loc
+    static let createButton = "create_event.create".loc
+    static let done = "common.done".loc
+
+    static let eventDate = "create_event.event_date".loc
+    static let playersTitle = "create_event.players".loc
+    static let startTimeTitle = "create_event.start_time".loc
+    static let addressTitle = "create_event.address".loc
+    static let placeTitle = "create_event.place".loc
 }

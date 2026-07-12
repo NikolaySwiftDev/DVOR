@@ -45,7 +45,7 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     private var title: String {
         if personlaMode {
-            "Ваши события на " + lastFilterDate.toString()
+            EventsPresenterStrings.yourEventsOn + lastFilterDate.toString()
         } else {
             lastFilterDate.toString()
         }
@@ -166,26 +166,26 @@ final class EventsPresenter: EventsPresenterProtocol {
     //MARK: - Удаление собитыя
     func deleteEvent(eventId: String) {
         guard eventId != "" else {
-            router?.showAlertWithTitle("Выберите событие")
+            router?.showAlertWithTitle(EventsPresenterStrings.pleaseSelectEvent)
             return
         }
         
         // Проверяем, является ли текущий пользователь участником или организатором события
 //        guard let currentUserId = firebase.currentUser?.uid else {
         guard let currentUserId = firebase.currentUserId else {
-            router?.showAlertWithTitle("Необходимо войти в систему")
+            router?.showAlertWithTitle(EventsPresenterStrings.needToLogIn)
             return
         }
         
         guard let event = events?.first(where: { $0.id == eventId }) else {
-            router?.showAlertWithTitle("Событие не найдено")
+            router?.showAlertWithTitle(EventsPresenterStrings.eventNotFound)
             return
         }
         
         let isOrganizer = event.orgId == currentUserId
         
         guard isOrganizer else {
-            router?.showAlertWithTitle("Вы не можете удалить событие, созданное не Вами")
+            router?.showAlertWithTitle(EventsPresenterStrings.cannotDeleteNotOwned)
             return
         }
         
@@ -197,7 +197,7 @@ final class EventsPresenter: EventsPresenterProtocol {
                 fetchEvents()
 //                router?.showAlertWithTitle(success)
             case .failure(let error):
-                router?.showAlertWithTitle("Ошибка удаления")
+                router?.showAlertWithTitle(EventsPresenterStrings.deleteError)
                 view?.error(error: error)
             }
         })
@@ -223,16 +223,16 @@ final class EventsPresenter: EventsPresenterProtocol {
     func pushCreateEvent() {
 //        guard firebase.currentUser?.uid != nil else {
         guard firebase.currentUserId != nil else {
-            router?.showAlertWithTitle("Для создания события необходимо зарегестрироваться")
+            router?.showAlertWithTitle(EventsPresenterStrings.needToRegisterToCreate)
             return
         }
         router?.pushCreateEvent(date: lastFilterDate)
     }
     
     func signOut() {
-        router?.showAlertConfigur(title: "Выйти из аккаунта?",
-                                  message: "Вы действительно хотите выйти?",
-                                  titleActionButton: "Да", handelr: { [weak self] in
+        router?.showAlertConfigur(title: EventsPresenterStrings.signOutTitle,
+                                  message: EventsPresenterStrings.signOutMessage,
+                                  titleActionButton: EventsPresenterStrings.yes, handelr: { [weak self] in
             guard let self = self else { return }
             
             if let userID = firebase.currentUserId {
@@ -272,7 +272,5 @@ final class EventsPresenter: EventsPresenterProtocol {
     //MARK: - Deinit
     deinit {
         print("Deinit HomePresenter")
-//        stopRealTimeObservation()
     }
-
 }

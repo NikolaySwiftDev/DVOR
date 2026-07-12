@@ -52,7 +52,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String) {
 //        guard let orgID = firebase.currentUser?.uid else {
         guard let orgID = firebase.currentUserId else {
-            router?.showAlertWithTitle("Зарегистрируйтесь")
+            router?.showAlertWithTitle("Sign up".loc)
             return
         }
         let model = EventModel(date: date,
@@ -76,14 +76,14 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
                     self.router?.popVC()
 //                }
             case .failure(let error):
-                router?.showAlertWithTitle("Ошибка сохранения")
+                router?.showAlertWithTitle("Save error")
                 view?.error(error: error)
             }
         })
     }
     
     func showInfoAlert() {
-        router?.showAlertWithTitle("Вы можете создать свое событие для проведения матча/турнира")
+        router?.showAlertWithTitle("You can create your own event for a match/tournament".loc)
     }
     
     deinit {

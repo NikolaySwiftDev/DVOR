@@ -48,26 +48,22 @@ extension PhotoManager: PhotoManagerProtocol {
         self.completion = completion
         self.maxSize = maxSize
         
-        let alert = UIAlertController(title: "Выбрать фото", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Choose a photo".loc, message: nil, preferredStyle: .actionSheet)
         
-        // Камера
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            alert.addAction(UIAlertAction(title: "Сделать фото", style: .default) { [weak self] _ in
+            alert.addAction(UIAlertAction(title: "Make a photo".loc, style: .default) { [weak self] _ in
                 self?.openCamera()
             })
         }
         
-        // Галерея
-        alert.addAction(UIAlertAction(title: "Выбрать из галереи", style: .default) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: "Choose from the gallery".loc, style: .default) { [weak self] _ in
             self?.openModernGallery()
         })
         
-        // Отмена
-        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: "Cancel".loc, style: .cancel) { [weak self] _ in
             self?.completion?(.failure(.cancelled))
         })
         
-        // Для iPad
         if let popoverController = alert.popoverPresentationController {
             popoverController.sourceView = router.navigationController.view
             popoverController.sourceRect = CGRect(x: router.navigationController.view.bounds.midX,
@@ -82,17 +78,16 @@ extension PhotoManager: PhotoManagerProtocol {
 // MARK: - Private Methods
 private extension PhotoManager {
     
-    //MARK: - Проверка размера изображения
+    //MARK: - Checking the image size
     private func checkImageSize(_ image: UIImage) -> Bool {
-        guard let maxSize = maxSize else { return true } // Если лимит не установлен
+        guard let maxSize = maxSize else { return true }
         
-        // Конвертируем изображение в Data для проверки размера
         guard let imageData = image.jpegData(compressionQuality: 1.0) else {
             return false
         }
         
         let imageSize = imageData.count
-        print("Размер изображения: \(imageSize) bytes, лимит: \(maxSize) bytes")
+        print("Image size: \(imageSize) bytes, limit: \(maxSize) bytes")
         
         return imageSize <= maxSize
     }

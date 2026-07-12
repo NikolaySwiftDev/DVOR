@@ -81,7 +81,7 @@ extension CreateAvatarViewController {
         let isValid = checkValidButton()
         chooseFoto.setTitle(isValid ? "Изменить фото" : "Выбрать фото", for: .normal)
         
-        changeNextButtonView(title: isValid ? "Продолжить" : "Пропустить",
+        changeNextButtonView(title: isValid ? "Продолжить" : "Skip".loc,
                              titleColor: isValid ? Constants.Colors.titleColor : Constants.Colors.textColor,
                              backColor: isValid ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor)
     }

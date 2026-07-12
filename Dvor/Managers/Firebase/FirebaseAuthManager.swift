@@ -75,10 +75,10 @@ enum AuthError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidEmail: return "Некорректный email"
-        case .weakPassword: return "Пароль должен быть не короче 6 символов"
-        case .emailAlreadyInUse: return "Почта уже зарегистрирована"
-        case .noUser: return "Пользователь не найден"
+        case .invalidEmail: return "Invalid email".loc
+        case .weakPassword: return "Password must be at least 6 characters long".loc
+        case .emailAlreadyInUse: return "Email already registered".loc
+        case .noUser: return "No user found".loc
         }
     }
 }

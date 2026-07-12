@@ -98,7 +98,7 @@ final class WelcomeOnboardingViewController: UIViewController {
 
     private let skipButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("Пропустить", for: .normal)
+        btn.setTitle("Skip".loc, for: .normal)
         btn.setTitleColor(Constants.Colors.inActiveColor, for: .normal)
         btn.titleLabel?.font = .poppins(weight: .semiBold, size: .small)
         return btn

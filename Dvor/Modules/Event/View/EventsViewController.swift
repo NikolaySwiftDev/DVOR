@@ -249,8 +249,8 @@ fileprivate struct HomeConstants {
     static let imageSort = "sortEvent"
     static let imageFetch = "arrow.triangle.2.circlepath"
     
-    static let titleSort = "Cортировать"
-    static let titleFetch  = "Обновить"
-    static let titleMatch  = "Матчи"
+    static let titleSort = "matches.title_sort".loc
+    static let titleFetch = "matches.title_refresh".loc
+    static let titleMatch = "matches.title".loc
 }
 

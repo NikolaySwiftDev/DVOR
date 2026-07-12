@@ -97,7 +97,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     func createAvatar() {
         let vc = CreateAvatarViewController(presenter: presenter)
         vc.setInfoForNavigationView(model: .avatar)
-        vc.changeNextButtonView(title: "Пропустить", titleColor: Constants.Colors.textColor)
+        vc.changeNextButtonView(title: "Skip".loc, titleColor: Constants.Colors.textColor)
         vc.onNext = { [weak self] avatar in
             if let image = avatar {
                 self?.registrationData.image = image.jpegData(compressionQuality: 0.3)
@@ -125,7 +125,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     func acceptNotification() {
         let vc = NotificationViewController(presenter: presenter)
         vc.setInfoForNavigationView(model: .pushNotif)
-        vc.changeNextButtonView(title: "Пропустить", titleColor: Constants.Colors.textColor, backColor: Constants.Colors.buttonInActiveColor)
+        vc.changeNextButtonView(title: "Skip".loc, titleColor: Constants.Colors.textColor, backColor: Constants.Colors.buttonInActiveColor)
         vc.onNext = { [weak self] in
             self?.showSuccess()
         }
@@ -160,7 +160,7 @@ struct RegistrationData: Codable {
     var name: String = "Name"
     var surname: String = "Surname"
     var dateBD: Date?
-    var position: String = "Вратарь"
+    var position: String = "Goalkeeper"
     var experience: String = "1 год"
     var image: Data?
     var city: String = ""

@@ -1,4 +1,3 @@
-
 import UIKit
 import SnapKit
 
@@ -13,18 +12,15 @@ final class DetailOrgInfoViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let mainStackView = UIStackView()
-    
-//    private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
-    
     private let orgImageView = UIImageView(cornerRadius: DetailOrgInfoConstants.cornerRadius)
     
-    private let titleLabel = UILabel(text: "Организатор", font: .poppins(weight: .bold, size: .big), textColor: .white)
+    private let titleLabel = UILabel(text: DetailOrgInfoConstants.organizerTitle.loc, font: .poppins(weight: .bold, size: .big), textColor: .white)
     private let nameLabel = UILabel(text: "", textColor: .white)
-    private let aboutTitle = UILabel(text: "О себе", font: .poppins(weight: .bold, size: .big), textColor: .white)
+    private let aboutTitle = UILabel(text: DetailOrgInfoConstants.aboutTitle.loc, font: .poppins(weight: .bold, size: .big), textColor: .white)
     private let aboutText = UILabel(text: "", textColor: Constants.Colors.inActiveColor)
-    private let responsibilitiesTitle = UILabel(text: "Мои обязанности:", font: .poppins(weight: .bold, size: .big), textColor: .white)
+    private let responsibilitiesTitle = UILabel(text: DetailOrgInfoConstants.responsibilitiesTitle.loc, font: .poppins(weight: .bold, size: .big), textColor: .white)
     private let responsibilitiesStack = UIStackView()
-    private let reminderLabel = UILabel(text: "Не забудьте! После матча/игры/мероприятия вы можете оценить мою работу",
+    private let reminderLabel = UILabel(text: DetailOrgInfoConstants.reminderText.loc,
                                         textColor: Constants.Colors.inActiveColor)
     
     // MARK: - Init
@@ -61,13 +57,11 @@ final class DetailOrgInfoViewController: UIViewController {
         responsibilitiesStack.spacing = 8
         responsibilitiesStack.alignment = .leading
         
-        // Добавление элементов
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(mainStackView)
 //        contentView.addSubview(backButton)
         
-        // Добавление в стек
         mainStackView.addArrangedSubview(orgImageView)
         mainStackView.addArrangedSubview(titleLabel)
         mainStackView.addArrangedSubview(nameLabel)
@@ -76,8 +70,6 @@ final class DetailOrgInfoViewController: UIViewController {
         mainStackView.addArrangedSubview(responsibilitiesTitle)
         mainStackView.addArrangedSubview(responsibilitiesStack)
         mainStackView.addArrangedSubview(reminderLabel)
-        
-
         
         Responsibilities.responsibilities.forEach { text in
             let label = UILabel(text: text, font: .poppins(weight: .medium, size: .mid), textColor: .white)
@@ -102,12 +94,6 @@ final class DetailOrgInfoViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-DetailOrgInfoConstants.paddingStandart)
         }
         
-//        backButton.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
-//            make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
-//            make.size.equalTo(Constants.Constraint.backButtonSize)
-//        }
-        
         orgImageView.snp.makeConstraints { make in
             make.height.equalTo(view.snp.height).multipliedBy(0.4)
             make.width.equalToSuperview()
@@ -117,7 +103,7 @@ final class DetailOrgInfoViewController: UIViewController {
     // MARK: - Cconfigure
     private func configureWithModel() {
         nameLabel.text = model.name
-        aboutText.text = "По всем вопросам обращайтесь в чат"
+        aboutText.text = DetailOrgInfoConstants.contactInChat.loc
         
         if let imageData = model.image, let image = UIImage(data: imageData) {
             orgImageView.image = image
@@ -140,4 +126,12 @@ fileprivate struct DetailOrgInfoConstants {
     static let paddingStandart: CGFloat = 20
     static let heightBackBtn: CGFloat = 40
 
+}
+
+extension DetailOrgInfoConstants {
+    static let organizerTitle = "organizer_title".loc
+    static let aboutTitle = "about_title".loc
+    static let responsibilitiesTitle = "responsibilities_title".loc
+    static let reminderText = "reminder_text".loc
+    static let contactInChat = "contact_in_chat".loc
 }

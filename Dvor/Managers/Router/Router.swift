@@ -204,7 +204,7 @@ class Router: RouterMainProtocol {
             handelr()
         }
         
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        let cancelAction = UIAlertAction(title: "Cancel".loc, style: .cancel)
         
         alert.addAction(repeatAction)
         alert.addAction(cancelAction)
@@ -218,7 +218,7 @@ class Router: RouterMainProtocol {
                                       message: nil,
                                       preferredStyle: .alert)
 
-        let cancelAction = UIAlertAction(title: "Ок",
+        let cancelAction = UIAlertAction(title: "Ok".loc,
                                          style: .default)
         
         alert.addAction(cancelAction)
@@ -228,11 +228,11 @@ class Router: RouterMainProtocol {
     
     //MARK: - Show Bottom Sheet Alert
     func showBottomSheetAlertForUser(model: UserModel) {
-        let alert = UIAlertController(title: "Пользователь инфо",
+        let alert = UIAlertController(title: "Info user".loc,
                                       message: nil,
                                       preferredStyle: .actionSheet)
         
-        let profile = UIAlertAction(title: "Профиль",
+        let profile = UIAlertAction(title: "Profile".loc,
                                     style: .default) { [weak self] _ in
             guard let self = self else { return }
 //            pushDetailUserInfo(model: model)
@@ -246,7 +246,7 @@ class Router: RouterMainProtocol {
 //            pushRatingVC(model: model)
 //        }
         
-        let cancel = UIAlertAction(title: "Отмена",
+        let cancel = UIAlertAction(title: "Cancel".loc,
                                    style: .destructive)
         
         alert.addAction(profile)
@@ -292,7 +292,7 @@ class Router: RouterMainProtocol {
         let search = MKLocalSearch(request: request)
         search.start { response, error in
             guard let mapItem = response?.mapItems.first else {
-                print("Не удалось найти локацию")
+                print("Location not found")
                 return
             }
             mapItem.name = location

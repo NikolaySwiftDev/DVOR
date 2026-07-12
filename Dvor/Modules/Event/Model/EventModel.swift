@@ -1,7 +1,10 @@
 import Foundation
 
 struct SegmentViewModel {
-    static let model = ["Текущие", "Ваши"]
+    static let model = [
+        "events.current".loc,
+        "events.yours".loc
+    ]
 }
 
 struct EventModel: Codable {
@@ -90,11 +93,11 @@ extension EventModel {
     }
     
     var formattedTime: String {
-        return time + "ч"
+        return time + "hour".loc
     }
     
     var priceString: String {
-        return "\(price) руб."
+        return "\(price)."
     }
     
     var participantsCount: Int {
@@ -159,4 +162,18 @@ extension EventModel {
             orgID: self.orgId
         )
     }
+}
+
+
+struct EventsPresenterStrings {
+    static let yourEventsOn = "your_events_on".loc
+    static let pleaseSelectEvent = "please_select_event".loc
+    static let needToLogIn = "need_to_log_in".loc
+    static let eventNotFound = "event_not_found".loc
+    static let cannotDeleteNotOwned = "cannot_delete_not_owned".loc
+    static let deleteError = "delete_error".loc
+    static let needToRegisterToCreate = "need_to_register_to_create".loc
+    static let signOutTitle = "sign_out_title".loc
+    static let signOutMessage = "sign_out_message".loc
+    static let yes = "yes".loc
 }

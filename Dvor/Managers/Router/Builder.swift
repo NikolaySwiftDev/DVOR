@@ -14,7 +14,7 @@ protocol BuilderProtocol: AnyObject {
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController
     
-    //Для отмены от таббара
+    //To cancel from tabbar
     func createHomeVC(router: RouterMainProtocol) -> UIViewController
     func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController
 }

@@ -1,0 +1,57 @@
+"create_event.enter_data" = "Enter event details";
+"create_event.address_placeholder" = "123 Any St., Apt. 1";
+"create_event.players_placeholder" = "8";
+"create_event.time_placeholder" = "11:22";
+"create_event.place_placeholder" = "School #29";
+"create_event.create" = "Create";
+"create_event.event_date" = "Event on";
+"create_event.players" = "Players per team";
+"create_event.start_time" = "Start time";
+"create_event.address" = "Address";
+"create_event.place" = "Venue";
+"common.done" = "Done";
+
+"detail.select_event" = "Select an event";
+"detail.add_account" = "Add an account";
+"detail.already_participating" = "Are you already participating in this event?";
+
+"detail.match_reminder" = "Match Reminder";
+"detail.event_tomorrow_at" = "The event will take place tomorrow at";
+
+"detail.queue_added" = "You have been added to the queue. The list of participants is already full, and there may not be enough seats for everyone!";
+"detail.user_added" = "User added";
+
+"detail.save_error" = "Save error";
+
+"detail.not_participating" = "You are not participating in this event";
+"detail.unsubscribed" = "You have unsubscribed from the event";
+"detail.delete_error" = "Error during deletion";
+
+"organizer_title" = "Organizer";
+"about_title" = "About";
+"responsibilities_title" = "My responsibilities:";
+"reminder_text" = "Don't forget! After the match/game/event you can rate my performance.";
+"contact_in_chat" = "For any questions, contact me in chat.";
+
+"organizer.meeting_players" = "⚽️ Meeting of players";
+"organizer.team_formation" = "⚽️ Formation of teams";
+"organizer.match_organization" = "⚽️ Organization of the match";
+"organizer.player_replacement" = "⚽️ Replacement of injured or absent players";
+
+"matches.title_sort" = "Sort";
+"matches.title_refresh" = "Refresh";
+"matches.title" = "Matches";
+
+"your_events_on" = "Your events on ";
+"please_select_event" = "Please select an event";
+"need_to_log_in" = "You need to log in";
+"event_not_found" = "Event not found";
+"cannot_delete_not_owned" = "You cannot delete an event you didn't create";
+"delete_error" = "Delete error";
+"need_to_register_to_create" = "You need to register to create an event";
+"sign_out_title" = "Sign out?";
+"sign_out_message" = "Are you sure you want to sign out?";
+"yes" = "Yes";
+"hour"="hour";
+"events.current" = "Current";
+"events.yours" = "Yours";

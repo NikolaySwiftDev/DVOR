@@ -1,16 +1,9 @@
 import UserNotifications
 
 protocol NotificationManagerProtocol: AnyObject {
-    // Запрос разрешения
     func requestAuthorization(completion: @escaping (Bool, Error?) -> Void)
-    
-    // Создание и отправка уведомлений
     func createNotification(identifier: String, title: String, body: String, date: Date)
-    
-    // Управление уведомлениями
     func cancelNotification(identifier: String)
-
-    // Проверка статуса разрешений
     func getAuthorizationStatus(completion: @escaping (UNAuthorizationStatus) -> Void)
 }
 
