@@ -11,7 +11,7 @@ class BaseRegistrationViewController: UIViewController {
     
     // MARK: - UI
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
-    let nextButton = UIButton.createStandartButton(title: "Продолжить", target: self, action: #selector(nextButtonTapped))
+    let nextButton = UIButton.createStandartButton(title: "Continue".loc, target: self, action: #selector(nextButtonTapped))
     private let progressBar: UIProgressView = {
         let progress = UIProgressView()
         progress.progressTintColor = Constants.Colors.layerColor

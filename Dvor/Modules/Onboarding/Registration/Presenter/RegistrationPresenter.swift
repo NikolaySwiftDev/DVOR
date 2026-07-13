@@ -67,7 +67,6 @@ final class RegistPresenter: RegistPresenterProtocol {
 //            guard let self = self else {return}
 //            switch result {
 //            case .success:
-//                // Новый пользователь: отправляем письмо с подтверждением
 //                self.firebase.sendEmailVerification { [weak self] sendResult in
 //                    guard let self = self else { return }
 //                    switch sendResult {
@@ -79,22 +78,18 @@ final class RegistPresenter: RegistPresenterProtocol {
 //                    }
 //                }
 //            case .failure(_):
-//                // Пытаемся войти
 //                self.firebase.signIn(email: email, password: password) { [weak self] signInResult in
 //                    guard let self = self else { return }
 //                    switch signInResult {
 //                    case .success:
-//                        // Пользователь уже существует: проверяем, верифицирован ли email
 //                        self.firebase.reloadUser { [weak self] reloadResult in
 //                            guard let self = self else { return }
 //                            switch reloadResult {
 //                            case .success:
 //                                if self.firebase.isEmailVerified {
-//                                    // Почта уже подтверждена — просто продолжаем flow без повторной отправки письма
-//                                    
+//
 //                                    self.view?.showInfoInput()
 //                                } else {
-//                                    // Почта не подтверждена — отправляем письмо и продолжаем как обычно
 //                                    self.firebase.sendEmailVerification { [weak self] sendResult in
 //                                        guard let self = self else { return }
 //                                        switch sendResult {
@@ -129,8 +124,8 @@ final class RegistPresenter: RegistPresenterProtocol {
                 if self.firebase.isEmailVerified {
                     self.view?.showSuccess()
                 } else {
-                    self.router?.showAlertWithTitle("Почта ещё не подтверждена")
-                    self.view?.showError("Почта ещё не подтверждена")
+                    self.router?.showAlertWithTitle(RegistPresenterStrings.emailNotVerified)
+                    self.view?.showError(RegistPresenterStrings.emailNotVerified)
                 }
             case .failure(let error):
                 self.view?.showError(error.localizedDescription)
@@ -146,7 +141,7 @@ final class RegistPresenter: RegistPresenterProtocol {
             self.view?.hideLoading()
             switch result {
             case .success:
-                self.router?.showAlertWithTitle("Письмо отправлено повторно")
+                self.router?.showAlertWithTitle(RegistPresenterStrings.verificationEmailSent)
             case .failure(let error):
                 self.view?.showError(error.localizedDescription)
             }
@@ -168,13 +163,13 @@ final class RegistPresenter: RegistPresenterProtocol {
             case .failure(let error):
                 self.view?.hideLoading()
                 if error != .cancelled {
-                    let errorMessage = error.errorDescription ?? "Ошибка выбора фото"
+                    let errorMessage = error.errorDescription ?? RegistPresenterStrings.photoPickerError
                     self.view?.showError(errorMessage)
                     self.router?.showAlertWithTitle(errorMessage)
                 }
                 
                 if error == .sizeExceeded(maxSize: SizeLimits.mb8) {
-                    let errorMessage = error.errorDescription ?? "Ошибка выбора фото"
+                    let errorMessage = error.errorDescription ?? RegistPresenterStrings.photoPickerError
                     self.view?.showError(errorMessage)
                     self.router?.showAlertWithTitle(errorMessage)
                     
@@ -193,7 +188,7 @@ final class RegistPresenter: RegistPresenterProtocol {
                 if granted {
                     view?.showSuccess()
                 } else {
-                    view?.showError("No notif")
+                    view?.showError(RegistPresenterStrings.notificationsDisabled)
                 }
             }
             view?.hideLoading()
@@ -201,13 +196,12 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
 
     func completeRegistration(model: RegistrationData) {
-        // Используем ID текущего пользователя из Firebase Auth, а не сгенерированный UUID
 //        guard let userId = firebase.currentUser?.uid else {
         
         firebase.signUp()
         
         guard let userId = firebase.currentUserId else {
-            router?.showAlertWithTitle("Ошибка: пользователь не авторизован")
+            router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
             return
         }
         
@@ -227,13 +221,15 @@ final class RegistPresenter: RegistPresenterProtocol {
             case .success(_):
                 router?.pushTabBarVC()
             case .failure(let error):
-                router?.showAlertConfigur(title: "Ошибка записи",
-                                          message: error.localizedDescription,
-                                          titleActionButton: "Продолжить",
-                                          handelr:  { [weak self] in
-                    guard let self = self else { return }
-                    self.router?.pushTabBarVC()
-                })
+                router?.showAlertConfigur(
+                    title: RegistPresenterStrings.writeErrorTitle,
+                    message: error.localizedDescription,
+                    titleActionButton: RegistPresenterStrings.continueButton,
+                    handelr: { [weak self] in
+                        guard let self = self else { return }
+                        self.router?.pushTabBarVC()
+                    }
+                )
             }
         })
     }
@@ -250,4 +246,16 @@ final class RegistPresenter: RegistPresenterProtocol {
     deinit {
         print("Deinit Registr Presenter")
     }
+}
+
+fileprivate struct RegistPresenterStrings {
+    static let emailNotVerified = "registration.email_not_verified".loc
+    static let verificationEmailSent = "registration.verification_email_sent".loc
+
+    static let photoPickerError = "registration.photo_picker_error".loc
+    static let notificationsDisabled = "registration.notifications_disabled".loc
+
+    static let unauthorizedUser = "registration.unauthorized_user".loc
+    static let writeErrorTitle = "registration.write_error_title".loc
+    static let continueButton = "common.continue".loc
 }

@@ -39,7 +39,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     func getProfileInto() {
 //        guard let idUser = firebase.currentUser?.uid else {
         guard let idUser = firebase.currentUserId else {
-            router?.showAlertWithTitle("Добавьте аккаунт")
+            router?.showAlertWithTitle("detail.add_account".loc)
             return
         }
         

@@ -63,14 +63,13 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let data = userModel else { return 0 }
-        return data.count + 1 // +1 для ячейки организатора
+        return data.count + 1 //
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let data = userModel else { return UITableViewCell() }
         guard let orgModel = orgModel else { return UITableViewCell() }
 
-        // Первая ячейка - организатор
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: OrganizatorTableViewCell.identifier,
@@ -82,7 +81,6 @@ extension UsersView: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
         
-        // Остальные ячейки - пользователи
         else {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: UserTableViewCell.identifier,

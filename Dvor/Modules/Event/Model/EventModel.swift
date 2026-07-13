@@ -121,7 +121,7 @@ extension EventModel {
     }
     
     var formattedTimeGame: String {
-        String(timeGame) + " мин"
+        String(timeGame) + " min"
     }
 }
 

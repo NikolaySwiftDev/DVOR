@@ -4,23 +4,23 @@ import Foundation
 extension Int {
     var placesString: String {
         guard self > 0 else {
-            return "уже набран"
+            return "places.full".loc
         }
-        
+
         let lastDigit = self % 10
         let lastTwoDigits = self % 100
-        
+
         if lastTwoDigits >= 11 && lastTwoDigits <= 14 {
-            return "еще \(self) мест"
+            return String(format: "places.remaining.many".loc, self)
         }
-        
+
         switch lastDigit {
         case 1:
-            return "еще \(self) место"
+            return String(format: "places.remaining.one".loc, self)
         case 2, 3, 4:
-            return "еще \(self) места"
+            return String(format: "places.remaining.few".loc, self)
         default:
-            return "еще \(self) мест"
+            return String(format: "places.remaining.many".loc, self)
         }
     }
 }

@@ -10,7 +10,7 @@ struct UserModel: Codable {
     let experience: String
     let city: String
     var email: String = ""
-    var gender: String = "муж"
+    var gender: String = "m"
     
     // for card
     var position: String
@@ -37,7 +37,7 @@ struct UserModel: Codable {
         experience: String,
         city: String,
         email: String = "",
-        gender: String = "муж",
+        gender: String = "m",
         position: String,
         followers: Int = 0,
         following: Int = 0,
@@ -76,7 +76,7 @@ struct UserModel: Codable {
     func toDictionary() -> [String: Any] {
         return [
             "id": id,
-            "image": image?.base64EncodedString() ?? "", // Конвертируем Data в Base64
+            "image": image?.base64EncodedString() ?? "",
             "name": name,
             "surname": surname,
             "dateBirthday": dateBirthday?.timeIntervalSince1970 ?? 0,
@@ -126,7 +126,7 @@ struct UserModel: Codable {
         self.experience = experience
         self.city = city
         self.email = dictionary["email"] as? String ?? ""
-        self.gender = dictionary["gender"] as? String ?? "муж"
+        self.gender = dictionary["gender"] as? String ?? "m"
         self.position = position
         self.followers = dictionary["followers"] as? Int ?? 0
         self.following = dictionary["following"] as? Int ?? 0
@@ -141,14 +141,12 @@ struct UserModel: Codable {
     }
 }
 
-// MARK: - Вспомогательные методы
+// MARK: - Auxiliary methods
 extension UserModel {
-    // Полное имя
     var fullName: String {
         return "\(name) \(surname)"
     }
     
-    // Возраст пользователя
     var age: Int? {
         guard let date = dateBirthday else { return nil }
         let calendar = Calendar.current

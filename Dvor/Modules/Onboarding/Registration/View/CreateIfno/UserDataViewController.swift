@@ -25,7 +25,6 @@ final class UserDataViewController: BaseRegistrationViewController {
     //MARK: - Next Button Action
     override func nextButtonTapped() {
         onNext?(position, experience)
-        print("Дата", position, experience)
     }
 }
 

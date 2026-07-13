@@ -61,7 +61,7 @@ extension String {
         return result
     }
     
-    // MARK: - Для firebase
+    // MARK: - For firebase
     func formatPhoneNumber() -> String {
         var cleanedNumber = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
         
@@ -71,21 +71,17 @@ extension String {
         
         return cleanedNumber
     }
-    
-    /// Форматирует строку как время в формате HH:mm
-    /// - Returns: Время в формате "12:00" или nil если невалидно
+
+    // MARK: - For 12:00
+
     func toTimeFormat() -> String? {
-        // Удаляем все нецифры
         let cleanString = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
         
-        // Проверяем длину
         guard cleanString.count == 4 else { return nil }
         
-        // Разделяем на часы и минуты
         let hourString = String(cleanString.prefix(2))
         let minuteString = String(cleanString.suffix(2))
         
-        // Проверяем валидность
         guard let hour = Int(hourString),
               let minute = Int(minuteString),
               (0...23).contains(hour),
@@ -96,12 +92,10 @@ extension String {
         return "\(hourString):\(minuteString)"
     }
     
-    /// Проверяет валидность времени
     var isValidTime: Bool {
         return toTimeFormat() != nil
     }
     
-    /// Форматирует строку как время (автоматическая вставка двоеточия)
     func formatAsTime() -> String {
         let cleanString = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
         

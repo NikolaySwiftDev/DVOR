@@ -10,18 +10,29 @@ extension OnboardingPage {
     static let pages: [OnboardingPage] = [
         OnboardingPage(
             emoji: "⚽️",
-            title: "Твой матч\nв пару кликов",
-            subtitle: "Создавай события, зови друзей\nи находи игроков рядом"
+            title: OnboardingStrings.firstTitle,
+            subtitle: OnboardingStrings.firstSubtitle
         ),
         OnboardingPage(
             emoji: "🤝",
-            title: "Записывайся\nна чужие игры",
-            subtitle: "Видишь матч — жми «Участвую».\nОрганизатор получит уведомление"
+            title: OnboardingStrings.secondTitle,
+            subtitle: OnboardingStrings.secondSubtitle
         ),
         OnboardingPage(
             emoji: "🏆",
-            title: "Расти\nкак игрок",
-            subtitle: "После матча оцениваете друг друга.\nСобирай MVP и повышай уровень"
+            title: OnboardingStrings.thirdTitle,
+            subtitle: OnboardingStrings.thirdSubtitle
         )
     ]
+}
+
+fileprivate struct OnboardingStrings {
+    static let firstTitle = "onboarding.first.title".loc
+    static let firstSubtitle = "onboarding.first.subtitle".loc
+
+    static let secondTitle = "onboarding.second.title".loc
+    static let secondSubtitle = "onboarding.second.subtitle".loc
+
+    static let thirdTitle = "onboarding.third.title".loc
+    static let thirdSubtitle = "onboarding.third.subtitle".loc
 }

@@ -2,39 +2,37 @@
 import Foundation
 
 enum BaseRegistPosition {
-    case email, info, experience, avatar, /*geo,*/ pushNotif
-    
+    case email, info, experience, avatar, geo, pushNotif
+
     var titleMain: String {
         switch self {
         case .email:
-            "Введите почту"
-        case .info:
-            "Профиль"
-        case .experience:
-            "Профиль"
+            BaseRegistStrings.enterEmail
+        case .info, .experience:
+            BaseRegistStrings.profile
         case .avatar:
-            "Аватар"
-//        case .geo:
-//            "Город"
+            BaseRegistStrings.avatar
+        case .geo:
+            BaseRegistStrings.city
         case .pushNotif:
-            "Включите уведомления"
+            BaseRegistStrings.enableNotifications
         }
     }
-    
+
     var titleDesc: String {
         switch self {
         case .email:
-            "Чтобы войти в приложение"
+            BaseRegistStrings.enterEmailDescription
         case .info:
-            "Введите ваши данные"
+            BaseRegistStrings.enterProfileData
         case .experience:
-            "Выберите опыт игры и вашу позицию"
+            BaseRegistStrings.selectExperience
         case .avatar:
-            "Выберите фотографию профиля"
-//        case .geo:
-//            "Выберите город в котором будете играть"
+            BaseRegistStrings.selectAvatar
+        case .geo:
+            BaseRegistStrings.selectCity
         case .pushNotif:
-            "Приложение ДВОР запрашивает доступ на отправку вам уведомлений"
+            BaseRegistStrings.notificationsDescription
         }
     }
 
@@ -43,18 +41,18 @@ enum BaseRegistPosition {
         case .email:
             ""
         case .info:
-            "1/4"
+            "1/5"
         case .experience:
-            "2/4"
+            "2/5"
         case .avatar:
-            "3/4"
-//        case .geo:
-//            "4/5"
+            "3/5"
+        case .geo:
+            "4/5"
         case .pushNotif:
-            "4/4"
+            "5/5"
         }
     }
-    
+
     var progress: Float {
         switch self {
         case .email:
@@ -65,19 +63,29 @@ enum BaseRegistPosition {
             0.4
         case .avatar:
             0.6
-//        case .geo:
-//            0.8
+        case .geo:
+            0.8
         case .pushNotif:
             1
         }
     }
-    
+
     var showTitleView: Bool {
-        switch self {
-        case .email:
-            true
-        default:
-            false
-        }
+        self == .email
     }
+}
+
+fileprivate struct BaseRegistStrings {
+    static let enterEmail = "base_regist.enter_email".loc
+    static let profile = "base_regist.profile".loc
+    static let avatar = "base_regist.avatar".loc
+    static let city = "base_regist.city".loc
+    static let enableNotifications = "base_regist.enable_notifications".loc
+
+    static let enterEmailDescription = "base_regist.enter_email_description".loc
+    static let enterProfileData = "base_regist.enter_profile_data".loc
+    static let selectExperience = "base_regist.select_experience".loc
+    static let selectAvatar = "base_regist.select_avatar".loc
+    static let selectCity = "base_regist.select_city".loc
+    static let notificationsDescription = "base_regist.notifications_description".loc
 }

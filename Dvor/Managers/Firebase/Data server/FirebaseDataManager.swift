@@ -31,12 +31,11 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     private let usersPath = "users"
     
     init() {
-        let databaseURL = "https://dvor-496f1-default-rtdb.europe-west1.firebasedatabase.app/"
         Database.database().isPersistenceEnabled = true
-        database = Database.database(url: databaseURL).reference()
+        database = Database.database(url: FirebaseDataManagerConstants.databaseURL).reference()
     }
     
-    //MARK: - Общий метод получения всех событий
+    //MARK: - Fetch Events
     func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {
         database.child(eventsPath).observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let self = self else { return }
@@ -44,10 +43,10 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         }
     }
     
-    //MARK: - Получение одного события по ID
+    //MARK: - Fetch Event from ID
     func fetchEvent(idEvent: String, completion: @escaping (Result<EventModel, Error>) -> Void) {
         guard !idEvent.isEmpty else {
-            completion(.failure(NSError(domain: "InvalidEventID", code: 400, userInfo: [NSLocalizedDescriptionKey: "The event ID cannot be empty".loc])))
+            completion(.failure(FirebaseDataError.invalidEventID))
             return
         }
         
@@ -55,13 +54,13 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         
         eventRef.observeSingleEvent(of: .value) { snapshot in
             guard snapshot.exists() else {
-                completion(.failure(NSError(domain: "EventNotFound", code: 404, userInfo: [NSLocalizedDescriptionKey: "Событие не найдено"])))
+                completion(.failure(FirebaseDataError.eventNotFound))
                 return
             }
             
             guard let eventData = snapshot.value as? [String: Any],
                   let event = EventModel(from: eventData) else {
-                completion(.failure(NSError(domain: "InvalidEventData", code: 500, userInfo: [NSLocalizedDescriptionKey: "Incorrect event data format".loc])))
+                completion(.failure(FirebaseDataError.invalidEventData))
                 return
             }
             
@@ -69,7 +68,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         }
     }
     
-    //MARK: - Общий метод получения всех участников ОДНОГО события + организатора
+    //MARK: - Fetch All Users From Event
     func fetchAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void) {
         let uniqueIDs = Array(Set(usersID)).filter { !$0.isEmpty }
         
@@ -78,7 +77,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             return
         }
 
-        let usersRef = database.child("users")
+        let usersRef = database.child(usersPath)
         var users: [UserModel] = []
         var organizator: UserModel?
         let group = DispatchGroup()
@@ -118,7 +117,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         }
     }
   
-    //MARK: - Обращение к БД запросом
+    //MARK: - Accessing the database with a query
     private func processSnapshot(_ snapshot: DataSnapshot, completion: @escaping (Result<[EventModel], Error>) -> Void) {
         guard snapshot.exists() else {
             completion(.success([]))
@@ -140,21 +139,21 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     //MARK: - Getting a single user
     func fetchUser(idUser: String, completion: @escaping (Result<UserModel, Error>) -> Void) {
         guard !idUser.isEmpty else {
-            completion(.failure(NSError(domain: "InvalidUserID", code: 400, userInfo: [NSLocalizedDescriptionKey: "The user's ID cannot be empty".loc])))
+            completion(.failure(FirebaseDataError.invalidUserID))
             return
         }
         
-        let userRef = database.child("users").child(idUser)
+        let userRef = database.child(usersPath).child(idUser)
         
         userRef.observeSingleEvent(of: .value) { snapshot in
             guard snapshot.exists() else {
-                completion(.failure(NSError(domain: "UserNotFound", code: 404, userInfo: [NSLocalizedDescriptionKey: "The user was not found".loc])))
+                completion(.failure(FirebaseDataError.userNotFound))
                 return
             }
             
             guard let userData = snapshot.value as? [String: Any],
                   let user = UserModel(from: userData) else {
-                completion(.failure(NSError(domain: "InvalidUserData", code: 500, userInfo: [NSLocalizedDescriptionKey: "Invalid user data format".loc])))
+                completion(.failure(FirebaseDataError.invalidUserData))
                 return
             }
             
@@ -170,7 +169,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             if let error = error {
                 completion(.failure(error))
             } else {
-                completion(.success("Event added".loc))
+                completion(.success(FirebaseDataManagerConstants.eventAdded))
             }
         }
     }
@@ -183,14 +182,14 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             if let error = error {
                 completion(.failure(error))
             } else {
-                completion(.success("Event added".loc))
+                completion(.success(FirebaseDataManagerConstants.userAdded))
             }
         }
     }
     
     //MARK: - Adding a user to an event in the database
     func writeUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
-        let usersRef = database.child(eventsPath).child(idEvent).child("users")
+        let usersRef = database.child(eventsPath).child(idEvent).child(usersPath)
         
         usersRef.observeSingleEvent(of: .value) { snapshot in
             var currentUsers = snapshot.value as? [String] ?? []
@@ -223,20 +222,20 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             if let error = error {
                 completion(.failure(error))
             } else {
-                completion(.success("Event added"))
+                completion(.success(FirebaseDataManagerConstants.eventDeleted))
             }
         }
     }
     
     //MARK: - Removing a user from an event
     func removeUserFromEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
-        let usersRef = database.child(eventsPath).child(idEvent).child("users")
+        let usersRef = database.child(eventsPath).child(idEvent).child(usersPath)
         
         usersRef.observeSingleEvent(of: .value) { snapshot in
             var currentUsers = snapshot.value as? [String] ?? []
             
             guard let userIndex = currentUsers.firstIndex(of: idUser) else {
-                completion(.failure(NSError(domain: "UserNotInEvent", code: 404, userInfo: [NSLocalizedDescriptionKey: "The user was not found in the event".loc])))
+                completion(.failure(FirebaseDataError.userNotInEvent))
                 return
             }
             

@@ -77,7 +77,7 @@ enum SupportNavigationBarState {
     var titleText: String {
         switch self {
         case .createEvent:
-            return "Создание события"
+            return "Create event".loc
         }
     }
 }

@@ -4,7 +4,6 @@ import UIKit
 final class CreateAvatarViewController: BaseRegistrationViewController {
     
     //MARK: - Properties
-//    private lazy var avatar = UIImage(systemName: "person.and.background.dotted")
     private var avatar: UIImage?
     var onNext: ((UIImage?) -> Void)?
     
@@ -12,7 +11,7 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
     private lazy var avatarImageView = UIImageView(systemImage: "person.and.background.dotted", cornerRadius: 125)
     
     private let chooseFoto = UIButton.createStandartButton(
-        title: "Выбрать фото",
+        title: CreateAvatarStrings.choosePhoto,
         backgroundColor: Constants.Colors.buttonActiveColor,
         target: self,
         action: #selector(chooseFotoButtonTapped)
@@ -79,11 +78,17 @@ extension CreateAvatarViewController {
     
     private func updateNextButtonState() {
         let isValid = checkValidButton()
-        chooseFoto.setTitle(isValid ? "Изменить фото" : "Выбрать фото", for: .normal)
-        
-        changeNextButtonView(title: isValid ? "Продолжить" : "Skip".loc,
-                             titleColor: isValid ? Constants.Colors.titleColor : Constants.Colors.textColor,
-                             backColor: isValid ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor)
+
+        chooseFoto.setTitle(
+            isValid ? CreateAvatarStrings.changePhoto : CreateAvatarStrings.choosePhoto,
+            for: .normal
+        )
+
+        changeNextButtonView(
+            title: isValid ? "Continue".loc : "Skip".loc,
+            titleColor: isValid ? Constants.Colors.titleColor : Constants.Colors.textColor,
+            backColor: isValid ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor
+        )
     }
     
     //MARK: - Check Valid Button
@@ -93,3 +98,7 @@ extension CreateAvatarViewController {
     }
 }
 
+fileprivate struct CreateAvatarStrings {
+    static let choosePhoto = "create_avatar.choose_photo".loc
+    static let changePhoto = "create_avatar.change_photo".loc
+}

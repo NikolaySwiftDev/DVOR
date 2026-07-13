@@ -94,11 +94,10 @@ extension EventsTableView: UITableViewDataSource, UITableViewDelegate {
         cell.configure(with: event)
         cell.delegate = cellDelegate
 
-        // Аватарки участников (не более 3, только у кого есть фото)
         let avatarImages: [UIImage?] = event.users
             .prefix(3)
             .compactMap { userID -> UIImage? in
-                userAvatars[userID]  // nil если нет фото — ячейка сама покажет placeholder
+                userAvatars[userID]
             }
         cell.configureAvatars(avatarImages)
 
@@ -111,7 +110,7 @@ extension EventsTableView: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let deleteAction = UIContextualAction(style: .destructive, title: "Удалить") { [weak self] (_, _, completion) in
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete".loc) { [weak self] (_, _, completion) in
             guard let self = self else { return }
             let eventId = self.events[indexPath.row].id
             self.delegate?.removeSelectedEvent(eventId)

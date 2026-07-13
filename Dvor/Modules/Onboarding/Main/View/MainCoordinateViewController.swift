@@ -16,7 +16,7 @@ final class MainCoordinateViewController: UIViewController {
     private let skipButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitle(AuthModel.skipButtonTitle, for: .normal)
-        btn.setTitleColor(.white, for: .normal) // Временный явный цвет
+        btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
         btn.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)
         return btn
@@ -35,7 +35,7 @@ final class MainCoordinateViewController: UIViewController {
     
     private let registrButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle(AuthModel.registButtonTitle, for: .normal)
+        btn.setTitle(AuthModel.registrationButtonTitle, for: .normal)
         btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
         btn.backgroundColor = Constants.Colors.buttonActiveColor
         btn.layer.cornerRadius = Constants.Constraint.cornerRadius
@@ -105,7 +105,7 @@ private extension MainCoordinateViewController {
 }
 
 fileprivate struct AuthModel {
-    static let skipButtonTitle = "Skip".loc
-    static let enterButtonTitle = "Войти"
-    static let registButtonTitle = "Регистрация"
+    static let skipButtonTitle = "auth.skip".loc
+    static let enterButtonTitle = "auth.enter".loc
+    static let registrationButtonTitle = "auth.registration".loc
 }

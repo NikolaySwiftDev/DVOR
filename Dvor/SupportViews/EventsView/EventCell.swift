@@ -172,7 +172,6 @@ final class EventTableViewCell: UITableViewCell {
         if let img = image {
             imageView.image = img
         } else {
-            // Placeholder: системная иконка персоны
             let config = UIImage.SymbolConfiguration(pointSize: size * 0.5, weight: .light)
             imageView.image = UIImage(systemName: "person.fill", withConfiguration: config)
             imageView.tintColor = UIColor.systemGray3

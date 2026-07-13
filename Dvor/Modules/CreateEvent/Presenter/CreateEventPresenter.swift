@@ -48,11 +48,11 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         router?.popVC()
     }
     
-    //MARK: - Записсь события в БД
+    //MARK: - Record events in the database
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String) {
 //        guard let orgID = firebase.currentUser?.uid else {
         guard let orgID = firebase.currentUserId else {
-            router?.showAlertWithTitle("Sign up".loc)
+            router?.showAlertWithTitle(CreateEventPresenterStrings.signUp)
             return
         }
         let model = EventModel(date: date,
@@ -71,22 +71,28 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-//                router?.showAlertConfigur(title: success, message: nil, titleActionButton: "Вернуться") { [weak self] in
+//                router?.showAlertConfigur(title: success, message: nil, titleActionButton: "Back") { [weak self] in
 //                    guard let self = self else { return }
                     self.router?.popVC()
 //                }
             case .failure(let error):
-                router?.showAlertWithTitle("Save error")
+                router?.showAlertWithTitle(CreateEventPresenterStrings.saveError)
                 view?.error(error: error)
             }
         })
     }
     
     func showInfoAlert() {
-        router?.showAlertWithTitle("You can create your own event for a match/tournament".loc)
+        router?.showAlertWithTitle(CreateEventPresenterStrings.infoAlert)
     }
     
     deinit {
         print("CreateEventPresenter deinitialized")
     }
+}
+
+fileprivate struct CreateEventPresenterStrings {
+    static let signUp = "create_event.sign_up".loc
+    static let saveError = "common.save_error".loc
+    static let infoAlert = "create_event.info_alert".loc
 }

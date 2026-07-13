@@ -1,5 +1,14 @@
 import Foundation
 
+fileprivate struct PhotoPickerStrings {
+    static let noCameraAvailable = "photo_picker.no_camera_available".loc
+    static let noPhotoSelected = "photo_picker.no_photo_selected".loc
+    static let permissionDenied = "photo_picker.permission_denied".loc
+    static let unknownError = "photo_picker.unknown_error".loc
+    static let cancelled = "photo_picker.cancelled".loc
+    static let sizeExceeded = "photo_picker.size_exceeded".loc
+}
+
 enum PhotoError: Error, LocalizedError, Equatable {
     case noCameraAvailable
     case noPhotoSelected
@@ -10,14 +19,24 @@ enum PhotoError: Error, LocalizedError, Equatable {
     
     var errorDescription: String? {
         switch self {
-        case .noCameraAvailable: return "Камера недоступна"
-        case .noPhotoSelected: return "Фото не выбрано"
-        case .permissionDenied: return "Доступ к галерее запрещен"
-        case .unknownError: return "Неизвестная ошибка"
-        case .cancelled: return "Выбор отменен"
+        case .noCameraAvailable:
+            return PhotoPickerStrings.noCameraAvailable
+
+        case .noPhotoSelected:
+            return PhotoPickerStrings.noPhotoSelected
+
+        case .permissionDenied:
+            return PhotoPickerStrings.permissionDenied
+
+        case .unknownError:
+            return PhotoPickerStrings.unknownError
+
+        case .cancelled:
+            return PhotoPickerStrings.cancelled
+
         case .sizeExceeded(let maxSize):
             let sizeInMB = maxSize / (1024 * 1024)
-            return "Размер фото превышает \(sizeInMB) MB"
+            return String(format: PhotoPickerStrings.sizeExceeded, sizeInMB)
         }
     }
 }

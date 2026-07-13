@@ -89,7 +89,7 @@ final class WelcomeOnboardingViewController: UIViewController {
 
     private let logoLabel: UILabel = {
         let label = UILabel()
-        label.text = "ДВОР"
+        label.text = "DVOR"
         label.font = .poppins(weight: .bold, size: .big)
         label.textColor = Constants.Colors.textColor
         label.textAlignment = .center
@@ -98,7 +98,7 @@ final class WelcomeOnboardingViewController: UIViewController {
 
     private let skipButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("Skip".loc, for: .normal)
+        btn.setTitle(OnboardingConstants.skipButtonTitle, for: .normal)
         btn.setTitleColor(Constants.Colors.inActiveColor, for: .normal)
         btn.titleLabel?.font = .poppins(weight: .semiBold, size: .small)
         return btn
@@ -114,7 +114,7 @@ final class WelcomeOnboardingViewController: UIViewController {
 
     private let actionButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("Далее", for: .normal)
+        btn.setTitle(OnboardingConstants.nextButtonTitle, for: .normal)
         btn.setTitleColor(Constants.Colors.titleColor, for: .normal)
         btn.backgroundColor = Constants.Colors.buttonActiveColor
         btn.layer.cornerRadius = Constants.Constraint.cornerRadius
@@ -214,7 +214,7 @@ final class WelcomeOnboardingViewController: UIViewController {
 
     private func updateState(animated: Bool) {
         let isLast = currentIndex == pages.count - 1
-        let title = isLast ? "Начать" : "Далее"
+        let title = isLast ? OnboardingConstants.startButtonTitle : OnboardingConstants.nextButtonTitle
         if animated {
             UIView.transition(with: actionButton,
                               duration: 0.2,
@@ -260,3 +260,9 @@ extension WelcomeOnboardingViewController: UIPageViewControllerDelegate {
     }
 }
 
+fileprivate struct OnboardingConstants {
+    static let logoTitle = "onboarding.logo".loc
+    static let skipButtonTitle = "onboarding.skip".loc
+    static let nextButtonTitle = "onboarding.next".loc
+    static let startButtonTitle = "onboarding.start".loc
+}

@@ -10,7 +10,7 @@ final class OrganizatorTableViewCell: UITableViewCell {
     private let avatarImageView = UIImageView(cornerRadius: 20)
     
     private let nameLabel = UILabel.init(font: .poppins(weight: .bold, size: .mid))
-    private let orgLabel = UILabel(text: "Организатор")
+    private let orgLabel = UILabel(text: "Organizer".loc)
     
     private let personImage = UIImageView(systemImage: "person.fill")
 

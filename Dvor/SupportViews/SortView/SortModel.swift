@@ -2,16 +2,21 @@
 import Foundation
 
 enum TypeView: String {
-    case sort = "Сортировка"
-    case filter = "Фильтры"
+    
+    case sort = "sort"
+    case filter = "filter"
+    
+    var title: String {
+        rawValue.loc
+    }
     
     var sortArray: [SortCellModel] {
         switch self {
         case .sort:
             return [
-                SortCellModel(title: "По кол-ву участников", predicate: .count),
-                SortCellModel(title: "По времени", predicate: .time),
-                SortCellModel(title: "По адресу", predicate: .address)
+                SortCellModel(title: "sort.participants_count".loc, predicate: .count),
+                SortCellModel(title: "sort.time".loc, predicate: .time),
+                SortCellModel(title: "sort.address".loc, predicate: .address)
             ]
         case .filter:
             return []

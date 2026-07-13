@@ -2,7 +2,7 @@
 import Foundation
 
 struct DetailSegmentModel {
-    let items = ["Инфо", "Участники", /*"Комментарии"*/]
+    let items = ["Info".loc, "Participants".loc, "Comments".loc]
 }
 
 enum DetailSegmentViewPosition: CaseIterable {

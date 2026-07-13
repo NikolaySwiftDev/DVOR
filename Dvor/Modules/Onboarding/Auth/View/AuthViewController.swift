@@ -7,14 +7,11 @@ final class AuthViewController: UIViewController {
     var presenter: AuthPresenterProtocol?
     private var heightKeyboard: CGFloat = Constants.Constraint.verticalPadding
 
-    
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
-    private let nextButton = UIButton.createStandartButton(title: "Продолжить", target: self, action: #selector(nextButtonTapped))
-    private let emailTF = AuthTextFieldView(placeholder: "Почта")
-    private let passwordTF = AuthTextFieldView(placeholder: "Пароль")
-    private let titleLabel = UILabel(text: "Авторизация", font: .poppins(weight: .bold, size: .big))
-    
-    
+    private let nextButton = UIButton.createStandartButton(title: AuthConstants.continueButton, target: self, action: #selector(nextButtonTapped))
+    private let emailTF = AuthTextFieldView(placeholder: AuthConstants.emailPlaceholder)
+    private let passwordTF = AuthTextFieldView(placeholder: AuthConstants.passwordPlaceholder)
+    private let titleLabel = UILabel(text: AuthConstants.authorizationTitle, font: .poppins(weight: .bold, size: .big))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,4 +106,11 @@ extension AuthViewController {
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
+}
+
+fileprivate struct AuthConstants {
+    static let continueButton = "auth.continue".loc
+    static let emailPlaceholder = "auth.email".loc
+    static let passwordPlaceholder = "auth.password".loc
+    static let authorizationTitle = "auth.authorization".loc
 }

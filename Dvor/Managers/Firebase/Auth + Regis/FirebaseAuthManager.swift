@@ -2,14 +2,14 @@ import Foundation
 import FirebaseAuth
 
 protocol FirebaseAuthManagerProtocol: AnyObject {
-//    var currentUser: User? { get } для firebase
+//    var currentUser: User? { get } for firebase
     var currentUserId: String? { get }
     var isAuthorized: Bool { get }
     var isEmailVerified: Bool { get }
 
-//    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) для firebase
+//    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) for firebase
     func signUp()
-//    func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) для firebase
+//    func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) for firebase
     func signIn(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void)
 
     func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void)
@@ -69,19 +69,6 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
 //        email.range(of: #"^\S+@\S+\.\S+$"#, options: .regularExpression) != nil
 //    }
 //}
-
-enum AuthError: LocalizedError {
-    case invalidEmail, weakPassword, emailAlreadyInUse, noUser
-
-    var errorDescription: String? {
-        switch self {
-        case .invalidEmail: return "Invalid email".loc
-        case .weakPassword: return "Password must be at least 6 characters long".loc
-        case .emailAlreadyInUse: return "Email already registered".loc
-        case .noUser: return "No user found".loc
-        }
-    }
-}
 
 
 final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {

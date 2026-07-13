@@ -61,7 +61,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         self.firebase = firebase
     }
     
-    //MARK: - Общая обработка результатов
+    //MARK: - General processing of results
     private func handleEventsResult(_ result: Result<[EventModel], Error>) {
         switch result {
         case .success(let events):
@@ -76,7 +76,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         }
     }
     
-    //MARK: - Общий метод отправки запроса и наблюдение за БД
+    //MARK: - General method of sending a request and monitoring the database
     func fetchEvents() {
         network?.fetchEvents(completion: { [weak self] result in
             guard let self = self else { return }
@@ -99,7 +99,7 @@ final class EventsPresenter: EventsPresenterProtocol {
                 guard let self = self else { return }
                 
                 if case .success(let user) = result, let data = user.image {
-                    self.userAvatars[userID] = data  // просто Data, без UIImage
+                    self.userAvatars[userID] = data
                 }
             }
         }
@@ -110,7 +110,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         }
     }
     
-    //MARK: - фильтрация Событий по Дате
+    //MARK: - Filtering Events by Date
     func filterEventsWithDate(date: Date) {
         guard let events = events else { return }
         if personlaMode {
@@ -134,7 +134,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         }
     }
     
-    //MARK: - фильтрация Событий по заданному параметру
+    //MARK: - Filtering Events by a specified parameter
 
     func sortEventsWithPredicate(predicate: SortPredicate) {
         switch predicate {
@@ -163,14 +163,13 @@ final class EventsPresenter: EventsPresenterProtocol {
         
     }
 
-    //MARK: - Удаление собитыя
+    //MARK: - Deleting an event
     func deleteEvent(eventId: String) {
         guard eventId != "" else {
             router?.showAlertWithTitle(EventsPresenterStrings.pleaseSelectEvent)
             return
         }
         
-        // Проверяем, является ли текущий пользователь участником или организатором события
 //        guard let currentUserId = firebase.currentUser?.uid else {
         guard let currentUserId = firebase.currentUserId else {
             router?.showAlertWithTitle(EventsPresenterStrings.needToLogIn)
@@ -203,23 +202,23 @@ final class EventsPresenter: EventsPresenterProtocol {
         })
     }
     
-    //MARK: - Отображение на карте
+    //MARK: - Display on the map
     func showLocationOnMap(location: String) {
         router?.showLocationOnMap(location: location)
     }
     
-    //MARK: - Пуш в детальный экран
+    //MARK: - Push to the detail screen
     func pushDetailVC(model: EventModel) {
         let details = model.toDetailModel()
         router?.pushDetailVC(model: details)
     }
 
-    //MARK: - Пуш в детальный экран
+    //MARK: - Push to the profile screen
     func pushProfileVC() {
         router?.pushProfileVC(model: nil)
     }
     
-    //MARK: - Пуш в экран создания события
+    //MARK: - Push to the create screen
     func pushCreateEvent() {
 //        guard firebase.currentUser?.uid != nil else {
         guard firebase.currentUserId != nil else {
@@ -229,6 +228,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         router?.pushCreateEvent(date: lastFilterDate)
     }
     
+    //MARK: - Sign Out
     func signOut() {
         router?.showAlertConfigur(title: EventsPresenterStrings.signOutTitle,
                                   message: EventsPresenterStrings.signOutMessage,

@@ -240,7 +240,7 @@ class Router: RouterMainProtocol {
 
         }
         
-//        let events = UIAlertAction(title: "Оценка",
+//        let events = UIAlertAction(title: "Estimation",
 //                                   style: .default) {[weak self] _ in
 //            guard let self = self else { return }
 //            pushRatingVC(model: model)

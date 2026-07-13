@@ -55,3 +55,147 @@
 "hour"="hour";
 "events.current" = "Current";
 "events.yours" = "Yours";
+
+"auth.continue" = "Continue";
+"auth.email" = "Email";
+"auth.password" = "Password";
+"auth.authorization" = "Authorization";
+"auth.skip" = "Skip";
+"auth.enter" = "Enter";
+"auth.registration" = "Registration";
+
+"onboarding.first.title" = "Your match\nin a couple of taps";
+"onboarding.first.subtitle" = "Create events, invite friends,\nand find nearby players";
+
+"onboarding.second.title" = "Join\nother people's matches";
+"onboarding.second.subtitle" = "See a match? Tap \"I'm in\".\nThe organizer will be notified";
+
+"onboarding.third.title" = "Grow\nas a player";
+"onboarding.third.subtitle" = "Rate each other after the match.\nCollect MVP awards and level up";
+
+"onboarding.logo" = "DVOR";
+"onboarding.skip" = "Skip";
+"onboarding.next" = "Next";
+"onboarding.start" = "Start";
+
+"profile.position.title" = "Position";
+"profile.experience.title" = "Playing experience";
+
+"profile.position.goalkeeper" = "Goalkeeper";
+"profile.position.defender" = "Defender";
+"profile.position.midfielder" = "Midfielder";
+"profile.position.forward" = "Forward";
+
+"profile.experience.less_than_year" = "Less than a year";
+"profile.experience.one_two_years" = "1–2 years";
+"profile.experience.three_four_years" = "3–4 years";
+"profile.experience.five_plus_years" = "5+ years";
+
+"profile.city" = "City";
+
+"registration.email_not_verified" = "Email has not been verified yet";
+"registration.verification_email_sent" = "Verification email sent again";
+"registration.photo_picker_error" = "Photo selection error";
+"registration.notifications_disabled" = "Notifications are disabled";
+"registration.unauthorized_user" = "Error: user is not authorized";
+"registration.write_error_title" = "Write error";
+
+"common.continue" = "Continue";
+
+"rating.title" = "Rating";
+"rating.important" = "IMPORTANT";
+"rating.description" = "You will be able to rate other players only if you are registered for the event and after it has ended 😊";
+
+"rating.attitude.title" = "Player attitude";
+"rating.attitude.description" = "Rate your interactions with this player both on and off the field.";
+
+"common.save" = "Save";
+
+"places.full" = "Already full";
+
+"places.remaining.one" = "%d place left";
+"places.remaining.few" = "%d places left";
+"places.remaining.many" = "%d places left";
+
+"auth.invalid_email" = "Invalid email";
+"auth.weak_password" = "Password must be at least 6 characters long";
+"auth.email_already_in_use" = "Email already registered";
+"auth.no_user" = "No user found";
+
+"firebase.invalid_event_id" = "The event ID cannot be empty";
+"firebase.event_not_found" = "Event not found";
+"firebase.invalid_event_data" = "Incorrect event data format";
+
+"firebase.invalid_user_id" = "The user's ID cannot be empty";
+"firebase.user_not_found" = "The user was not found";
+"firebase.invalid_user_data" = "Invalid user data format";
+"firebase.user_not_found_in_event" = "The user was not found in the event";
+
+"firebase.event_added" = "Event added";
+"firebase.user_added" = "User added";
+"firebase.event_deleted" = "Event deleted";
+
+"photo_picker.no_camera_available" = "Camera is not available";
+"photo_picker.no_photo_selected" = "No photo selected";
+"photo_picker.permission_denied" = "Photo library access denied";
+"photo_picker.unknown_error" = "Unknown error";
+"photo_picker.cancelled" = "Selection cancelled";
+"photo_picker.size_exceeded" = "Photo size exceeds %d MB";
+
+"create_event.sign_up" = "Sign up";
+"create_event.info_alert" = "You can create your own event for a match or tournament.";
+
+"common.save_error" = "Save error";
+"common.profile" = "Profile";
+
+"create_avatar.choose_photo" = "Choose photo";
+"create_avatar.change_photo" = "Change photo";
+"infoInput.nikname"="Nikname";
+"regist.succes_regsit"="Successful registration";
+"regist.moving"="Moving on to the list of matches...";
+
+"enteremail.char"="Minimum of 6 characters";
+
+"base_regist.enter_email" = "Enter your email";
+"base_regist.profile" = "Profile";
+"base_regist.avatar" = "Avatar";
+"base_regist.city" = "City";
+"base_regist.enable_notifications" = "Enable notifications";
+
+"base_regist.enter_email_description" = "To sign in to the application";
+"base_regist.enter_profile_data" = "Enter your personal information";
+"base_regist.select_experience" = "Select your playing experience and position";
+"base_regist.select_avatar" = "Choose a profile photo";
+"base_regist.select_city" = "Choose the city where you will play";
+"base_regist.notifications_description" = "DVOR requests permission to send you notifications";
+
+"info_view.event" = "Event";
+"info_view.address" = "Address";
+"info_view.place" = "Place";
+"info_view.date" = "Date";
+"info_view.time" = "Time";
+
+"common.not_specified" = "Not specified";
+
+"Organizer"="Organizer";
+"Delete"="Delete";
+"Create event"="Create event";
+"Info"="Info";
+"Participants"="Participants";
+"Comments"="Comments";
+
+"sort" = "Sort";
+"filter" = "Filters";
+
+"sort.participants_count" = "By number of participants";
+"sort.time" = "By time";
+"sort.address" = "By address";
+
+"info.personal_information"="Personal information";
+"info.experience"="Experience";
+"info.games"="Games";
+"info.level"="Level";
+"info.city"="City";
+
+
+""="";

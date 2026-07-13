@@ -6,8 +6,6 @@ protocol Coordinator: AnyObject {
 }
 
 protocol RegistrationCoordinatorProtocol: Coordinator {
-    func showPhoneInput()
-    func showPhoneConfirmation(email: String)
     func showInfoInput()
     func showUserDataInput()
     func createAvatar()
@@ -29,48 +27,13 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     
     // MARK: - Start
     func start() {
-//        showPhoneInput()
         showInfoInput()
-    }
-    
-    // MARK: - Flow Methods
-    func showPhoneInput() {
-        let vc = EnterEmailViewController(presenter: presenter)
-        
-        vc.setInfoForNavigationView(model: .email)
-        vc.configureEnadle(false)
-        vc.onNext = { [weak self] email in
-            self?.registrationData.email = email
-            self?.showPhoneConfirmation(email: email)
-        }
-        
-        vc.pushCreateInfo = { [weak self] in
-            self?.showInfoInput()
-        }
-        if let registPresenter = presenter as? RegistPresenter {
-            registPresenter.view = vc
-        }
-        presenter?.pushViewController(vc)
-    }
-    
-    func showPhoneConfirmation(email: String) {
-        let vc = EmailConfirmViewController(presenter: presenter)
-        vc.setTitleNumberText(with: email)
-        vc.configureEnadle(false)
-        vc.onNext = { [weak self] in
-            self?.showInfoInput()
-        }
-        if let registPresenter = presenter as? RegistPresenter {
-            registPresenter.view = vc
-        }
-        presenter?.pushViewController(vc)
     }
     
     func showInfoInput() {
         let vc = InfoInputViewController(presenter: presenter)
         vc.setInfoForNavigationView(model: .info)
         vc.configureEnadle(false)
-//        vc.hideBackButton(true)
         vc.onNext = { [weak self] name, surname, dateBD in
             self?.registrationData.name = name
             self?.registrationData.surname = surname
@@ -102,7 +65,6 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             if let image = avatar {
                 self?.registrationData.image = image.jpegData(compressionQuality: 0.3)
             }
-//            self?.chooseCity()
             self?.acceptNotification()
         }
         if let registPresenter = presenter as? RegistPresenter {
@@ -110,17 +72,6 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         }
         presenter?.pushViewController(vc)
     }
-    
-//    func chooseCity() {
-//        let vc = CityViewController(presenter: presenter)
-//        vc.setInfoForNavigationView(model: .geo)
-//        vc.configureEnadle(false)
-//        vc.onNext = { [weak self] city in
-//            self?.registrationData.city = city
-//            self?.acceptNotification()
-//        }
-//        presenter?.pushViewController(vc)
-//    }
     
     func acceptNotification() {
         let vc = NotificationViewController(presenter: presenter)
@@ -161,7 +112,7 @@ struct RegistrationData: Codable {
     var surname: String = "Surname"
     var dateBD: Date?
     var position: String = "Goalkeeper"
-    var experience: String = "1 год"
+    var experience: String = "1 year"
     var image: Data?
     var city: String = ""
 }

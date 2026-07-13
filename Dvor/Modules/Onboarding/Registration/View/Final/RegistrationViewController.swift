@@ -4,12 +4,12 @@ import UIKit
 final class RegistrationViewController: BaseRegistrationViewController {
 
     //MARK: - Properties    
-    private let titleRegist = UILabel.init(text: "Успешная регистрация",
+    private let titleRegist = UILabel.init(text: "regist.succes_regsit".loc,
                                            font: .poppins(weight: .bold, size: .big),
                                            textColor: Constants.Colors.textColor,
                                            textAlignment: .center)
     
-    private let descLabel = UILabel.init(text: "Переходим к списку матчей...",
+    private let descLabel = UILabel.init(text: "regist.moving".loc,
                                          font: .poppins(weight: .regular, size: .small),
                                          textColor: Constants.Colors.textColor,
                                          textAlignment: .center)

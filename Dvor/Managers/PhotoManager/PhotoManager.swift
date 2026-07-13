@@ -3,10 +3,10 @@ import PhotosUI
 
 protocol PhotoManagerProtocol: AnyObject {
     func pickPhoto(from router: RouterMainProtocol?,
-                  maxSize: Int?, // Добавляем опциональный параметр максимального размера
+                  maxSize: Int?,
                   completion: @escaping (Result<UIImage, PhotoError>) -> Void)
     func showPhotoPickerOptions(from router: RouterMainProtocol,
-                               maxSize: Int?, // Добавляем опциональный параметр максимального размера
+                               maxSize: Int?,
                                completion: @escaping (Result<UIImage, PhotoError>) -> Void)
 }
 
@@ -16,7 +16,7 @@ final class PhotoManager: NSObject {
     private var router: RouterMainProtocol?
     private var completion: ((Result<UIImage, PhotoError>) -> Void)?
     private var allowsEditing: Bool = true
-    private var maxSize: Int? // Максимальный размер в байтах
+    private var maxSize: Int?
     
     deinit {
         print("Deinit PhotoManager")
@@ -28,7 +28,7 @@ extension PhotoManager: PhotoManagerProtocol {
     
     // MARK: - Call Pick Photo
     func pickPhoto(from router: RouterMainProtocol?,
-                   maxSize: Int? = nil, // Значение по умолчанию nil (без ограничения)
+                   maxSize: Int? = nil,
                    completion: @escaping (Result<UIImage, PhotoError>) -> Void) {
         
         self.router = router
@@ -92,7 +92,7 @@ private extension PhotoManager {
         return imageSize <= maxSize
     }
     
-    //MARK: - Обработка выбранного изображения с проверкой размера
+    //MARK: - Processing of the selected image with size verification
     private func handleSelectedImageWithSizeCheck(_ image: UIImage) {
         if checkImageSize(image) {
             completion?(.success(image))
@@ -223,11 +223,11 @@ extension PhotoManager: UIAdaptivePresentationControllerDelegate {
     }
 }
 
-// MARK: - Вспомогательные константы
+// MARK: - Constants
     struct SizeLimits {
         static let mb1 = 1024 * 1024 // 1 MB
         static let mb2 = 2 * 1024 * 1024 // 2 MB
         static let mb3 = 3 * 1024 * 1024 // 3 MB
-        static let mb8 = 8 * 1024 * 1024 // 10 MB
+        static let mb8 = 8 * 1024 * 1024 // 8 MB
     }
 

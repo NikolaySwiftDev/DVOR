@@ -9,14 +9,14 @@ final class InfoView: UIView {
     private let contentView = UIView()
     private let stackView = UIStackView()
     
-    private let titleEvent = UILabel(text: "Событие",
+    private let titleEvent = UILabel(text: InfoViewStrings.event,
                                      font: .poppins(weight: .bold, size: .big))
     
     // Address Section
     private let addressSectionView = UIView()
     private let addressIconLabel = UILabel(text: "📍", font: .systemFont(ofSize: 20))
     private let addressStackView = UIStackView()
-    private let addressTitleLabel = UILabel(text: "Адрес", 
+    private let addressTitleLabel = UILabel(text: InfoViewStrings.address,
                                             font: .poppins(weight: .semiBold, size: .mid))
     private let titleAddress = UILabel()
     
@@ -24,7 +24,7 @@ final class InfoView: UIView {
     private let placeSectionView = UIView()
     private let placeIconLabel = UILabel(text: "🏢", font: .systemFont(ofSize: 20))
     private let placeStackView = UIStackView()
-    private let placeTitleLabel = UILabel(text: "Место", 
+    private let placeTitleLabel = UILabel(text: InfoViewStrings.place,
                                          font: .poppins(weight: .semiBold, size: .mid))
     private let titlePlace = UILabel()
     
@@ -35,29 +35,17 @@ final class InfoView: UIView {
     private let dateContainerView = UIView()
     private let dateIconLabel = UILabel(text: "📅", font: .systemFont(ofSize: 20))
     private let dateStackView = UIStackView()
-    private let dateTitleLabel = UILabel(text: "Дата", 
+    private let dateTitleLabel = UILabel(text: InfoViewStrings.date,
                                          font: .poppins(weight: .semiBold, size: .mid))
     private let titleDate = UILabel.init(font: .poppins(weight: .semiBold, size: .small))
     
     private let timeContainerView = UIView()
     private let timeIconLabel = UILabel(text: "🕐", font: .systemFont(ofSize: 20))
     private let timeStackView = UIStackView()
-    private let timeTitleLabel = UILabel(text: "Время", 
+    private let timeTitleLabel = UILabel(text: InfoViewStrings.time,
                                          font: .poppins(weight: .semiBold, size: .mid))
     private let titleTime = UILabel.init(font: .poppins(weight: .semiBold, size: .small))
-    
-    // People Count Section
-//    private let peopleSectionView = UIView()
-//    private let peopleIconLabel = UILabel(text: "👥", font: .systemFont(ofSize: 20))
-//    private let peopleStackView = UIStackView()
-//    private let peopleTitleLabel = UILabel(text: "Участники", 
-//                                           font: .poppins(weight: .semiBold, size: .mid))
-//    private let titleCountPeop = UILabel()
-    
-//    private let titlePrice = UILabel.init()
-//    private let titleTimeGame = UILabel.init()
-
-    
+        
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupView()
@@ -74,11 +62,7 @@ final class InfoView: UIView {
         titlePlace.text = model.namePlace
         titleDate.text = model.date.formattedAsDayMonthYear()
         titleTime.text = model.formattedTime
-//        titlePrice.text = model.priceString
-//        titleTimeGame.text = model.formattedTimeGame
-//        titleCountPeop.text = model.peopleAllCount
-        
-        // Apply accessibility
+
         applyAccessibility()
     }
 }
@@ -118,12 +102,6 @@ private extension InfoView {
         dateTimeSectionView.addSubview(dateTimeStackView)
         dateTimeStackView.addArrangedSubview(dateContainerView)
         dateTimeStackView.addArrangedSubview(timeContainerView)
-        
-        // Setup People Section
-//        peopleSectionView.addSubview(peopleIconLabel)
-//        peopleSectionView.addSubview(peopleStackView)
-//        peopleStackView.addArrangedSubview(peopleTitleLabel)
-//        peopleStackView.addArrangedSubview(titleCountPeop)
         
         // Add all sections to main stack
         [titleEvent, addressSectionView, placeSectionView, dateTimeSectionView, /*peopleSectionView*/].forEach { view in
@@ -197,15 +175,15 @@ private extension InfoView {
         
         addressSectionView.isAccessibilityElement = false
         titleAddress.isAccessibilityElement = true
-        titleAddress.accessibilityLabel = "Адрес: \(titleAddress.text ?? "Не указано")"
+        titleAddress.accessibilityLabel = "\(InfoViewStrings.address): \(titleAddress.text ?? InfoViewStrings.notSpecified)"
         
         placeSectionView.isAccessibilityElement = false
         titlePlace.isAccessibilityElement = true
-        titlePlace.accessibilityLabel = "Место: \(titlePlace.text ?? "Не указано")"
+        titlePlace.accessibilityLabel = "\(InfoViewStrings.place): \(titlePlace.text ?? InfoViewStrings.notSpecified)"
         
         dateTimeSectionView.isAccessibilityElement = false
-        titleDate.accessibilityLabel = "Дата: \(titleDate.text ?? "")"
-        titleTime.accessibilityLabel = "Время: \(titleTime.text ?? "")"
+        titleDate.accessibilityLabel = "\(InfoViewStrings.date): \(titleDate.text ?? "")"
+        titleTime.accessibilityLabel = "\(InfoViewStrings.time): \(titleTime.text ?? "")"
     }
     
     private func setupConstraints() {
@@ -273,18 +251,6 @@ private extension InfoView {
             make.leading.equalTo(timeIconLabel.snp.trailing).offset(InfoViewConstants.iconSpacing)
             make.trailing.top.bottom.equalToSuperview()
         }
-        
-        // People Section Constraints
-//        peopleIconLabel.snp.makeConstraints { make in
-//            make.leading.top.equalToSuperview().inset(InfoViewConstants.sectionPadding)
-//            make.size.equalTo(InfoViewConstants.iconSize)
-//        }
-//        
-//        peopleStackView.snp.makeConstraints { make in
-//            make.leading.equalTo(peopleIconLabel.snp.trailing).offset(InfoViewConstants.iconSpacing)
-//            make.trailing.equalToSuperview().inset(InfoViewConstants.sectionPadding)
-//            make.top.bottom.equalToSuperview().inset(InfoViewConstants.sectionPadding)
-//        }
     }
 }
 
@@ -293,4 +259,15 @@ fileprivate struct InfoViewConstants {
     static let sectionPadding = 12
     static let iconSize = 24
     static let iconSpacing = 12
+}
+
+fileprivate struct InfoViewStrings {
+    static let event = "info_view.event".loc
+    static let address = "info_view.address".loc
+    static let place = "info_view.place".loc
+    static let date = "info_view.date".loc
+    static let time = "info_view.time".loc
+
+    static let notSpecified = "common.not_specified".loc
+
 }

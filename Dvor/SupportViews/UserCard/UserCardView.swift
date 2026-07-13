@@ -51,15 +51,14 @@ final class UserCardView: UIView {
     // Info Section
     private let infoTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Личная информация"
+        label.text = UserCardViewConstan.title
         label.font = UIFont.poppins(weight: .semiBold, size: .mid)
         label.textColor = UserCardViewConstan.textColor
         return label
     }()
     
-//    private let cityInfoView = InfoRowView(icon: "location.fill", title: "Город")
-//    private let ageInfoView = InfoRowView(icon: "calendar", title: "Возраст")
-    private let experienceInfoView = InfoRowView(icon: "sportscourt.fill", title: "Опыт")
+    private let cityInfoView = InfoRowView(icon: "location.fill", title: UserCardViewConstan.city)
+    private let experienceInfoView = InfoRowView(icon: "sportscourt.fill", title: UserCardViewConstan.experience)
 
     
     private let separatorView2: UIView = {
@@ -67,23 +66,7 @@ final class UserCardView: UIView {
         view.backgroundColor = UserCardViewConstan.secondTextColor
         return view
     }()
-    
-    // Club Section
-//    private let clubTitleLabel: UILabel = {
-//        let label = UILabel()
-//        label.text = "Клуб"
-//        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
-//        label.textColor = UserCardViewConstan.textColor
-//        return label
-//    }()
-    
-//    private let clubLabel: UILabel = {
-//        let label = UILabel()
-//        label.font = UIFont.poppins(weight: .semiBold, size: .mid)
-//        label.textColor = UserCardViewConstan.secondTextColor
-//        return label
-//    }()
-    
+        
     // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -112,12 +95,7 @@ final class UserCardView: UIView {
         setupStats(with: model)
         
         // Personal info
-//        cityInfoView.setValue(model.city)
-//        ageInfoView.setValue("\(model.age) лет")
         experienceInfoView.setValue(model.experience)
-        
-        // Club
-//        clubLabel.text = model.club.isEmpty ? "Не указан" : model.club
     }
     
     // MARK: - Private Methods
@@ -198,15 +176,14 @@ final class UserCardView: UIView {
     }
     
     private func setupStats(with stats: UserModel) {
-        // Очищаем предыдущие данные
         statsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         // Plays
-        let playsView = createStatView(title: "Игр", value: "\(stats.plays)")
+        let playsView = createStatView(title: UserCardViewConstan.games, value: "\(stats.plays)")
         statsStackView.addArrangedSubview(playsView)
         
         // LVL
-        let lvlView = createStatView(title: "Уровень", value: String(format: "%.0f", stats.level))
+        let lvlView = createStatView(title: UserCardViewConstan.level, value: String(format: "%.0f", stats.level))
         statsStackView.addArrangedSubview(lvlView)
     }
     
@@ -310,4 +287,10 @@ fileprivate struct UserCardViewConstan {
     static let padding: CGFloat = 20
     static let topPadding: CGFloat = 20
     static let avatarHeight: CGFloat = 250
+    
+    static let title = "info.personal_information".loc
+    static let experience = "info.experience".loc
+    static let games = "info.games".loc
+    static let level = "info.level".loc
+    static let city = "info.city".loc
 }

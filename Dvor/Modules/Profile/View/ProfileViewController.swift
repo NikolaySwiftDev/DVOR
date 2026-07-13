@@ -8,7 +8,7 @@ final class ProfileViewController: UIViewController {
     var model: UserModel?
         
     //MARK: - Properties
-    private let titleLabel = UILabel.init(text: "Профиль", font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
+    private let titleLabel = UILabel.init(text: "common.profile".loc, font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
     private let userCard = UserCardView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
 
@@ -28,10 +28,8 @@ final class ProfileViewController: UIViewController {
         setupConstraint()
         
         if let model = model {
-            // Если модель передана (профиль другого пользователя)
             configureUserCard(with: model)
         } else {
-            // Если модель не передана (свой профиль) - загружаем данные
             presenter?.getProfileInto()
         }
     }

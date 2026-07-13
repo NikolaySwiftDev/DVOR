@@ -21,7 +21,7 @@ final class RatingViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Оценка"
+        label.text = RatingVCConstant.title
         label.font = .boldSystemFont(ofSize: 24)
         label.textColor = .white
         return label
@@ -29,7 +29,7 @@ final class RatingViewController: UIViewController {
     
     private let importantLabel: UILabel = {
         let label = UILabel()
-        label.text = "ВАЖНО"
+        label.text = RatingVCConstant.important
         label.font = .boldSystemFont(ofSize: 16)
         label.textColor = .white
         return label
@@ -37,7 +37,7 @@ final class RatingViewController: UIViewController {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Вы сможете оценить коллег, если зарегистрированы на мероприятие и после его окончания 😊"
+        label.text = RatingVCConstant.description
         label.font = .systemFont(ofSize: 14)
         label.textColor = Constants.Colors.inActiveColor
         label.numberOfLines = 0
@@ -54,7 +54,7 @@ final class RatingViewController: UIViewController {
     
     private let attitudeTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Отношение игрока"
+        label.text = RatingVCConstant.attitudeTitle
         label.font = .boldSystemFont(ofSize: 16)
         label.textColor = .white
         return label
@@ -62,7 +62,7 @@ final class RatingViewController: UIViewController {
     
     private let attitudeDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Оцените ваше отношение с другими пользователями на поле или вне его."
+        label.text = RatingVCConstant.attitudeDescription
         label.font = .systemFont(ofSize: 14)
         label.textColor = Constants.Colors.inActiveColor
         label.numberOfLines = 0
@@ -77,7 +77,7 @@ final class RatingViewController: UIViewController {
         return stack
     }()
     
-    private let saveButton = UIButton.createStandartButton(title: "Сохранить")
+    private let saveButton = UIButton.createStandartButton(title: RatingVCConstant.saveButton)
     
     // MARK: - Init
     init(model: UserModel) {
@@ -245,11 +245,9 @@ final class RatingButton: UIButton {
     }
     
     @objc private func didTap() {
-        // Вызываем замыкание при нажатии
         didSelectRating?(ratingValue)
     }
     
-    // Замыкание для обработки выбора рейтинга
     var didSelectRating: ((Int) -> Void)?
 }
 
@@ -303,4 +301,13 @@ final class UserRatingView: UIView {
 
 fileprivate struct RatingVCConstant {
     static let backColor: UIColor = .backgrDarkGreen
+
+    static let title = "rating.title".loc
+    static let important = "rating.important".loc
+    static let description = "rating.description".loc
+
+    static let attitudeTitle = "rating.attitude.title".loc
+    static let attitudeDescription = "rating.attitude.description".loc
+
+    static let saveButton = "common.save".loc
 }
