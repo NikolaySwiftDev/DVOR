@@ -26,6 +26,8 @@ enum DetailPresenterConstants {
     static let selectEvent = "detail.select_event".loc
     static let addAccount = "detail.add_account".loc
     static let alreadyParticipating = "detail.already_participating".loc
+    static let differentCity = "detail.different_city".loc
+    static let readyToGo = "detail.ready_to_go".loc
 
     static let matchReminder = "detail.match_reminder".loc
     static let eventTomorrowAt = "detail.event_tomorrow_at".loc

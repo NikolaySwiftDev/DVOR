@@ -1,6 +1,6 @@
 import MapKit
 
-struct CitySuggestion {
+struct SuggestionModel {
     let title: String
     let subtitle: String
 }
@@ -13,7 +13,7 @@ protocol CityCompleterServiceProtocol: AnyObject {
 }
 
 protocol CityCompleterServiceDelegate: AnyObject {
-    func cityCompleterService(_ service: CityCompleterService, didUpdateResults results: [CitySuggestion])
+    func cityCompleterService(_ service: CityCompleterService, didUpdateResults results: [SuggestionModel])
     func cityCompleterService(_ service: CityCompleterService, didFailWithError error: Error)
 }
 
@@ -63,7 +63,7 @@ extension CityCompleterService: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         completions = completer.results.filter { !$0.subtitle.isEmpty }
         
-        let suggestions = completions.map { CitySuggestion(title: $0.title, subtitle: $0.subtitle) }
+        let suggestions = completions.map { SuggestionModel(title: $0.title, subtitle: $0.subtitle) }
         delegate?.cityCompleterService(self, didUpdateResults: suggestions)
     }
     

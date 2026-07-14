@@ -11,7 +11,7 @@ protocol DetailProtocol: AnyObject {
 protocol DetailPresenterProtocol: AnyObject {
     init(view: DetailProtocol,
          router: RouterMainProtocol,
-         network: FirebaseDataManagerProtocol?,
+         network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
          notification: NotificationManagerProtocol
     )
@@ -20,7 +20,7 @@ protocol DetailPresenterProtocol: AnyObject {
     var org: OrganizatorModel? { get set }
     
     func fetchAllUsers(usersID: [String], orgID: String)
-    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool)
+    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool, city: String)
     func removeUserFromEvent(idEvent: String)
     
     func popVC()
@@ -35,14 +35,14 @@ final class DetailPresenter: DetailPresenterProtocol {
     weak var view: DetailProtocol?
     var users: [UserModel]?
     var org: OrganizatorModel?
-    let router: RouterMainProtocol?
-    let network: FirebaseDataManagerProtocol?
+    let router: RouterMainProtocol
+    let network: FirebaseDataManagerProtocol
     let firebase: FirebaseAuthManagerProtocol
     let notification: NotificationManagerProtocol
 
     required init(view: DetailProtocol,
                   router: RouterMainProtocol,
-                  network: FirebaseDataManagerProtocol?,
+                  network: FirebaseDataManagerProtocol,
                   firebase: FirebaseAuthManagerProtocol,
                   notification: NotificationManagerProtocol
     ) {
@@ -56,7 +56,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     //MARK: - Fetch all users
     func fetchAllUsers(usersID: [String], orgID: String) {
         view?.load()
-        network?.fetchAllUsersFromEvent(usersID: usersID, orgId: orgID, completion: { [weak self] result in
+        network.fetchAllUsersFromEvent(usersID: usersID, orgId: orgID, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success((let users, let org)):
@@ -65,52 +65,68 @@ final class DetailPresenter: DetailPresenterProtocol {
                 view?.success(users: users, org: org ?? OrganizatorModel())
             case .failure(let failure):
                 view?.error(error: failure.localizedDescription)
-                router?.showAlertWithTitle(failure.localizedDescription)
+                router.showAlertWithTitle(failure.localizedDescription)
             }
         })
     }
     
     //MARK: - Add user
-    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool) {
+    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool, city: String) {
         guard idEvent != "" else {
-            router?.showAlertWithTitle(DetailPresenterConstants.selectEvent)
+            router.showAlertWithTitle(DetailPresenterConstants.selectEvent)
             return
         }
         
 //        guard let idUser = firebase.currentUser?.uid else {
         guard let idUser = firebase.currentUserId else {
-            router?.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            router.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
         }
         
         if let users = users, users.contains(where: { $0.id == idUser }) {
-            router?.showAlertWithTitle(DetailPresenterConstants.alreadyParticipating)
+            router.showAlertWithTitle(DetailPresenterConstants.alreadyParticipating)
             return
         }
         
-        network?.writeUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
+        network.fetchUser(idUser: idUser, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let success):
-                view?.updateUsers(model: success)
-                
-                
-                let hours = Calendar.current.component(.hour, from: date)
-                notification.createNotification(
-                    identifier: idEvent,
-                    title: DetailPresenterConstants.matchReminder,
-                    body: "\(DetailPresenterConstants.eventTomorrowAt) \(hours)",
-                    date: date
-                )
-                
-                if isComplete {
-                    router?.showAlertWithTitle(DetailPresenterConstants.queueAdded)
-                } else {
-                    router?.showAlertWithTitle(DetailPresenterConstants.userAdded)
+            case .success(let model):
+                guard model.city == city else {
+//                    router.showAlertWithTitle()
+                    
+                    router.showAlertConfigur(title: DetailPresenterConstants.differentCity, message: DetailPresenterConstants.readyToGo, titleActionButton: "yes".loc) { [weak self] in
+                        guard let self = self else { return }
+                        network.writeUserToEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
+                            guard let self = self else { return }
+                            switch result {
+                            case .success(let success):
+                                view?.updateUsers(model: success)
+                                let hours = Calendar.current.component(.hour, from: date)
+                                notification.createNotification(
+                                    identifier: idEvent,
+                                    title: DetailPresenterConstants.matchReminder,
+                                    body: "\(DetailPresenterConstants.eventTomorrowAt) \(hours)",
+                                    date: date
+                                )
+                                
+                                if isComplete {
+                                    router.showAlertWithTitle(DetailPresenterConstants.queueAdded)
+                                } else {
+                                    router.showAlertWithTitle(DetailPresenterConstants.userAdded)
+                                }
+                            case .failure(_):
+                                router.showAlertWithTitle(DetailPresenterConstants.saveError)
+                                
+                            }
+                        })
+
+                    }
+                    return
                 }
-            case .failure(let error):
-                router?.showAlertWithTitle(DetailPresenterConstants.saveError)
-                view?.error(error: error.localizedDescription)
+
+            case .failure(let failure):
+                router.showAlertWithTitle(failure.localizedDescription)
             }
         })
     }
@@ -118,30 +134,29 @@ final class DetailPresenter: DetailPresenterProtocol {
     //MARK: - Remove user
     func removeUserFromEvent(idEvent: String) {
         guard idEvent != "" else {
-            router?.showAlertWithTitle(DetailPresenterConstants.selectEvent)
+            router.showAlertWithTitle(DetailPresenterConstants.selectEvent)
             return
         }
         
-//        guard let idUser = firebase.currentUser?.uid else {
         guard let idUser = firebase.currentUserId else {
-            router?.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            router.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
         }
         
         guard let users = users, users.contains(where: { $0.id == idUser }) else {
-            router?.showAlertWithTitle(DetailPresenterConstants.notParticipating)
+            router.showAlertWithTitle(DetailPresenterConstants.notParticipating)
             return
         }
         
-        network?.removeUserFromEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
+        network.removeUserFromEvent(idEvent: idEvent, idUser: idUser, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):
                 view?.updateUsers(model: success)
-                router?.showAlertWithTitle(DetailPresenterConstants.unsubscribed)
+                router.showAlertWithTitle(DetailPresenterConstants.unsubscribed)
                 notification.cancelNotification(identifier: idEvent)
             case .failure(let error):
-                router?.showAlertWithTitle(DetailPresenterConstants.deleteError)
+                router.showAlertWithTitle(DetailPresenterConstants.deleteError)
                 view?.error(error: error.localizedDescription)
             }
         })
@@ -151,26 +166,26 @@ final class DetailPresenter: DetailPresenterProtocol {
         let shareURL = "dvor://openScreen?screen=detail&eventId="
         let fullURL = shareURL + eventID
         view?.load()
-        router?.showShareSheet(items: [fullURL]) { [weak self] completed in
+        router.showShareSheet(items: [fullURL]) { [weak self] completed in
             guard let self = self else { return }
             self.view?.hideLoading()
         }
     }
     
     func showBottomAlertForUser(model: UserModel) {
-        router?.showBottomSheetAlertForUser(model: model)
+        router.showBottomSheetAlertForUser(model: model)
     }
     
     func showLocationOnMap(location: String) {
-        router?.showLocationOnMap(location: location)
+        router.showLocationOnMap(location: location)
     }
     
     func showDetailOrgInfo(model: OrganizatorModel) {
-        router?.pushDetailOrgInfo(model: model)
+        router.pushDetailOrgInfo(model: model)
     }
     
     func popVC() {
-        router?.popVC()
+        router.popVC()
     }
     
     deinit {

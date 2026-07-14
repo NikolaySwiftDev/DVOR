@@ -14,6 +14,8 @@
 "detail.select_event" = "Select an event";
 "detail.add_account" = "Add an account";
 "detail.already_participating" = "You are participating in this event";
+"detail.different_city" = "Your city is different from the place of the event";
+"detail.ready_to_go" = "Do you still want to join?";
 
 "detail.match_reminder" = "Match Reminder";
 "detail.event_tomorrow_at" = "The event will take place tomorrow at";

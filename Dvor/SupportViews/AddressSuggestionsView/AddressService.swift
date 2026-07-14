@@ -1,13 +1,16 @@
 import UIKit
 
-final class CitySuggestionsView: UIView {
+final class AddressSuggestionsView: UIView {
     
-    //MARK: - Public
-    var onCitySelected: ((String) -> Void)?
+    var expectedCity: String {
+        get { addressService.expectedCity }
+        set { addressService.expectedCity = newValue }
+    }
+    
+    var onAddressSelected: ((String) -> Void)?
     var onInvalidSelection: (() -> Void)?
     
-    //MARK: - Private
-    private let cityService: CityCompleterServiceProtocol
+    private let addressService: AddressCompleterServiceProtocol
     private var suggestions: [SuggestionModel] = [] {
         didSet {
             isHidden = suggestions.isEmpty
@@ -24,28 +27,29 @@ final class CitySuggestionsView: UIView {
         return tv
     }()
     
-    //MARK: - Init
-    init(cityService: CityCompleterServiceProtocol = CityCompleterService()) {
-        self.cityService = cityService
+    init(addressService: AddressCompleterServiceProtocol = AddressCompleterService()) {
+        self.addressService = addressService
         super.init(frame: .zero)
         isHidden = true
-        self.cityService.delegate = self
+        self.addressService.delegate = self
         setupLayout()
         configure()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    //MARK: - Public API
     func search(query: String) {
-        cityService.search(query: query)
+        guard !query.isEmpty else {
+            clear()
+            return
+        }
+        addressService.search(query: query)
     }
     
     func clear() {
         suggestions = []
     }
     
-    //MARK: - Layout
     private func setupLayout() {
         addSubview(tableView)
         tableView.snp.makeConstraints { make in
@@ -57,25 +61,19 @@ final class CitySuggestionsView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
     }
-    
-    deinit {
-        print("Deinit City VIEw")
-    }
 }
 
-//MARK: - CityCompleterServiceDelegate
-extension CitySuggestionsView: CityCompleterServiceDelegate {
-    func cityCompleterService(_ service: CityCompleterService, didUpdateResults results: [SuggestionModel]) {
+extension AddressSuggestionsView: AddressCompleterServiceDelegate {
+    func addressCompleterService(_ service: AddressCompleterService, didUpdateResults results: [SuggestionModel]) {
         suggestions = results
     }
     
-    func cityCompleterService(_ service: CityCompleterService, didFailWithError error: Error) {
+    func addressCompleterService(_ service: AddressCompleterService, didFailWithError error: Error) {
         suggestions = []
     }
 }
 
-//MARK: - UITableViewDataSource, UITableViewDelegate
-extension CitySuggestionsView: UITableViewDataSource, UITableViewDelegate {
+extension AddressSuggestionsView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         suggestions.count
     }
@@ -88,14 +86,14 @@ extension CitySuggestionsView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cityService.selectCity(at: indexPath.row) { [weak self] locality in
+        addressService.selectAddress(at: indexPath.row) { [weak self] resolved in
             guard let self else { return }
-            guard let locality else {
+            guard let resolved else {
                 self.onInvalidSelection?()
                 return
             }
             self.clear()
-            self.onCitySelected?(locality)
+            self.onAddressSelected?(resolved)
         }
     }
 }
