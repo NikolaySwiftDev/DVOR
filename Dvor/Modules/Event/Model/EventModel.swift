@@ -150,6 +150,7 @@ extension EventModel {
         return DetailModel(
             id: self.id,
             name: self.name,
+            city: self.location,
             address: self.address,
             namePlace: self.namePlace,
             date: self.date,

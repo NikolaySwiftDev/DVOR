@@ -8,9 +8,11 @@ final class CreateEventViewController: UIViewController {
     private var date: Date
     private var player = 0
     private var time = ""
-    private var adress = ""
+    private var adress = "" {
+        didSet { updateValidButton() }
+    }
     private var place = ""
-    
+        
     private let navigationBar = SupportNavigationBar(state: .createEvent)
     private let subTitle = UILabel(text: CreateEventConstants.enterData)
     private let titleDate = UILabel.init(font: .poppins(weight: .regular, size: .small), textAlignment: .center)
@@ -19,6 +21,8 @@ final class CreateEventViewController: UIViewController {
     private let timeTF = AuthTextFieldView(placeholder: CreateEventConstants.timePlaceholder)
     private let placeTF = AuthTextFieldView(placeholder: CreateEventConstants.placePlaceholder)
     private let nextButton = UIButton.createStandartButton(title: CreateEventConstants.createButton, target: self, action: #selector(nextButtonTapped))
+    
+    private lazy var addressSuggestionsView = AddressSuggestionsView()
     
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -41,16 +45,22 @@ final class CreateEventViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupConstraints()
         config()
+        
+        presenter?.getCityForSearchAdress()
     }
     
     @objc private func nextButtonTapped() {
         presenter?.writeEvent(players: player, date: date, time: time, address: adress, place: place)
+    }
+    
+    private func updateValidButton() {
+        nextButton.backgroundColor = checkValidButton() ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor
+        nextButton.isEnabled = checkValidButton()
     }
     
     deinit {
@@ -60,7 +70,10 @@ final class CreateEventViewController: UIViewController {
 
 //MARK: - Create Event Protocol
 extension CreateEventViewController: CreateEventProtocol {
-    func success() {}
+    func success(city: String) {
+        addressSuggestionsView.expectedCity = city
+        print("City is success --- " + city)
+    }
     func error(error: Error) {}
 }
 
@@ -114,24 +127,22 @@ extension CreateEventViewController: UITextFieldDelegate {
             time = formattedTime.toTimeFormat() ?? ""
             checkTimeTFIsNotEmpty(text: formattedTime, tf: timeTF)
         case 2:
-            adress = text
+            adress = ""
+            addressSuggestionsView.search(query: text)
             checkTFIsNotEmpty(text: text, tf: adressTF)
-            
         case 3:
             place = text
             checkCountTFIsNotEmpty(text: text, tf: placeTF)
-            
         default:
             break
         }
         
-        nextButton.backgroundColor = checkValidButton() ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor
-        nextButton.isEnabled = checkValidButton()
+        updateValidButton()
     }
-    
+
     //MARK: - Check Valid Button
     private func checkValidButton() -> Bool {
-        guard player != 0, time.isValidTime, adress != "", place != "" else { return false }
+        guard player != 0, time.isValidTime, !adress.isEmpty, place != "" else { return false }
         return true
     }
     
@@ -178,6 +189,17 @@ extension CreateEventViewController {
         placeTF.textField.tag = 3
         placeTF.textField.returnKeyType = .default
         placeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        
+        addressSuggestionsView.onAddressSelected = { [weak self] resolved in
+            guard let self else { return }
+            self.adressTF.textField.text = resolved
+            self.adress = resolved
+            self.adressTF.textField.resignFirstResponder()
+        }
+        
+        addressSuggestionsView.onInvalidSelection = { [weak self] in
+            self?.adress = ""
+        }
     }
     
     @objc private func titleDateTapped() {
@@ -272,6 +294,13 @@ extension CreateEventViewController {
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
+        
+        view.addSubview(addressSuggestionsView)
+        addressSuggestionsView.snp.makeConstraints { make in
+            make.top.equalTo(adressView.snp.bottom).offset(4)
+            make.leading.trailing.equalTo(adressView)
+            make.height.equalTo(280)
+        }
     }
 }
 
@@ -292,4 +321,191 @@ fileprivate struct CreateEventConstants {
     static let startTimeTitle = "create_event.start_time".loc
     static let addressTitle = "create_event.address".loc
     static let placeTitle = "create_event.place".loc
+}
+
+import MapKit
+
+struct AddressSuggestion {
+    let title: String
+    let subtitle: String
+}
+
+protocol AddressCompleterServiceDelegate: AnyObject {
+    func addressCompleterService(_ service: AddressCompleterService, didUpdateResults results: [AddressSuggestion])
+    func addressCompleterService(_ service: AddressCompleterService, didFailWithError error: Error)
+}
+
+protocol AddressCompleterServiceProtocol: AnyObject {
+    var delegate: AddressCompleterServiceDelegate? { get set }
+    var expectedCity: String { get set }
+    
+    func search(query: String)
+    func selectAddress(at index: Int, completionHandler: @escaping (String?) -> Void)
+}
+
+final class AddressCompleterService: NSObject, AddressCompleterServiceProtocol {
+    
+    weak var delegate: AddressCompleterServiceDelegate?
+    var expectedCity: String
+    
+    private lazy var completer: MKLocalSearchCompleter = {
+        let c = MKLocalSearchCompleter()
+        c.delegate = self
+        c.resultTypes = .address
+        return c
+    }()
+    
+    private var completions: [MKLocalSearchCompletion] = []
+    
+    init(expectedCity: String = "") {
+        self.expectedCity = expectedCity
+    }
+    
+    func search(query: String) {
+        let prefix = expectedCity.isEmpty ? "" : "\(expectedCity), "
+        completer.queryFragment = prefix + query
+    }
+    
+    func selectAddress(at index: Int, completionHandler: @escaping (String?) -> Void) {
+        guard completions.indices.contains(index) else {
+            completionHandler(nil)
+            return
+        }
+        
+        let completion = completions[index]
+        let request = MKLocalSearch.Request(completion: completion)
+        let search = MKLocalSearch(request: request)
+        
+        search.start { [weak self] response, error in
+            guard let self else { return }
+            
+            guard let placemark = response?.mapItems.first?.placemark,
+                  let locality = placemark.locality,
+                  locality.caseInsensitiveCompare(self.expectedCity) == .orderedSame else {
+                DispatchQueue.main.async { completionHandler(nil) }
+                return
+            }
+            
+            let street = placemark.thoroughfare
+            let number = placemark.subThoroughfare
+            let fullAddress = [street, number].compactMap { $0 }.joined(separator: ", ")
+            let result = fullAddress.isEmpty ? placemark.name : fullAddress
+            
+            DispatchQueue.main.async { completionHandler(result) }
+        }
+    }
+}
+
+extension AddressCompleterService: MKLocalSearchCompleterDelegate {
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        completions = completer.results
+        
+        let suggestions = completions.map { AddressSuggestion(title: $0.title, subtitle: $0.subtitle) }
+        delegate?.addressCompleterService(self, didUpdateResults: suggestions)
+    }
+    
+    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        completions = []
+        delegate?.addressCompleterService(self, didFailWithError: error)
+    }
+}
+
+import UIKit
+
+final class AddressSuggestionsView: UIView {
+    
+    var expectedCity: String {
+        get { addressService.expectedCity }
+        set { addressService.expectedCity = newValue }
+    }
+    
+    var onAddressSelected: ((String) -> Void)?
+    var onInvalidSelection: (() -> Void)?
+    
+    private let addressService: AddressCompleterServiceProtocol
+    private var suggestions: [AddressSuggestion] = [] {
+        didSet {
+            isHidden = suggestions.isEmpty
+            tableView.reloadData()
+        }
+    }
+    
+    private let tableView: UITableView = {
+        let tv = UITableView()
+        tv.layer.cornerRadius = 8
+        tv.layer.borderWidth = 1
+        tv.layer.borderColor = UIColor.systemGray4.cgColor
+        tv.separatorInset = .zero
+        return tv
+    }()
+    
+    init(addressService: AddressCompleterServiceProtocol = AddressCompleterService()) {
+        self.addressService = addressService
+        super.init(frame: .zero)
+        isHidden = true
+        self.addressService.delegate = self
+        setupLayout()
+        configure()
+    }
+    
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    
+    func search(query: String) {
+        guard !query.isEmpty else {
+            clear()
+            return
+        }
+        addressService.search(query: query)
+    }
+    
+    func clear() {
+        suggestions = []
+    }
+    
+    private func setupLayout() {
+        addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    private func configure() {
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+}
+
+extension AddressSuggestionsView: AddressCompleterServiceDelegate {
+    func addressCompleterService(_ service: AddressCompleterService, didUpdateResults results: [AddressSuggestion]) {
+        suggestions = results
+    }
+    
+    func addressCompleterService(_ service: AddressCompleterService, didFailWithError error: Error) {
+        suggestions = []
+    }
+}
+
+extension AddressSuggestionsView: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        suggestions.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
+        cell.textLabel?.text = suggestions[indexPath.row].title
+        cell.detailTextLabel?.text = suggestions[indexPath.row].subtitle
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        addressService.selectAddress(at: indexPath.row) { [weak self] resolved in
+            guard let self else { return }
+            guard let resolved else {
+                self.onInvalidSelection?()
+                return
+            }
+            self.clear()
+            self.onAddressSelected?(resolved)
+        }
+    }
 }

@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - View Protocol
 protocol CreateEventProtocol: AnyObject {
-    func success()
+    func success(city: String)
     func error(error: Error)
 }
 
@@ -18,6 +18,8 @@ protocol CreateEventPresenterProtocol: AnyObject {
 
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String)
     
+    func getCityForSearchAdress()
+    
     func popVC()
     func showInfoAlert()
 
@@ -29,8 +31,8 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     // MARK: - Properties
     weak var view: CreateEventProtocol?
     let router: RouterMainProtocol?
-    let network: FirebaseDataManagerProtocol?
-    let firebase: FirebaseAuthManagerProtocol
+    let network: FirebaseDataManagerProtocol
+    let firebaseAuth: FirebaseAuthManagerProtocol
     
     // MARK: - Initializers
     init(view: CreateEventProtocol,
@@ -40,18 +42,42 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         self.view = view
         self.router = router
         self.network = network
-        self.firebase = firebase
+        self.firebaseAuth = firebase
     }
+    
+    private var city: String?
     
     // MARK: - Methods
     func popVC() {
         router?.popVC()
     }
     
+    //MARK: -
+    
+    func getCityForSearchAdress() {
+        guard let orgID = firebaseAuth.currentUserId else {
+            router?.showAlertWithTitle(CreateEventPresenterStrings.signUp)
+            return
+        }
+        
+        network.fetchUser(idUser: orgID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                let city = success.city
+                self.city = city
+                view?.success(city: city)
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+        
+    }
+    
     //MARK: - Record events in the database
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String) {
 //        guard let orgID = firebase.currentUser?.uid else {
-        guard let orgID = firebase.currentUserId else {
+        guard let orgID = firebaseAuth.currentUserId else {
             router?.showAlertWithTitle(CreateEventPresenterStrings.signUp)
             return
         }
@@ -59,7 +85,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
                                time: time,
                                name: "",
                                format: players,
-                               location: "",
+                               location: city ?? "",
                                address: address,
                                namePlace: place,
                                price: 0,
@@ -67,7 +93,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
                                timeGame: 0,
                                orgId: orgID)
         
-        network?.writeEvents(model: model, completion: { [weak self] result in
+        network.writeEvents(model: model, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):

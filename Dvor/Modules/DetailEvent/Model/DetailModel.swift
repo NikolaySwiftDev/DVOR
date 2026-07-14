@@ -4,6 +4,7 @@ import Foundation
 struct DetailModel {
     let id: String
     let name: String
+    let city: String
     let address: String
     let namePlace: String
     let date: Date
@@ -14,6 +15,10 @@ struct DetailModel {
     let peopleAllCountInt: Int
     let users: [String]
     let orgID: String
+    
+    var fullAdress: String {
+        city + "," + address
+    }
 }
 
 

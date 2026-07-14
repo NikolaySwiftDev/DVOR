@@ -128,7 +128,8 @@ extension DetailViewController: UserCellProtocol {
 //MARK: - Detail Info Protocol
 extension DetailViewController: DetailViewDelegate {
     func mapButtonTapped() {
-        presenter?.showLocationOnMap(location: detail.address)
+        print("Adress map ----" + detail.fullAdress)
+        presenter?.showLocationOnMap(location: detail.fullAdress)
     }
 }
 
@@ -150,7 +151,7 @@ private extension DetailViewController {
     private func configure() {
         segmentView.usersView.delegate = self
         mapView.delegate = self
-        mapView.configure(with: detail.address)
+        mapView.configure(with: detail.fullAdress)
     }
     
     private func setupContraints() {

@@ -58,7 +58,7 @@ final class InfoView: UIView {
     }
     
     func configure(with model: DetailModel) {
-        titleAddress.text = model.address
+        titleAddress.text = model.fullAdress
         titlePlace.text = model.namePlace
         titleDate.text = model.date.formattedAsDayMonthYear()
         titleTime.text = model.formattedTime
@@ -176,6 +176,7 @@ private extension InfoView {
         addressSectionView.isAccessibilityElement = false
         titleAddress.isAccessibilityElement = true
         titleAddress.accessibilityLabel = "\(InfoViewStrings.address): \(titleAddress.text ?? InfoViewStrings.notSpecified)"
+        titleAddress.adjustsFontSizeToFitWidth = true
         
         placeSectionView.isAccessibilityElement = false
         titlePlace.isAccessibilityElement = true
