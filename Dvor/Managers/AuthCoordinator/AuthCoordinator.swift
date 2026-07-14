@@ -9,6 +9,8 @@ protocol RegistrationCoordinatorProtocol: Coordinator {
     func showInfoInput()
     func showUserDataInput()
     func createAvatar()
+    func showCity()
+    func acceptNotification()
     func showSuccess()
 }
 
@@ -65,10 +67,22 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             if let image = avatar {
                 self?.registrationData.image = image.jpegData(compressionQuality: 0.3)
             }
-            self?.acceptNotification()
+            self?.showCity()
         }
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
+        }
+        presenter?.pushViewController(vc)
+    }
+    
+    func showCity() {
+        let vc = CityViewController(presenter: presenter)
+        vc.setInfoForNavigationView(model: .geo)
+        vc.configureEnadle(false)
+        vc.hideBackButton(false)
+        vc.onNext = { [weak self] city in
+            self?.registrationData.city = city
+            self?.acceptNotification()
         }
         presenter?.pushViewController(vc)
     }
