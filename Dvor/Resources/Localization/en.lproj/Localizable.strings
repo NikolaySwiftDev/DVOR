@@ -8,12 +8,12 @@
 "create_event.players" = "Players per team";
 "create_event.start_time" = "Start time";
 "create_event.address" = "Address";
-"create_event.place" = "Venue";
+"create_event.place" = "Place";
 "common.done" = "Done";
 
 "detail.select_event" = "Select an event";
 "detail.add_account" = "Add an account";
-"detail.already_participating" = "Are you already participating in this event?";
+"detail.already_participating" = "You are participating in this event";
 
 "detail.match_reminder" = "Match Reminder";
 "detail.event_tomorrow_at" = "The event will take place tomorrow at";
@@ -198,4 +198,4 @@
 "info.city"="City";
 
 
-""="";
+"cityview.placeholder"="Enter yout city";

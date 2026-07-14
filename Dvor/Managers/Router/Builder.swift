@@ -5,7 +5,7 @@ import UIKit
 protocol BuilderProtocol: AnyObject {
     func createTabbarVC(router: RouterMainProtocol) -> UIViewController
     func createRegistrationCoordinator(router: RouterMainProtocol)
-    func createAuthVC(router: RouterMainProtocol) -> UIViewController
+//    func createAuthVC(router: RouterMainProtocol) -> UIViewController
     func createMainCoordinateVC(router: RouterMainProtocol) -> UIViewController
     func createOnboardPageVC(router: RouterMainProtocol) -> UIViewController
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
@@ -104,13 +104,13 @@ class Builder: BuilderProtocol {
     }
     
     //MARK: -  Auth Builder
-    func createAuthVC(router: RouterMainProtocol) -> UIViewController {
-        let view = AuthViewController()
-        let firebase = MockFirebaseAuthManager()
-        let presenter = AuthPresenter(router: router, firebase: firebase)
-        view.presenter = presenter
-        return view
-    }
+//    func createAuthVC(router: RouterMainProtocol) -> UIViewController {
+//        let view = AuthViewController()
+//        let firebase = MockFirebaseAuthManager()
+//        let presenter = AuthPresenter(router: router, firebase: firebase)
+//        view.presenter = presenter
+//        return view
+//    }
 
     //MARK: -  Home Builder
     func createHomeVC(router: RouterMainProtocol) -> UIViewController {

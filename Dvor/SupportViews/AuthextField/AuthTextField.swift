@@ -9,6 +9,8 @@ final class AuthTextFieldView: UIView, UITextFieldDelegate {
         tf.borderStyle = .none
         tf.font = UIFont.poppins(weight: .regular, size: 16)
         tf.textColor = .darkGray
+        tf.autocorrectionType = .no
+        tf.returnKeyType = .done
         return tf
     }()
 

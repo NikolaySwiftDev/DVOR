@@ -62,6 +62,11 @@ extension InfoInputViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         configureBottomPaddingButtom(isActiveTF: false)
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
 
 

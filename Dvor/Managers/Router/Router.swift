@@ -18,7 +18,7 @@ protocol RouterMainProtocol: RouterMain {
     func setVC(_ vc: UIViewController)
     func pushVC(_ vc: UIViewController)
     
-    func pushAuthVC()
+//    func pushAuthVC()
     func pushMainCoordinateVC()
     func pushRegistVC()
     func pushTabBarVC()
@@ -109,11 +109,10 @@ class Router: RouterMainProtocol {
     }
     
     //MARK: - Push Auth View Controller
-
-    func pushAuthVC() {
-        guard let authVC = builder?.createAuthVC(router: self) else { return }
-        pushVC(authVC)
-    }
+//    func pushAuthVC() {
+//        guard let authVC = builder?.createAuthVC(router: self) else { return }
+//        pushVC(authVC)
+//    }
     
     //MARK: - Push to Regist VC
     func pushRegistVC() {

@@ -103,13 +103,14 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     func showSuccess() {
         let vc = RegistrationViewController(presenter: presenter)
         vc.hideBackButton(true)
-        presenter?.pushViewController(vc)
+        presenter?.setViewController(vc)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             guard let self = self else { return }
             self.presenter?.completeRegistration(model: registrationData)
             self.onRegistrationComplete?()
         }
+        
     }
 
     // MARK: - Deinit

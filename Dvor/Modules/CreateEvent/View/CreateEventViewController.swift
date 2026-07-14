@@ -160,19 +160,23 @@ extension CreateEventViewController {
         playersTF.textField.delegate = self
         playersTF.textField.tag = 0
         playersTF.textField.keyboardType = .numberPad
+        playersTF.textField.returnKeyType = .default
         playersTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         timeTF.textField.delegate = self
         timeTF.textField.tag = 1
         timeTF.textField.keyboardType = .numberPad
+        timeTF.textField.returnKeyType = .default
         timeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         adressTF.textField.delegate = self
         adressTF.textField.tag = 2
+        adressTF.textField.returnKeyType = .default
         adressTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         placeTF.textField.delegate = self
         placeTF.textField.tag = 3
+        placeTF.textField.returnKeyType = .default
         placeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
