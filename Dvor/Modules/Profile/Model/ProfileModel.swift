@@ -8,10 +8,17 @@ struct UserModel: Codable {
     let dateBirthday: Date?
     let mobile: String
     let experience: String
+    
+    //For geo
     let city: String
+    let countryCode: String
+    let administrativeArea: String?
+    let latitude: Double?
+    let longitude: Double?
+
     var email: String = ""
     var gender: String = "m"
-    
+
     // for card
     var position: String
     var followers: Int = 0
@@ -20,13 +27,13 @@ struct UserModel: Codable {
     var progress: Float = 50
     var hasTicket: Bool = false
     var isChecked: Bool = false
-    
+
     // for game
     var plays: Int = 0
     var level: Double = 50
     var mvpCount: Int = 0
     var mvpNominations: Int = 0
-    
+
     init(
         id: String,
         image: Data? = nil,
@@ -36,6 +43,10 @@ struct UserModel: Codable {
         mobile: String,
         experience: String,
         city: String,
+        countryCode: String,
+        administrativeArea: String?,
+        latitude: Double,
+        longitude: Double,
         email: String = "",
         gender: String = "m",
         position: String,
@@ -58,6 +69,10 @@ struct UserModel: Codable {
         self.mobile = mobile
         self.experience = experience
         self.city = city
+        self.latitude = latitude
+        self.longitude = longitude
+        self.countryCode = countryCode
+        self.administrativeArea = administrativeArea
         self.email = email
         self.gender = gender
         self.position = position
@@ -72,9 +87,9 @@ struct UserModel: Codable {
         self.mvpCount = mvpCount
         self.mvpNominations = mvpNominations
     }
-    
+
     func toDictionary() -> [String: Any] {
-        return [
+        [
             "id": id,
             "image": image?.base64EncodedString() ?? "",
             "name": name,
@@ -83,6 +98,10 @@ struct UserModel: Codable {
             "mobile": mobile,
             "experience": experience,
             "city": city,
+            "latitude": latitude as Any,
+            "longitude": longitude as Any,
+            "countryCode": countryCode,
+            "administrativeArea": administrativeArea as Any,
             "email": email,
             "gender": gender,
             "position": position,
@@ -98,7 +117,7 @@ struct UserModel: Codable {
             "mvpNominations": mvpNominations
         ]
     }
-    
+
     init?(from dictionary: [String: Any]) {
         guard let id = dictionary["id"] as? String,
               let name = dictionary["name"] as? String,
@@ -110,21 +129,26 @@ struct UserModel: Codable {
               let position = dictionary["position"] as? String else {
             return nil
         }
-        
+
         self.id = id
-        
+
         if let imageString = dictionary["image"] as? String, !imageString.isEmpty {
             self.image = Data(base64Encoded: imageString)
         } else {
             self.image = nil
         }
-        
+
         self.name = name
         self.surname = surname
         self.dateBirthday = Date(timeIntervalSince1970: timestamp)
         self.mobile = mobile
         self.experience = experience
         self.city = city
+        self.countryCode = dictionary["countryCode"] as? String ?? ""
+        self.administrativeArea = dictionary["administrativeArea"] as? String
+        self.latitude = dictionary["latitude"] as? Double
+        self.longitude = dictionary["longitude"] as? Double
+
         self.email = dictionary["email"] as? String ?? ""
         self.gender = dictionary["gender"] as? String ?? "m"
         self.position = position
@@ -161,7 +185,17 @@ extension UserModel {
         return OrganizatorModel(id: self.id,
                                 image: self.image,
                                 name: self.name,
-                                city: self.city
+                                city: self.city,
+                                latitude: self.latitude,
+                                longitude: self.longitude
         )
+    }
+    
+    func toCityModel() -> CityModel {
+        CityModel(name: self.name,
+                  countryCode: self.countryCode,
+                  administrativeArea: self.administrativeArea,
+                  latitude: self.latitude ?? 0,
+                  longitude: self.longitude ?? 0)
     }
 }

@@ -13,7 +13,11 @@ struct EventModel: Codable {
     let time: String
     let name: String
     let format: Int
-    let location: String
+    let city: String
+    let countryCode: String
+    let administrativeArea: String?
+    let latitude: Double
+    let longitude: Double
     let address: String
     let namePlace: String
     let price: Int
@@ -27,13 +31,16 @@ struct EventModel: Codable {
          time: String,
          name: String,
          format: Int,
-         location: String,
+         city: String,
+         countryCode: String,
+         administrativeArea: String?,
+         latitude: Double,
+         longitude: Double,
          address: String,
          namePlace: String,
          price: Int,
          ownerName: String,
          timeGame: Int,
-//         totalPeopleCount: Int,
          users: [String] = [],
          orgId: String
     ) {
@@ -42,48 +49,119 @@ struct EventModel: Codable {
         self.time = time
         self.name = name
         self.format = format
-        self.location = location
+        self.city = city
+        self.countryCode = countryCode
+        self.administrativeArea = administrativeArea
+        self.longitude = longitude
+        self.latitude = latitude
         self.address = address
         self.namePlace = namePlace
         self.price = price
         self.ownerName = ownerName
         self.timeGame = timeGame
-//        self.totalPeopleCount = totalPeopleCount
         self.users = users
         self.orgId = orgId
+        
+        
     }
     
     init?(from dictionary: [String: Any]) {
-        guard let id = dictionary["id"] as? String,
-              let timestamp = dictionary["date"] as? TimeInterval,
-              let time = dictionary["time"] as? String,
-              let name = dictionary["name"] as? String,
-              let format = dictionary["format"] as? Int,
-              let location = dictionary["location"] as? String,
-              let address = dictionary["address"] as? String,
-              let namePlace = dictionary["namePlace"] as? String,
-              let price = dictionary["price"] as? Int,
-              let ownerName = dictionary["ownerName"] as? String,
-              let timeGame = dictionary["timeGame"] as? Int,
-//              let totalPeopleCount = dictionary["totalPeopleCount"] as? Int,
-              let orgId = dictionary["orgId"] as? String else {
+
+        guard let id = dictionary["id"] as? String else {
+            print("❌ Missing id")
             return nil
         }
-        
+
+        guard let timestamp = dictionary["date"] as? TimeInterval else {
+            print("❌ Missing date")
+            return nil
+        }
+
+        guard let time = dictionary["time"] as? String else {
+            print("❌ Missing time")
+            return nil
+        }
+
+        guard let name = dictionary["name"] as? String else {
+            print("❌ Missing name")
+            return nil
+        }
+
+        guard let format = dictionary["format"] as? Int else {
+            print("❌ Missing format")
+            return nil
+        }
+
+        guard let city = dictionary["location"] as? String else {
+            print("❌ Missing location")
+            return nil
+        }
+
+        guard let countryCode = dictionary["countryCode"] as? String else {
+            print("❌ Missing countryCode")
+            return nil
+        }
+
+        let administrativeArea = dictionary["administrativeArea"] as? String
+
+        guard let latitude = (dictionary["latitude"] as? NSNumber)?.doubleValue else {
+            print("❌ Missing latitude")
+            return nil
+        }
+
+        guard let longitude = (dictionary["longitude"] as? NSNumber)?.doubleValue else {
+            print("❌ Missing longitude")
+            return nil
+        }
+
+        guard let address = dictionary["address"] as? String else {
+            print("❌ Missing address")
+            return nil
+        }
+
+        guard let namePlace = dictionary["namePlace"] as? String else {
+            print("❌ Missing namePlace")
+            return nil
+        }
+
+        guard let price = dictionary["price"] as? Int else {
+            print("❌ Missing price")
+            return nil
+        }
+
+        guard let ownerName = dictionary["ownerName"] as? String else {
+            print("❌ Missing ownerName")
+            return nil
+        }
+
+        guard let timeGame = dictionary["timeGame"] as? Int else {
+            print("❌ Missing timeGame")
+            return nil
+        }
+
+        guard let orgId = dictionary["orgId"] as? String else {
+            print("❌ Missing orgId")
+            return nil
+        }
+
         self.id = id
         self.date = Date(timeIntervalSince1970: timestamp)
         self.time = time
         self.name = name
         self.format = format
-        self.location = location
+        self.city = city
+        self.countryCode = countryCode
+        self.administrativeArea = administrativeArea
+        self.latitude = latitude
+        self.longitude = longitude
         self.address = address
         self.namePlace = namePlace
         self.price = price
         self.ownerName = ownerName
         self.timeGame = timeGame
-//        self.totalPeopleCount = totalPeopleCount
         self.users = dictionary["users"] as? [String] ?? []
         self.orgId = orgId
+    
     }
 }
 
@@ -128,19 +206,22 @@ extension EventModel {
 extension EventModel {
     
     func toDictionary() -> [String: Any] {
-        return [
+        [
             "id": id,
             "date": date.timeIntervalSince1970,
             "time": time,
             "name": name,
             "format": format,
-            "location": location,
+            "location": city,
+            "countryCode": countryCode,
+            "administrativeArea": administrativeArea as Any,
+            "latitude": latitude,
+            "longitude": longitude,
             "address": address,
             "namePlace": namePlace,
             "price": price,
             "ownerName": ownerName,
             "timeGame": timeGame,
-//            "totalPeopleCount": totalPeopleCount,
             "users": users,
             "orgId": orgId
         ]
@@ -150,7 +231,11 @@ extension EventModel {
         return DetailModel(
             id: self.id,
             name: self.name,
-            city: self.location,
+            city: self.city,
+            countryCode: self.countryCode,
+            administrativeArea: self.administrativeArea ?? "",
+            latitude: self.latitude,
+            longitude: self.longitude,
             address: self.address,
             namePlace: self.namePlace,
             date: self.date,

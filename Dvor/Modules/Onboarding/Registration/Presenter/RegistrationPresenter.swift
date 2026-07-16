@@ -213,7 +213,13 @@ final class RegistPresenter: RegistPresenterProtocol {
                              mobile: model.email,
                              experience: model.experience,
                              city: model.city,
-                             position: model.position)
+                             countryCode: model.countryCode ?? "",
+                             administrativeArea: model.administrativeArea,
+                             latitude: model.latitude ?? 0,
+                             longitude: model.longitude ?? 0,
+                             email: model.email,
+                             position: model.position
+        )
         
         network.writeUser(model: data, completion: { [weak self] result in
             guard let self = self else { return }

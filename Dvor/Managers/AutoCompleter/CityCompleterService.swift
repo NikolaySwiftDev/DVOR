@@ -9,7 +9,7 @@ protocol CityCompleterServiceProtocol: AnyObject {
     var delegate: CityCompleterServiceDelegate? { get set }
     
     func search(query: String)
-    func selectCity(at index: Int, completionHandler: @escaping (String?) -> Void)
+    func selectCity(at index: Int, completionHandler: @escaping (CityModel?) -> Void)
 }
 
 protocol CityCompleterServiceDelegate: AnyObject {
@@ -34,23 +34,30 @@ final class CityCompleterService: NSObject, CityCompleterServiceProtocol {
         completer.queryFragment = query
     }
     
-    func selectCity(at index: Int, completionHandler: @escaping (String?) -> Void) {
+    func selectCity(at index: Int, completionHandler: @escaping (CityModel?) -> Void) {
         guard completions.indices.contains(index) else {
             completionHandler(nil)
             return
         }
-        
+
         let completion = completions[index]
         let request = MKLocalSearch.Request(completion: completion)
-        let search = MKLocalSearch(request: request)
-        
-        search.start { response, error in
-            guard let placemark = response?.mapItems.first?.placemark,
-                  let locality = placemark.locality else {
+
+        MKLocalSearch(request: request).start { response, error in
+            guard let placemark = response?.mapItems.first?.placemark else {
                 DispatchQueue.main.async { completionHandler(nil) }
                 return
             }
-            DispatchQueue.main.async { completionHandler(locality) }
+
+            let city = CityModel(
+                name: placemark.locality ?? completion.title,
+                countryCode: placemark.countryCode ?? "",
+                administrativeArea: placemark.administrativeArea,
+                latitude: placemark.coordinate.latitude,
+                longitude: placemark.coordinate.longitude
+            )
+
+            DispatchQueue.main.async { completionHandler(city) }
         }
     }
     
@@ -72,3 +79,24 @@ extension CityCompleterService: MKLocalSearchCompleterDelegate {
         delegate?.cityCompleterService(self, didFailWithError: error)
     }
 }
+
+import CoreLocation
+
+import CoreLocation
+
+struct CityModel: Equatable, Codable {
+    let name: String
+    let countryCode: String
+    let administrativeArea: String?
+    let latitude: Double
+    let longitude: Double
+    
+    private static let sameCityRadius: CLLocationDistance = 30_000
+
+    static func == (lhs: CityModel, rhs: CityModel) -> Bool {
+        let location1 = CLLocation(latitude: lhs.latitude, longitude: lhs.longitude)
+        let location2 = CLLocation(latitude: rhs.latitude, longitude: rhs.longitude)
+        return location1.distance(from: location2) < sameCityRadius
+    }
+}
+

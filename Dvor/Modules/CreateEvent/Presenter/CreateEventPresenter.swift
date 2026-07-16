@@ -45,7 +45,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         self.firebaseAuth = firebase
     }
     
-    private var city: String?
+    private var city: CityModel?
     
     // MARK: - Methods
     func popVC() {
@@ -64,9 +64,10 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let success):
-                let city = success.city
+                let city = CityModel(name: success.city, countryCode: success.countryCode, administrativeArea: success.administrativeArea, latitude: success.latitude ?? 0, longitude: success.longitude ?? 0)
                 self.city = city
-                view?.success(city: city)
+                print(city.countryCode)
+                view?.success(city: city.name)
             case .failure(let failure):
                 print(failure.localizedDescription)
             }
@@ -85,7 +86,11 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
                                time: time,
                                name: "",
                                format: players,
-                               location: city ?? "",
+                               city: city?.name ?? "Emtpy",
+                               countryCode: city?.countryCode ?? "",
+                               administrativeArea: city?.administrativeArea ?? "",
+                               latitude: city?.latitude ?? 0,
+                               longitude: city?.longitude ?? 0,
                                address: address,
                                namePlace: place,
                                price: 0,
@@ -97,10 +102,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-//                router?.showAlertConfigur(title: success, message: nil, titleActionButton: "Back") { [weak self] in
-//                    guard let self = self else { return }
-                    self.router?.popVC()
-//                }
+                self.router?.popVC()
             case .failure(let error):
                 router?.showAlertWithTitle(CreateEventPresenterStrings.saveError)
                 view?.error(error: error)

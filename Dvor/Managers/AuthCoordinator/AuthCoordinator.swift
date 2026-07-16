@@ -81,7 +81,12 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         vc.configureEnadle(false)
         vc.hideBackButton(false)
         vc.onNext = { [weak self] city in
-            self?.registrationData.city = city
+            self?.registrationData.city = city.name
+            self?.registrationData.countryCode = city.countryCode
+            self?.registrationData.administrativeArea = city.administrativeArea
+            self?.registrationData.latitude = city.latitude
+            self?.registrationData.longitude = city.longitude
+            
             self?.acceptNotification()
         }
         presenter?.pushViewController(vc)
@@ -130,4 +135,8 @@ struct RegistrationData: Codable {
     var experience: String = "1 year"
     var image: Data?
     var city: String = ""
+    var latitude: Double?
+    var longitude: Double?
+    var countryCode: String?
+    var administrativeArea: String?
 }

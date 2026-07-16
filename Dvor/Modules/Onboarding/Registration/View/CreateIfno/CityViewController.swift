@@ -2,10 +2,13 @@ import UIKit
 
 final class CityViewController: BaseRegistrationViewController {
     
-    private var city = "" {
-        didSet { configureEnadle(checkValidButton()) }
+    private var city: CityModel? {
+        didSet {
+            configureEnadle(city != nil)
+        }
     }
-    var onNext: ((String) -> Void)?
+    
+    var onNext: ((CityModel) -> Void)?
     
     private let cityTextField = AuthTextFieldView(placeholder: "cityview.placeholder".loc)
     private let suggestionsView = CitySuggestionsView()
@@ -17,7 +20,7 @@ final class CityViewController: BaseRegistrationViewController {
     }
     
     override func nextButtonTapped() {
-        onNext?(city)
+        onNext?(city!)
     }
     
     deinit {
@@ -31,7 +34,7 @@ extension CityViewController: UITextFieldDelegate {
         let current = (textField.text ?? "") as NSString
         let updated = current.replacingCharacters(in: range, with: string)
         
-        city = ""
+        city = nil
         suggestionsView.search(query: updated)
         return true
     }
@@ -48,8 +51,6 @@ extension CityViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         configureBottomPaddingButtom(isActiveTF: false)
     }
-    
-
 }
 
 //MARK: - setupLayout + config
@@ -76,17 +77,17 @@ extension CityViewController {
         
         suggestionsView.onCitySelected = { [weak self] locality in
             guard let self else { return }
-            self.cityTextField.textField.text = locality
+            self.cityTextField.textField.text = locality.name
             self.city = locality
             self.cityTextField.resignFirstResponder()
         }
         
         suggestionsView.onInvalidSelection = { [weak self] in
-            self?.city = ""
+            self?.city = nil
         }
     }
     
     private func checkValidButton() -> Bool {
-        !city.isEmpty
+        city != nil
     }
 }

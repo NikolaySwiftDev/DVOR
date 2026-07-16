@@ -123,16 +123,27 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             completion(.success([]))
             return
         }
-        
+
         var events: [EventModel] = []
+
         for child in snapshot.children {
-            if let snapshot = child as? DataSnapshot,
-               let value = snapshot.value as? [String: Any],
-               let event = EventModel(from: value) {
+            guard let snapshot = child as? DataSnapshot else {
+                continue
+            }
+
+            guard let value = snapshot.value as? [String: Any] else {
+                print("❌ \(snapshot.key): value is not [String: Any]")
+                continue
+            }
+
+            if let event = EventModel(from: value) {
                 events.append(event)
+            } else {
+                print("❌ Failed to parse event: \(snapshot.key)")
+                dump(value)
             }
         }
-        
+
         completion(.success(events))
     }
     
@@ -164,6 +175,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     //MARK: - Recording an Event in the Database
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void) {
         let eventRef = database.child(eventsPath).child(model.id)
+        print(model.toDictionary())
         eventRef.setValue(model.toDictionary()) { /*[weak self]*/ error, _ in
 //            guard let self = self else { return }
             if let error = error {

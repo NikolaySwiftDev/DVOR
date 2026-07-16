@@ -3,7 +3,7 @@ import UIKit
 final class CitySuggestionsView: UIView {
     
     //MARK: - Public
-    var onCitySelected: ((String) -> Void)?
+    var onCitySelected: ((CityModel) -> Void)?
     var onInvalidSelection: (() -> Void)?
     
     //MARK: - Private
@@ -88,14 +88,16 @@ extension CitySuggestionsView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cityService.selectCity(at: indexPath.row) { [weak self] locality in
+        cityService.selectCity(at: indexPath.row) { [weak self] city in
             guard let self else { return }
-            guard let locality else {
+
+            guard let city else {
                 self.onInvalidSelection?()
                 return
             }
+
             self.clear()
-            self.onCitySelected?(locality)
+            self.onCitySelected?(city)
         }
     }
 }

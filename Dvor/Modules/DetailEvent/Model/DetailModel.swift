@@ -5,6 +5,10 @@ struct DetailModel {
     let id: String
     let name: String
     let city: String
+    let countryCode: String
+    let administrativeArea: String
+    let latitude: Double
+    let longitude: Double
     let address: String
     let namePlace: String
     let date: Date
@@ -18,6 +22,16 @@ struct DetailModel {
     
     var fullAdress: String {
         city + "," + address
+    }
+}
+
+extension DetailModel {
+    func toCityModel() -> CityModel {
+        CityModel(name: self.name,
+                  countryCode: self.countryCode,
+                  administrativeArea: self.administrativeArea,
+                  latitude: self.latitude,
+                  longitude: self.longitude)
     }
 }
 

@@ -14,4 +14,6 @@ struct OrganizatorModel: Codable {
     var image: Data? = nil
     var name: String = ""
     var city: String = ""
+    var latitude: Double? = nil
+    var longitude: Double? = nil
 }
