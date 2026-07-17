@@ -43,14 +43,17 @@ final class EventsViewController: BaseViewController {
 
     //MARK: - Buttons Action
     override func didTapPersonButton() {
+        sortView.selectedIndex = nil
         presenter?.pushProfileVC()
     }
     
     override func didTapAddTapped() {
+        sortView.selectedIndex = nil
         presenter?.pushCreateEvent()
     }
     
     @objc private func fetchButtonTapped() {
+        sortView.selectedIndex = nil
         presenter?.fetchEvents()
     }
     
@@ -66,8 +69,6 @@ final class EventsViewController: BaseViewController {
 
 // MARK: - Home Protocol
 extension EventsViewController: EventsProtocol {
-
-    
     func success(date: String) {
         titleDate.text = "\(date)"
         
@@ -110,11 +111,13 @@ extension EventsViewController: CustomSegmentViewDelegate {
 extension EventsViewController: CustomCalendarViewDelegate, EventsTableViewDelegate {
     //Calendar delegate
     func didSelectDate(_ date: Date) {
+        sortView.selectedIndex = nil
         presenter?.filterEventsWithDate(date: date)
     }
     
     //Event delegate for PUSH
     func didSelectEvent(_ event: EventModel) {
+        sortView.selectedIndex = nil
         presenter?.pushDetailVC(model: event)
     }
     
@@ -125,6 +128,7 @@ extension EventsViewController: CustomCalendarViewDelegate, EventsTableViewDeleg
     
     //Event delegate for REFRESH EVENTS
     func didPullToRefresh() {
+        sortView.selectedIndex = nil
         presenter?.fetchEvents()
     }
 }

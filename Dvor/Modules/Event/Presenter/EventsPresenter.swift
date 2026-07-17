@@ -129,6 +129,19 @@ final class EventsPresenter: EventsPresenterProtocol {
             filteredEvents = events.filter {
                 calendar.isDate($0.date, inSameDayAs: date)
             }
+
+            guard let userCity = firebase.currentCity else { return }
+
+            filteredEvents = filteredEvents?.filter { event in
+                let eventCity = CityModel(
+                    name: event.city,
+                    countryCode: event.countryCode,
+                    administrativeArea: event.administrativeArea,
+                    latitude: event.latitude,
+                    longitude: event.longitude
+                )
+                return eventCity == userCity
+            }
             lastFilterDate = date
             view?.success(date: lastFilterDate.toString())
         }
@@ -157,21 +170,6 @@ final class EventsPresenter: EventsPresenterProtocol {
             filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
             view?.success(date: title)
             
-        case .city:
-            guard let userCity = firebase.currentCity else { return }
-
-            filteredEvents = filteredEvents?.filter { event in
-                let eventCity = CityModel(
-                    name: event.city,
-                    countryCode: event.countryCode,
-                    administrativeArea: event.administrativeArea,
-                    latitude: event.latitude,
-                    longitude: event.longitude
-                )
-                return eventCity == userCity
-            }
-            view?.success(date: title)
-        
         case .none:
             personlaMode = false
             filterEventsWithDate(date: lastFilterDate)

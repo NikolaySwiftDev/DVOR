@@ -77,8 +77,13 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
 
-        guard let idUser = firebase.currentUserId else {
+        guard let idUser = firebase.currentUserId, let currentCity = firebase.currentCity else {
             router.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            return
+        }
+
+        guard currentCity == city else {
+            router.showAlertWithTitle(DetailPresenterConstants.differentCity)
             return
         }
 
@@ -87,38 +92,23 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
 
-        network.fetchUser(idUser: idUser) { [weak self] result in
+        network.writeUserToEvent(idEvent: idEvent, idUser: idUser) { [weak self] result in
             guard let self = self else { return }
-
             switch result {
-            case .success(let model):
-                guard model.toCityModel() == city else {
-                    router.showAlertWithTitle(DetailPresenterConstants.differentCity)
-                    return
-                }
-
-                network.writeUserToEvent(idEvent: idEvent, idUser: idUser) { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success(let success):
-                        view?.updateUsers(model: success)
-                        let hours = Calendar.current.component(.hour, from: date)
-                        notification.createNotification(
-                            identifier: idEvent,
-                            title: DetailPresenterConstants.matchReminder,
-                            body: "\(DetailPresenterConstants.eventTomorrowAt) \(hours)",
-                            date: date
-                        )
-                        router.showAlertWithTitle(
-                            isComplete ? DetailPresenterConstants.queueAdded : DetailPresenterConstants.userAdded
-                        )
-                    case .failure:
-                        router.showAlertWithTitle(DetailPresenterConstants.saveError)
-                    }
-                }
-
-            case .failure(let failure):
-                router.showAlertWithTitle(failure.localizedDescription)
+            case .success(let success):
+                view?.updateUsers(model: success)
+                let hours = Calendar.current.component(.hour, from: date)
+                notification.createNotification(
+                    identifier: idEvent,
+                    title: DetailPresenterConstants.matchReminder,
+                    body: "\(DetailPresenterConstants.eventTomorrowAt) \(hours)",
+                    date: date
+                )
+                router.showAlertWithTitle(
+                    isComplete ? DetailPresenterConstants.queueAdded : DetailPresenterConstants.userAdded
+                )
+            case .failure:
+                router.showAlertWithTitle(DetailPresenterConstants.saveError)
             }
         }
     }

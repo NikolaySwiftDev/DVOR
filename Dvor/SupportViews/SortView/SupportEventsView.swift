@@ -14,7 +14,11 @@ final class SupportEventsView: UIView {
     weak var delegate: SupportEventsViewDelegate?
     
     private let type: TypeView
-    private var selectedIndex: Int?
+    var selectedIndex: Int? {
+        didSet {
+            sortTableView.reloadData()
+        }
+    }
     
     private let container = UIView()
     private let closeButton = UIButton.createBackButton(image: UIImage(systemName: "xmark.circle.fill")?.withTintColor(.black) ?? UIImage(), target: self, action: #selector(closeButtonTapped))
@@ -28,15 +32,13 @@ final class SupportEventsView: UIView {
         return tableView
     }()
     
-    private lazy var labelTitle = UILabel.init(text: type.rawValue, font: .poppins(weight: .bold, size: 18), textAlignment: .center)
+    private lazy var labelTitle = UILabel.init(text: type.title, font: .poppins(weight: .bold, size: 18), textAlignment: .center)
 
     //MARK: - Init
 
     init(type: TypeView) {
         self.type = type
         super.init(frame: .zero)
-        
-//        addLightBlurBackground()
         choiseTypeView(with: type)
         
     }
