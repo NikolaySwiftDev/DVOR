@@ -72,7 +72,6 @@ final class CreateEventViewController: UIViewController {
 extension CreateEventViewController: CreateEventProtocol {
     func success(city: String) {
         addressSuggestionsView.expectedCity = city
-        print("City is success --- " + city)
     }
     func error(error: Error) {}
 }

@@ -4,11 +4,13 @@ import FirebaseAuth
 protocol FirebaseAuthManagerProtocol: AnyObject {
 //    var currentUser: User? { get } for firebase
     var currentUserId: String? { get }
+    var currentCity: CityModel? { get }
     var isAuthorized: Bool { get }
     var isEmailVerified: Bool { get }
 
 //    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) for firebase
-    func signUp()
+    func signUp(city: CityModel)
+
 //    func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) for firebase
     func signIn(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void)
 
@@ -72,18 +74,14 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
 
 
 final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
-
-    // MARK: - UserDefaults Keys
-
+    
     private enum Keys {
-        static let isAuthorized    = "mock_auth_isAuthorized"
-        static let userId          = "mock_auth_userId"
-        
+        static let isAuthorized = "mock_auth_isAuthorized"
+        static let userId       = "mock_auth_userId"
+        static let city         = "mock_auth_city"
     }
 
     private let defaults = UserDefaults.standard
-
-    // MARK: - Protocol Properties
 
     var currentUserId: String? {
         guard isAuthorized else { return nil }
@@ -93,26 +91,34 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
         return newId
     }
 
+    var currentCity: CityModel? {
+        guard isAuthorized,
+              let data = defaults.data(forKey: Keys.city) else { return nil }
+        return try? JSONDecoder().decode(CityModel.self, from: data)
+    }
+
     var isAuthorized: Bool {
         get { defaults.bool(forKey: Keys.isAuthorized) }
         set { defaults.set(newValue, forKey: Keys.isAuthorized) }
     }
 
-    var isEmailVerified: Bool {
-        true
-    }
+    var isEmailVerified: Bool { true }
 
     // MARK: - Auth Methods
 
-    func signUp() {
+    func signUp(city: CityModel) {
         let newUserId = UUID().uuidString
         defaults.set(newUserId, forKey: Keys.userId)
-        isAuthorized    = true
 
+        if let data = try? JSONEncoder().encode(city) {
+            defaults.set(data, forKey: Keys.city)
+        }
+
+        isAuthorized = true
     }
 
     func signIn(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let userId    = defaults.string(forKey: Keys.userId) else { return }
+        guard let userId = defaults.string(forKey: Keys.userId) else { return }
         isAuthorized = true
         completion(.success(userId))
     }
@@ -132,8 +138,9 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
     }
 
     func signOut(completion: @escaping (Result<Void, Error>) -> Void) {
-        isAuthorized    = false
+        isAuthorized = false
         defaults.removeObject(forKey: Keys.userId)
+        defaults.removeObject(forKey: Keys.city)
         completion(.success(()))
     }
 }

@@ -49,8 +49,14 @@ final class CityCompleterService: NSObject, CityCompleterServiceProtocol {
                 return
             }
 
+            guard placemark.thoroughfare == nil,
+                  let locality = placemark.locality else {
+                DispatchQueue.main.async { completionHandler(nil) }
+                return
+            }
+
             let city = CityModel(
-                name: placemark.locality ?? completion.title,
+                name: locality,
                 countryCode: placemark.countryCode ?? "",
                 administrativeArea: placemark.administrativeArea,
                 latitude: placemark.coordinate.latitude,
@@ -68,7 +74,11 @@ final class CityCompleterService: NSObject, CityCompleterServiceProtocol {
 
 extension CityCompleterService: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        completions = completer.results.filter { !$0.subtitle.isEmpty }
+        completions = completer.results.filter { result in
+            guard !result.subtitle.isEmpty else { return false }
+            let looksLikeCity = !result.subtitle.contains(",")
+            return looksLikeCity
+        }
         
         let suggestions = completions.map { SuggestionModel(title: $0.title, subtitle: $0.subtitle) }
         delegate?.cityCompleterService(self, didUpdateResults: suggestions)
@@ -79,10 +89,6 @@ extension CityCompleterService: MKLocalSearchCompleterDelegate {
         delegate?.cityCompleterService(self, didFailWithError: error)
     }
 }
-
-import CoreLocation
-
-import CoreLocation
 
 struct CityModel: Equatable, Codable {
     let name: String

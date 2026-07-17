@@ -16,7 +16,8 @@ enum TypeView: String {
             return [
                 SortCellModel(title: "sort.participants_count".loc, predicate: .count),
                 SortCellModel(title: "sort.time".loc, predicate: .time),
-                SortCellModel(title: "sort.address".loc, predicate: .address)
+                SortCellModel(title: "sort.address".loc, predicate: .address),
+                SortCellModel(title: "sort.city".loc, predicate: .city)
             ]
         case .filter:
             return []
@@ -36,6 +37,7 @@ enum SortPredicate: String {
     case count
     case time
     case address
+    case city
 }
 
 

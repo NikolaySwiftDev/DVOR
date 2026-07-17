@@ -63,13 +63,15 @@ class Builder: BuilderProtocol {
         let network = FirebaseDataManager()
         let photoManager = PhotoManager()
         let notifManager = NotificationManager()
+        let locationManager = LocationManager()
         
         let presenter = RegistPresenter(
             router: router,
             firebase: firebase,
             network: network,
             photoManager: photoManager,
-            notifManager: notifManager
+            notifManager: notifManager,
+            locationManager: locationManager
         )
         
         registrationCoordinator = RegistrationCoordinator(presenter: presenter)

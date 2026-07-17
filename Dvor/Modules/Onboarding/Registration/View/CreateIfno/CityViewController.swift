@@ -12,6 +12,7 @@ final class CityViewController: BaseRegistrationViewController {
     
     private let cityTextField = AuthTextFieldView(placeholder: "cityview.placeholder".loc)
     private let suggestionsView = CitySuggestionsView()
+    private let geoButton = UIButton.createStandartButton(title: "Geo".loc, titleColor: .black)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,9 +24,28 @@ final class CityViewController: BaseRegistrationViewController {
         onNext?(city!)
     }
     
+    @objc private func geoButtonTapped() {
+        cityTextField.resignFirstResponder()
+        geoButton.isEnabled = false
+        
+        presenter?.requestCurrentCity { [weak self] city in
+            guard let self else { return }
+            self.geoButton.isEnabled = true
+            
+            guard let city else {
+                return
+            }
+            
+            self.cityTextField.textField.text = city.name
+            self.suggestionsView.clear()
+            self.city = city
+        }
+    }
+    
     deinit {
         print("Deinit City VC")
     }
+    
 }
 
 //MARK: - UITextFieldDelegate
@@ -57,12 +77,20 @@ extension CityViewController: UITextFieldDelegate {
 extension CityViewController {
     private func setupLayout() {
         view.addSubview(cityTextField)
+        view.addSubview(geoButton)
         view.addSubview(suggestionsView)
         
         cityTextField.snp.makeConstraints { make in
             make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
-            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.leading.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.trailing.equalTo(geoButton.snp.leading).offset(-8)
             make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
+        
+        geoButton.snp.makeConstraints { make in
+            make.centerY.equalTo(cityTextField)
+            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.size.equalTo(Constants.Constraint.buttonHeight)
         }
         
         suggestionsView.snp.makeConstraints { make in
@@ -74,6 +102,7 @@ extension CityViewController {
     
     private func configure() {
         cityTextField.textField.delegate = self
+        geoButton.addTarget(self, action: #selector(geoButtonTapped), for: .touchUpInside)
         
         suggestionsView.onCitySelected = { [weak self] locality in
             guard let self else { return }

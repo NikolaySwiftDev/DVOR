@@ -175,9 +175,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     //MARK: - Recording an Event in the Database
     func writeEvents(model: EventModel, completion: @escaping (Result<String, Error>) -> Void) {
         let eventRef = database.child(eventsPath).child(model.id)
-        print(model.toDictionary())
-        eventRef.setValue(model.toDictionary()) { /*[weak self]*/ error, _ in
-//            guard let self = self else { return }
+        eventRef.setValue(model.toDictionary()) { error, _ in
             if let error = error {
                 completion(.failure(error))
             } else {
@@ -189,8 +187,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     //MARK: - User record in the database
     func writeUser(model: UserModel, completion: @escaping (Result<String, any Error>) -> Void) {
         let eventRef = database.child(usersPath).child(model.id)
-        eventRef.setValue(model.toDictionary()) { /*[weak self]*/ error, _ in
-//            guard let self = self else { return }
+        eventRef.setValue(model.toDictionary()) {  error, _ in
             if let error = error {
                 completion(.failure(error))
             } else {

@@ -28,12 +28,14 @@ protocol RegistPresenterProtocol: AnyObject {
     func pushViewController(_ vc: UIViewController)
     func setViewController(_ vc: UIViewController)
     
+    func requestCurrentCity(completion: @escaping (CityModel?) -> Void)
 
     init(router: RouterMainProtocol,
          firebase: FirebaseAuthManagerProtocol,
          network: FirebaseDataManager,
          photoManager: PhotoManagerProtocol,
-         notifManager: NotificationManagerProtocol)
+         notifManager: NotificationManagerProtocol,
+         locationManager: LocationManagerProtocol)
 }
 
 final class RegistPresenter: RegistPresenterProtocol {
@@ -44,17 +46,20 @@ final class RegistPresenter: RegistPresenterProtocol {
     let network: FirebaseDataManager
     let photoManager: PhotoManagerProtocol
     let notifManager: NotificationManagerProtocol
+    let locationManager: LocationManagerProtocol
     
     required init(router: RouterMainProtocol,
                   firebase: FirebaseAuthManagerProtocol,
                   network: FirebaseDataManager,
                   photoManager: PhotoManagerProtocol,
-                  notifManager: NotificationManagerProtocol) {
+                  notifManager: NotificationManagerProtocol,
+                  locationManager: LocationManagerProtocol) {
         self.router = router
         self.firebase = firebase
         self.network = network
         self.photoManager = photoManager
         self.notifManager = notifManager
+        self.locationManager = locationManager
     }
     
     func popVC() {
@@ -196,10 +201,17 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
 
     func completeRegistration(model: RegistrationData) {
-//        guard let userId = firebase.currentUser?.uid else {
-        
-        firebase.signUp()
-        
+
+        let city = CityModel(
+            name: model.city,
+            countryCode: model.countryCode ?? "",
+            administrativeArea: model.administrativeArea,
+            latitude: model.latitude ?? 0,
+            longitude: model.longitude ?? 0
+        )
+
+        firebase.signUp(city: city)
+
         guard let userId = firebase.currentUserId else {
             router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
             return
@@ -246,6 +258,17 @@ final class RegistPresenter: RegistPresenterProtocol {
     
     func setViewController(_ vc: UIViewController) {
         router?.setVC(vc)
+    }
+    
+    // MARK: - Location -> City
+    func requestCurrentCity(completion: @escaping (CityModel?) -> Void) {
+        locationManager.requestCurrentCity { [weak self] city, error  in
+            guard let self = self else { return }
+            if let error {
+                router?.showAlertWithTitle(error.localizedDescription)
+            }
+            completion(city)
+        }
     }
     
 
