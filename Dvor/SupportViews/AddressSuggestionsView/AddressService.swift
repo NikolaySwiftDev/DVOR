@@ -8,6 +8,7 @@ final class AddressSuggestionsView: UIView {
     }
     
     var onAddressSelected: ((String) -> Void)?
+    var onNeedsHouseNumber: ((String) -> Void)?
     var onInvalidSelection: (() -> Void)?
     
     private let addressService: AddressCompleterServiceProtocol
@@ -86,14 +87,21 @@ extension AddressSuggestionsView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        addressService.selectAddress(at: indexPath.row) { [weak self] resolved in
+        addressService.selectAddress(at: indexPath.row) { [weak self] result in
             guard let self else { return }
-            guard let resolved else {
+
+            switch result {
+            case .completed(let address):
+                self.clear()
+                self.onAddressSelected?(address)
+
+            case .needsHouseNumber(let textToFill):
+                self.onNeedsHouseNumber?(textToFill)
+                self.addressService.search(query: textToFill)
+
+            case .invalid:
                 self.onInvalidSelection?()
-                return
             }
-            self.clear()
-            self.onAddressSelected?(resolved)
         }
     }
 }

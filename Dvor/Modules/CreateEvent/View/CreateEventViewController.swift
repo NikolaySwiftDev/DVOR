@@ -199,6 +199,14 @@ extension CreateEventViewController {
         addressSuggestionsView.onInvalidSelection = { [weak self] in
             self?.adress = ""
         }
+        
+        addressSuggestionsView.onNeedsHouseNumber = { [weak self] streetText in
+            self?.adressTF.textField.text = streetText + " "
+            if let textField = self?.adressTF.textField {
+                let endPosition = textField.endOfDocument
+                textField.selectedTextRange = textField.textRange(from: endPosition, to: endPosition)
+            }
+        }
     }
     
     @objc private func titleDateTapped() {

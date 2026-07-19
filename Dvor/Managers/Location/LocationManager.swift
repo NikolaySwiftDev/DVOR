@@ -98,7 +98,7 @@ final class LocationManager: NSObject, LocationManagerProtocol {
 
 extension LocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        guard cityCompletion != nil else { return } // не наш запрос — игнор
+        guard cityCompletion != nil else { return }
 
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
