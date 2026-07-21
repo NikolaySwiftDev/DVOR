@@ -1,4 +1,3 @@
-
 import Foundation
 import UIKit
 import MapKit
@@ -39,17 +38,27 @@ protocol RouterMainProtocol: RouterMain {
 
 class Router: RouterMainProtocol {
 
-    var navigationController: UINavigationController
+    var navigationController: UINavigationController {
+        didSet {
+            attachInteractivePopGesture()
+        }
+    }
     var builder: BuilderProtocol?
 //    private let firebase = FirebaseAuthManager()
     private let firebase = MockFirebaseAuthManager()
+    private var popGestureHandler: InteractivePopGestureHandler?
     
     init(navigationController: UINavigationController,
          builder: BuilderProtocol) {
         
         self.navigationController = navigationController
         self.builder = builder
- 
+        attachInteractivePopGesture()
+    }
+
+    //MARK: - Interactive Pop Gesture
+    private func attachInteractivePopGesture() {
+        popGestureHandler = InteractivePopGestureHandler(navigationController: navigationController)
     }
     
     //MARK: - Initial View Controller
@@ -58,7 +67,6 @@ class Router: RouterMainProtocol {
             guard let mainVC = builder?.createHomeVC(router: self) else { return }
             navigationController.viewControllers = [mainVC]
             navigationController.setNavigationBarHidden(true, animated: true)
-            
         } else {
             guard let mainVC = builder?.createOnboardPageVC(router: self) else { return }
             navigationController.setNavigationBarHidden(true, animated: true)
@@ -123,11 +131,6 @@ class Router: RouterMainProtocol {
     func pushDetailVC(model: DetailModel) {
         guard let detailVC = builder?.createDetailVC(router: self, model: model) else { return }
         pushVC(detailVC)
-//        if let tabBarController = navigationController.topViewController as? UITabBarController {
-//            if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
-//                selectedNavigationController.pushViewController(detailVC, animated: true)
-//            }
-//        }
     }
 
     //MARK: - Log Out
