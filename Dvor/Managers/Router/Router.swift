@@ -11,21 +11,18 @@ protocol RouterMainProtocol: RouterMain {
     func initialViewController()
     func popVC()
     func dismiss()
-    func logOut()
     
     func presentVC(_ vc: UIViewController)
     func setVC(_ vc: UIViewController)
     func pushVC(_ vc: UIViewController)
     
-//    func pushAuthVC()
-    func pushMainCoordinateVC()
+    func showMainCoordinateFlow()
     func pushRegistVC()
-    func pushTabBarVC()
+    func showMainFlow()
     func pushProfileVC(model: UserModel?)
     func pushCreateEvent(date: Date)
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
-//    func pushDetailUserInfo(model: UserModel)
     func pushRatingVC(model: UserModel)
  
     func showAlertWithTitle(_ title: String)
@@ -38,21 +35,17 @@ protocol RouterMainProtocol: RouterMain {
 
 class Router: RouterMainProtocol {
 
-    var navigationController: UINavigationController {
-        didSet {
-            attachInteractivePopGesture()
-        }
-    }
     var builder: BuilderProtocol?
-//    private let firebase = FirebaseAuthManager()
+    var navigationController: UINavigationController
     private let firebase = MockFirebaseAuthManager()
     private var popGestureHandler: InteractivePopGestureHandler?
-    
-    init(navigationController: UINavigationController,
-         builder: BuilderProtocol) {
-        
+    private weak var rootController: RootController?
+
+    init(navigationController: UINavigationController, builder: BuilderProtocol, rootController: RootController) {
         self.navigationController = navigationController
         self.builder = builder
+        self.rootController = rootController
+
         attachInteractivePopGesture()
     }
 
@@ -63,30 +56,28 @@ class Router: RouterMainProtocol {
     
     //MARK: - Initial View Controller
     func initialViewController() {
+        let rootVC: UIViewController
+
         if firebase.isAuthorized {
-            guard let mainVC = builder?.createHomeVC(router: self) else { return }
-            navigationController.viewControllers = [mainVC]
-            navigationController.setNavigationBarHidden(true, animated: true)
+            guard let vc = builder?.createHomeVC(router: self) else { return }
+            rootVC = vc
         } else {
-            guard let mainVC = builder?.createOnboardPageVC(router: self) else { return }
-            navigationController.setNavigationBarHidden(true, animated: true)
-            navigationController.viewControllers = [mainVC]
+            guard let vc = builder?.createOnboardPageVC(router: self) else { return }
+            rootVC = vc
         }
+
+        let navigation = makeNavigationController(root: rootVC)
+        navigationController = navigation
+        rootController?.setRoot(navigation)
     }
     
     //MARK: - Push Tab Bar View Controller
-    func pushTabBarVC() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let sceneDelegate = windowScene.delegate as? SceneDelegate,
-//              let tabbarVC = builder?.createTabbarVC(router: self) else {
-              let tabbarVC = builder?.createHomeVC(router: self) else {
-            return
-        }
-
-        navigationController = UINavigationController(rootViewController: tabbarVC)
-        navigationController.setNavigationBarHidden(true, animated: true)
-        sceneDelegate.window?.rootViewController = navigationController
-        sceneDelegate.window?.makeKeyAndVisible()
+    func showMainFlow() {
+        guard let vc = builder?.createHomeVC(router: self) else { return }
+        let navigation = makeNavigationController(root: vc)
+        navigationController = navigation
+        rootController?.setRoot(navigation)
+        
     }
     
     //MARK: - Custom VC presentation
@@ -103,24 +94,13 @@ class Router: RouterMainProtocol {
     }
 
     //MARK: - Push Main Coordinate View Controller
-    func pushMainCoordinateVC() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let sceneDelegate = windowScene.delegate as? SceneDelegate,
-              let tabbarVC = builder?.createMainCoordinateVC(router: self) else {
-            return
-        }
-        
-        navigationController = UINavigationController(rootViewController: tabbarVC)
-        navigationController.setNavigationBarHidden(true, animated: true)
-        sceneDelegate.window?.rootViewController = navigationController
-        sceneDelegate.window?.makeKeyAndVisible()
+    func showMainCoordinateFlow() {
+        guard let vc = builder?.createMainCoordinateVC(router: self) else { return }
+
+        let navigation = makeNavigationController(root: vc)
+        navigationController = navigation
+        rootController?.setRoot(navigation)
     }
-    
-    //MARK: - Push Auth View Controller
-//    func pushAuthVC() {
-//        guard let authVC = builder?.createAuthVC(router: self) else { return }
-//        pushVC(authVC)
-//    }
     
     //MARK: - Push to Regist VC
     func pushRegistVC() {
@@ -131,22 +111,6 @@ class Router: RouterMainProtocol {
     func pushDetailVC(model: DetailModel) {
         guard let detailVC = builder?.createDetailVC(router: self, model: model) else { return }
         pushVC(detailVC)
-    }
-
-    //MARK: - Log Out
-    func logOut() {
-        firebase.signOut { [weak self] _ in
-            guard let self = self else { return }
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                  let sceneDelegate = windowScene.delegate as? SceneDelegate,
-                  let tabbarVC = builder?.createMainCoordinateVC(router: self) else {
-                return
-            }
-            
-            self.navigationController = UINavigationController(rootViewController: tabbarVC)
-            sceneDelegate.window?.rootViewController = self.navigationController
-            sceneDelegate.window?.makeKeyAndVisible()
-        }
     }
     
     //MARK: - Push Profile User Info
@@ -161,12 +125,6 @@ class Router: RouterMainProtocol {
         detailVC.modalPresentationStyle = .popover
         navigationController.present(detailVC, animated: true)
     }
-
-//    //MARK: - Push Detail User Info
-//    func pushDetailUserInfo(model: UserModel) {
-//        guard let detailVC = builder?.createDetailUserInfo(router: self, model: model) else { return }
-//        pushVC(detailVC)
-//    }
     
     //MARK: - Push Rating VC
     func pushRatingVC(model: UserModel) {
@@ -182,13 +140,7 @@ class Router: RouterMainProtocol {
 
     //MARK: - Pop VC
     func popVC() {
-        if let tabBarController = navigationController.topViewController as? UITabBarController {
-            if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
-                selectedNavigationController.popViewController(animated: true)
-            }
-        } else {
-            navigationController.popViewController(animated: true)
-        }
+        navigationController.popViewController(animated: true)
     }
     
     //MARK: - Dismiss
@@ -237,22 +189,14 @@ class Router: RouterMainProtocol {
         let profile = UIAlertAction(title: "Profile".loc,
                                     style: .default) { [weak self] _ in
             guard let self = self else { return }
-//            pushDetailUserInfo(model: model)
             pushProfileVC(model: model)
 
         }
-        
-//        let events = UIAlertAction(title: "Estimation",
-//                                   style: .default) {[weak self] _ in
-//            guard let self = self else { return }
-//            pushRatingVC(model: model)
-//        }
         
         let cancel = UIAlertAction(title: "Cancel".loc,
                                    style: .destructive)
         
         alert.addAction(profile)
-//        alert.addAction(events)
         alert.addAction(cancel)
         
         navigationController.present(alert, animated: true)
@@ -277,9 +221,7 @@ class Router: RouterMainProtocol {
             popoverController.permittedArrowDirections = []
         }
         
-        // Handle completion when share sheet is dismissed
         activityViewController.completionWithItemsHandler = { activityType, completed, returnedItems, error in
-            // Call completion handler with whether sharing was successful or cancelled
             completion(completed)
         }
         
@@ -300,5 +242,17 @@ class Router: RouterMainProtocol {
             mapItem.name = location
             mapItem.openInMaps(launchOptions: nil)
         }
+    }
+    
+    //MARK: - Make Navigation Controller
+    private func makeNavigationController(root: UIViewController) -> UINavigationController {
+        let navigationController = UINavigationController(rootViewController: root)
+        navigationController.setNavigationBarHidden(true, animated: false)
+
+        popGestureHandler = InteractivePopGestureHandler(
+            navigationController: navigationController
+        )
+        
+        return navigationController
     }
 }

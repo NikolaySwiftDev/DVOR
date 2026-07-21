@@ -24,7 +24,7 @@ final class AuthPresenter: AuthPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-                router.pushTabBarVC()
+                router.showMainFlow()
             case .failure(let failure):
                 router.showAlertWithTitle(failure.localizedDescription)
             }

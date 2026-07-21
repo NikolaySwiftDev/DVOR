@@ -55,7 +55,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     //MARK: -
     
     func getCityForSearchAdress() {
-        guard let orgID = firebaseAuth.currentUserId else {
+        guard firebaseAuth.currentUserId != nil else {
             router?.showAlertWithTitle(CreateEventPresenterStrings.signUp)
             return
         }

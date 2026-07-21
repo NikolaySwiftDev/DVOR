@@ -15,7 +15,7 @@ final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
     }
     
     func pushMainView() {
-        router?.pushTabBarVC()
+        router?.showMainFlow()
     }
     
     func pushRegistVC() {

@@ -33,11 +33,18 @@ final class EventsViewController: BaseViewController {
         configure()
         setupView()
         setupConstraints()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         presenter?.fetchEvents()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        print(navigationController?.interactivePopGestureRecognizer?.delegate)
     }
   
 

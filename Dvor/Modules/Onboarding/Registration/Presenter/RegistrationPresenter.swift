@@ -237,7 +237,7 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-                router?.pushTabBarVC()
+                router?.showMainFlow()
             case .failure(let error):
                 router?.showAlertConfigur(
                     title: RegistPresenterStrings.writeErrorTitle,
@@ -245,7 +245,7 @@ final class RegistPresenter: RegistPresenterProtocol {
                     titleActionButton: RegistPresenterStrings.continueButton,
                     handelr: { [weak self] in
                         guard let self = self else { return }
-                        self.router?.pushTabBarVC()
+                        self.router?.showMainFlow()
                     }
                 )
             }

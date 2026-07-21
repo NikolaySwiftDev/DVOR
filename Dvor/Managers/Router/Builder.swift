@@ -21,9 +21,7 @@ protocol BuilderProtocol: AnyObject {
 
 class Builder: BuilderProtocol {
 
-
     var registrationCoordinator: RegistrationCoordinator?
-//    private let firebase = FirebaseAuthManager()
     private let firebase = MockFirebaseAuthManager()
 
     //MARK: - Tab bar Builder
@@ -40,16 +38,12 @@ class Builder: BuilderProtocol {
 
         let documentModel = TabBarModel(vc: createEmptyVC(.systemMint),
                                          selectedImage: "ticket")
-        
-//        let personModel = TabBarModel(vc: createProfileVC(router: router, model: <#UserModel#>),
-//                                    selectedImage: "person.circle")
                                         
         
         let tabbarControllers = TabBarModels(cells: [marketModel,
                                                      walletModel,
                                                      homeModel,
                                                      documentModel,
-//                                                     personModel
                                                     ])
         
         let view = TabBarViewController()
@@ -104,15 +98,6 @@ class Builder: BuilderProtocol {
         view.presenter = presenter
         return view
     }
-    
-    //MARK: -  Auth Builder
-//    func createAuthVC(router: RouterMainProtocol) -> UIViewController {
-//        let view = AuthViewController()
-//        let firebase = MockFirebaseAuthManager()
-//        let presenter = AuthPresenter(router: router, firebase: firebase)
-//        view.presenter = presenter
-//        return view
-//    }
 
     //MARK: -  Home Builder
     func createHomeVC(router: RouterMainProtocol) -> UIViewController {

@@ -207,3 +207,8 @@
 "registration.location_restricted" = "Location services are restricted on this device.";
 "registration.location_unavailable" = "Couldn't determine your location. Please try again.";
 "registration.city_not_found" = "Couldn't determine the city from your current location.";
+
+"network.offline_error" = "No internet connection";
+"network.offline_title" = "No Internet Connection";
+"network.offline_message" = "Please check your connection and try again.";
+"network.retry" = "Retry";
