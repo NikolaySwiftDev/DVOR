@@ -64,7 +64,7 @@ final class CreateEventViewController: UIViewController {
     }
     
     deinit {
-        print("deinit CreateEventViewController")
+        // print("deinit CreateEventViewController")
     }
 }
 

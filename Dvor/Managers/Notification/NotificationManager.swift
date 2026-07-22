@@ -85,6 +85,6 @@ final class NotificationManager: NotificationManagerProtocol {
     }
     
     deinit {
-        print("Deinit NotificationManager")
+        // print("Deinit NotificationManager")
     }
 }

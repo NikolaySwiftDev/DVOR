@@ -86,7 +86,7 @@ private extension InfoInputViewController {
         case 0:
             name = text
             configureEnadle(checkValidButton())
-            checkTFIsNotEmpty(text: text, tf: nameTF)
+            checkCountTFIsNotEmpty(text: text, tf: nameTF)
             
         default:
             break

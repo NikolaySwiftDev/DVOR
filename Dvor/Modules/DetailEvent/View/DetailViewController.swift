@@ -84,7 +84,7 @@ final class DetailViewController: UIViewController {
     }
  
     deinit {
-        print("Deinit Detail Event")
+        // print("Deinit Detail Event")
     }
 }
 

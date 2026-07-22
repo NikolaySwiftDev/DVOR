@@ -171,6 +171,6 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
     
     deinit {
-        print("Deinit Detail Presenter")
+        // print("Deinit Detail Presenter")
     }
 }

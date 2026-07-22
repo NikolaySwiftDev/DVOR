@@ -271,6 +271,6 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
     
     deinit {
-        print("Deinit Firebase real data base")
+        // print("Deinit Firebase real data base")
     }
 }

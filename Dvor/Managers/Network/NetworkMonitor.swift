@@ -114,6 +114,6 @@ final class NetworkMonitor: NetworkMonitorProtocol {
     }
 
     deinit {
-        print("Deinit NetworkMonitor")
+        // print("Deinit NetworkMonitor")
     }
 }

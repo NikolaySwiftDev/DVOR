@@ -40,13 +40,6 @@ final class EventsViewController: BaseViewController {
         super.viewWillAppear(animated)
         presenter?.fetchEvents()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        print(navigationController?.interactivePopGestureRecognizer?.delegate)
-    }
-  
 
     //MARK: - Buttons Action
     override func didTapPersonButton() {
@@ -70,7 +63,7 @@ final class EventsViewController: BaseViewController {
     
     
     deinit {
-        print("deinit HomeVC")
+        // print("deinit HomeVC")
     }
 }
 

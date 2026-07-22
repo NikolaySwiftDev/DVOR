@@ -26,7 +26,7 @@ final class RatingPresenter: RatingPresenterProtocol {
     }
     
     deinit {
-        print("deinit RatingPresenterProtocol")
+        // print("deinit RatingPresenterProtocol")
 
     }
 }

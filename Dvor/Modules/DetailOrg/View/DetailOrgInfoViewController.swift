@@ -114,7 +114,7 @@ final class DetailOrgInfoViewController: UIViewController {
     }
     
     deinit {
-        print("deinit DetailOrgInfoViewController")
+        // print("deinit DetailOrgInfoViewController")
     }
 }
 

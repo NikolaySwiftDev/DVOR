@@ -3,7 +3,7 @@ import Foundation
 protocol EventsProtocol: AnyObject {
     func success(date: String)
     func error(error: Error)
-    func updateAvatars(_ avatars: [String: Data])
+    func updateAvatars(_ avatars: [String: Data]) 
 }
 
 protocol EventsPresenterProtocol: AnyObject {
@@ -26,12 +26,14 @@ protocol EventsPresenterProtocol: AnyObject {
     init(view: EventsProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         firebase: FirebaseAuthManagerProtocol)
+         firebase: FirebaseAuthManagerProtocol,
+         coordinator: AppCoordinatorProtocol)
 }
 
 final class EventsPresenter: EventsPresenterProtocol {
 
     weak var view: EventsProtocol?
+    private weak var coordinator: AppCoordinatorProtocol?
     var events: [EventModel]?
     var filteredEvents: [EventModel]?
     let router: RouterMainProtocol?
@@ -54,11 +56,13 @@ final class EventsPresenter: EventsPresenterProtocol {
     required init(view: EventsProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
-                  firebase: FirebaseAuthManagerProtocol) {
+                  firebase: FirebaseAuthManagerProtocol,
+                  coordinator: AppCoordinatorProtocol) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
+        self.coordinator = coordinator
     }
     
     //MARK: - General processing of results
@@ -258,7 +262,7 @@ final class EventsPresenter: EventsPresenterProtocol {
                             guard let self = self else { return }
                             switch result {
                             case .success:
-                                self.router?.initialViewController()
+                                coordinator?.start()
                             case .failure(let failure):
                                 self.router?.showAlertWithTitle(failure.localizedDescription)
                             }
@@ -272,7 +276,7 @@ final class EventsPresenter: EventsPresenterProtocol {
                     guard let self = self else { return }
                     switch result {
                     case .success:
-                        self.router?.initialViewController()
+                        coordinator?.start()
                     case .failure(let failure):
                         self.router?.showAlertWithTitle(failure.localizedDescription)
                     }
@@ -285,6 +289,6 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Deinit
     deinit {
-        print("Deinit HomePresenter")
+        // print("Deinit HomePresenter")
     }
 }

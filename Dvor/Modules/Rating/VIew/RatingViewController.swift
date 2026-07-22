@@ -118,7 +118,7 @@ final class RatingViewController: UIViewController {
     }
     
     deinit {
-        print("deinit RatingViewController")
+        // print("deinit RatingViewController")
     }
 }
 

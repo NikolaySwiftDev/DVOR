@@ -73,7 +73,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         case .detailEvent(let eventId):
             handleDetailEvent(eventId: eventId)
         case .unknown:
-            print("⚠️ Unknown deep link")
+             print("⚠️ Unknown deep link")
         }
     }
     
@@ -90,7 +90,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
                     
                 case .failure(let error):
                     self.router.showAlertWithTitle(error.localizedDescription)
-                    print("❌ Failed to fetch event: \(error.localizedDescription)")
+                    // print("❌ Failed to fetch event: \(error.localizedDescription)")
                 }
             }
         }

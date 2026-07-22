@@ -41,7 +41,7 @@ final class ProfileViewController: UIViewController {
     
     //MARK: - Deinit
     deinit {
-        print(#function, "ProfileViewController")
+        // print(#function, "ProfileViewController")
     }
 }
 

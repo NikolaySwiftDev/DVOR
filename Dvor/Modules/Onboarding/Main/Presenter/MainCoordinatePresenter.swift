@@ -1,33 +1,27 @@
 import Foundation
 
 protocol MainCoordinatePresenterProtocol: AnyObject {
-    init(router: RouterMainProtocol)
+    init(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol)
+
     func pushRegistVC()
-//    func pushAuthVC()
     func pushMainView()
 }
 
 final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
-    let router: RouterMainProtocol?
 
-    required init(router: RouterMainProtocol) {
+    private let router: RouterMainProtocol
+    private weak var coordinator: AppCoordinatorProtocol?
+
+    init(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol) {
         self.router = router
+        self.coordinator = coordinator
     }
-    
+
     func pushMainView() {
-        router?.showMainFlow()
+        coordinator?.showHome()
     }
-    
+
     func pushRegistVC() {
-        router?.pushRegistVC()
-    }
-    
-//    func pushAuthVC() {
-//        router?.pushAuthVC()
-//    }
-    
-    deinit {
-        print("Auth Presenter deinit")
+        coordinator?.showOnboarding()
     }
 }
-

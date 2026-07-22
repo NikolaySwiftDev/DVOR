@@ -70,7 +70,7 @@ final class WelcomeOnboardingViewController: UIViewController {
 
     // MARK: - Properties
 
-    var presenter: MainCoordinatePresenter?
+    var finish: (()->())?
 
     private let pages = OnboardingPage.pages
     private var currentIndex = 0
@@ -181,7 +181,7 @@ final class WelcomeOnboardingViewController: UIViewController {
 
     private func setupActions() {
         actionButton.addTarget(self, action: #selector(actionTapped), for: .touchUpInside)
-        skipButton.addTarget(self, action: #selector(finish), for: .touchUpInside)
+        skipButton.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Navigation
@@ -189,7 +189,7 @@ final class WelcomeOnboardingViewController: UIViewController {
     @objc private func actionTapped() {
         let isLast = currentIndex == pages.count - 1
         if isLast {
-            finish()
+            finish?()
         } else {
             let next = currentIndex + 1
             guard let vc = makePageVC(at: next) else { return }
@@ -198,11 +198,11 @@ final class WelcomeOnboardingViewController: UIViewController {
             updateState(animated: true)
         }
     }
-
-    @objc private func finish() {
-        presenter?.pushRegistVC()
+    
+    @objc private func skipButtonTapped() {
+        finish?()
     }
-
+    
     // MARK: - Helpers
 
     private func makePageVC(at index: Int) -> UIViewController? {
@@ -226,6 +226,10 @@ final class WelcomeOnboardingViewController: UIViewController {
         }
         pageControl.currentPage = currentIndex
         skipButton.isHidden = isLast
+    }
+    
+    deinit {
+        // print("Deinit Welcome")
     }
 }
 

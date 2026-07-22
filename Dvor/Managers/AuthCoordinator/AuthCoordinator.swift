@@ -1,7 +1,7 @@
 import UIKit
 
 protocol Coordinator: AnyObject {
-    init(presenter: RegistPresenterProtocol?)
+    init(presenter: RegistPresenterProtocol?, window: UIWindow, router: RouterMainProtocol)
     func start()
 }
 
@@ -15,21 +15,36 @@ protocol RegistrationCoordinatorProtocol: Coordinator {
 }
 
 final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
-    
+
     // MARK: - Properties
-    weak var presenter: RegistPresenterProtocol?
+    var presenter: RegistPresenterProtocol?
     var onRegistrationComplete: (() -> Void)?
+    
+    private let window: UIWindow
+    private let rootController: RootController
+    private let router: RouterMainProtocol
     
     private var registrationData = RegistrationData()
     
     // MARK: - Initialization
-    init(presenter: RegistPresenterProtocol?) {
+    init(presenter: RegistPresenterProtocol?, window: UIWindow, router: RouterMainProtocol) {
         self.presenter = presenter
+        self.window = window
+        self.rootController = RootController(window: window)
+        self.router = router
     }
     
     // MARK: - Start
     func start() {
-        showInfoInput()
+        showWelcome()
+    }
+    
+    func showWelcome() {
+        let vc = WelcomeOnboardingViewController()
+        vc.finish = { [weak self] in
+            self?.showInfoInput()
+        }
+        setRoot(vc)
     }
     
     func showInfoInput() {
@@ -42,7 +57,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.registrationData.dateBD = dateBD
             self?.showUserDataInput()
         }
-        presenter?.pushViewController(vc)
+        router.pushVC(vc)
     }
     
     func showUserDataInput() {
@@ -56,7 +71,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.createAvatar()
         }
 
-        presenter?.pushViewController(vc)
+        router.pushVC(vc)
     }
     
     func createAvatar() {
@@ -72,7 +87,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
         }
-        presenter?.pushViewController(vc)
+        router.pushVC(vc)
     }
     
     func showCity() {
@@ -89,7 +104,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             
             self?.acceptNotification()
         }
-        presenter?.pushViewController(vc)
+        router.pushVC(vc)
     }
     
     func acceptNotification() {
@@ -102,14 +117,14 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         if let registPresenter = presenter as? RegistPresenter {
             registPresenter.view = vc
         }
-        presenter?.pushViewController(vc)
+        router.pushVC(vc)
     }
     
     func showSuccess() {
         let vc = RegistrationViewController(presenter: presenter)
         vc.hideBackButton(true)
-        presenter?.setViewController(vc)
-        
+        router.pushVC(vc)
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             guard let self = self else { return }
             self.presenter?.completeRegistration(model: registrationData)
@@ -117,10 +132,17 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         }
         
     }
+    
+    private func setRoot(_ root: UIViewController) {
+        let navigation = UINavigationController(rootViewController: root)
+        navigation.setNavigationBarHidden(true, animated: false)
+        router.navigationController = navigation
+        rootController.setRoot(navigation)
+    }
 
     // MARK: - Deinit
     deinit {
-        print("RegistrationCoordinator deallocated")
+//        print("RegistrationCoordinator deallocated")
     }
 }
 

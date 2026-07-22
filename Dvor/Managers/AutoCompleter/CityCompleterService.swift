@@ -68,7 +68,7 @@ final class CityCompleterService: NSObject, CityCompleterServiceProtocol {
     }
     
     deinit {
-        print("Deinit City competer Service")
+        // print("Deinit City competer Service")
     }
 }
 
@@ -106,3 +106,4 @@ struct CityModel: Equatable, Codable {
     }
 }
 
+let mockCity = CityModel(name: "", countryCode: "", latitude: 0, longitude: 0)

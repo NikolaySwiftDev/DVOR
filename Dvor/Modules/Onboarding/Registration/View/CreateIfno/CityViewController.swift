@@ -21,7 +21,7 @@ final class CityViewController: BaseRegistrationViewController {
     }
     
     override func nextButtonTapped() {
-        onNext?(city!)
+        onNext?(city ?? mockCity)
     }
     
     @objc private func geoButtonTapped() {
@@ -43,7 +43,7 @@ final class CityViewController: BaseRegistrationViewController {
     }
     
     deinit {
-        print("Deinit City VC")
+        // print("Deinit City VC")
     }
     
 }

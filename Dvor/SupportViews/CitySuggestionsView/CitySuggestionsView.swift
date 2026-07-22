@@ -59,7 +59,7 @@ final class CitySuggestionsView: UIView {
     }
     
     deinit {
-        print("Deinit City VIEw")
+        // print("Deinit City VIEw")
     }
 }
 

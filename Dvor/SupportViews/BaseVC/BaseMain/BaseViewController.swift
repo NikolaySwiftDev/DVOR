@@ -34,7 +34,7 @@ class BaseViewController: UIViewController {
     }
     
     deinit {
-        print("Deinit BaseVC")
+        // print("Deinit BaseVC")
     }
 }
 

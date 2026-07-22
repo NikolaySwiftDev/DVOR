@@ -1,7 +1,5 @@
 import UIKit
 
-import UIKit
-
 final class OfflineAlertController {
 
     private weak var window: UIWindow?
@@ -96,12 +94,9 @@ final class OfflineAlertController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        print("Deinit OfflineAlertController")
+         print("Deinit OfflineAlertController")
     }
 }
-
-import UIKit
-
 
 final class OfflineOverlayView: UIView {
 

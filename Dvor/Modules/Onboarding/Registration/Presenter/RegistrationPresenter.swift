@@ -15,7 +15,6 @@ protocol RegistProtocol: AnyObject {
 protocol RegistPresenterProtocol: AnyObject {
     func popVC()
 
-    func signUp(email: String, password: String)
     func checkEmailVerification()
     func resendVerificationEmail()
         
@@ -66,60 +65,6 @@ final class RegistPresenter: RegistPresenterProtocol {
         router?.popVC()
     }
     
-    func signUp(email: String, password: String) {
-//        view?.showLoading()
-//        firebase.signUp(email: email, password: password) { [weak self] result in
-//            guard let self = self else {return}
-//            switch result {
-//            case .success:
-//                self.firebase.sendEmailVerification { [weak self] sendResult in
-//                    guard let self = self else { return }
-//                    switch sendResult {
-//                    case .success:
-//                        self.view?.showSuccess()
-//                    case .failure(let error):
-//                        self.view?.showError(error.localizedDescription)
-//                        self.router?.showAlertWithTitle(error.localizedDescription)
-//                    }
-//                }
-//            case .failure(_):
-//                self.firebase.signIn(email: email, password: password) { [weak self] signInResult in
-//                    guard let self = self else { return }
-//                    switch signInResult {
-//                    case .success:
-//                        self.firebase.reloadUser { [weak self] reloadResult in
-//                            guard let self = self else { return }
-//                            switch reloadResult {
-//                            case .success:
-//                                if self.firebase.isEmailVerified {
-//
-//                                    self.view?.showInfoInput()
-//                                } else {
-//                                    self.firebase.sendEmailVerification { [weak self] sendResult in
-//                                        guard let self = self else { return }
-//                                        switch sendResult {
-//                                        case .success:
-//                                            self.view?.showSuccess()
-//                                        case .failure(let error):
-//                                            self.view?.showError(error.localizedDescription)
-//                                            self.router?.showAlertWithTitle(error.localizedDescription)
-//                                        }
-//                                    }
-//                                }
-//                            case .failure(let reloadError):
-//                                self.view?.showError(reloadError.localizedDescription)
-//                                self.router?.showAlertWithTitle(reloadError.localizedDescription)
-//                            }
-//                        }
-//                    case .failure(let signInError):
-//                        self.view?.showError(signInError.localizedDescription)
-//                        self.router?.showAlertWithTitle(signInError.localizedDescription)
-//                    }
-//                }
-//            }
-//        }
-    }
-
     func checkEmailVerification() {
         view?.showLoading()
         firebase.reloadUser { [weak self] result in
@@ -237,7 +182,8 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-                router?.showMainFlow()
+                break // fix
+
             case .failure(let error):
                 router?.showAlertConfigur(
                     title: RegistPresenterStrings.writeErrorTitle,
@@ -245,7 +191,7 @@ final class RegistPresenter: RegistPresenterProtocol {
                     titleActionButton: RegistPresenterStrings.continueButton,
                     handelr: { [weak self] in
                         guard let self = self else { return }
-                        self.router?.showMainFlow()
+//                        self.router?.showMainFlow()
                     }
                 )
             }
@@ -273,7 +219,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     
 
     deinit {
-        print("Deinit Registr Presenter")
+        // print("Deinit Registr Presenter")
     }
 }
 

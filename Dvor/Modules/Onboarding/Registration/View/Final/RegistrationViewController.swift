@@ -27,7 +27,7 @@ final class RegistrationViewController: BaseRegistrationViewController {
     }
     
     deinit {
-        print("RegistrationViewController deinit")
+        // print("RegistrationViewController deinit")
     }
 }
 
