@@ -60,7 +60,6 @@ final class DetailOrgInfoViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(mainStackView)
-//        contentView.addSubview(backButton)
         
         mainStackView.addArrangedSubview(orgImageView)
         mainStackView.addArrangedSubview(titleLabel)
@@ -89,7 +88,7 @@ final class DetailOrgInfoViewController: UIViewController {
         }
         
         mainStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(DetailOrgInfoConstants.paddingStandart)
+            make.top.equalToSuperview().offset(DetailOrgInfoConstants.paddingStandart * 2)
             make.leading.trailing.equalToSuperview().inset(DetailOrgInfoConstants.paddingStandart)
             make.bottom.equalToSuperview().offset(-DetailOrgInfoConstants.paddingStandart)
         }
@@ -114,7 +113,7 @@ final class DetailOrgInfoViewController: UIViewController {
     }
     
     deinit {
-        // print("deinit DetailOrgInfoViewController")
+//        print("deinit DetailOrgInfoViewController")
     }
 }
 

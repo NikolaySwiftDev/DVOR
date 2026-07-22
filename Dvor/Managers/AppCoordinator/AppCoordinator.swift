@@ -9,16 +9,17 @@ protocol AppCoordinatorProtocol: AnyObject {
 final class AppCoordinator: AppCoordinatorProtocol {
 
     // MARK: - Properties
+    private let window: UIWindow
+    
+    private let builder: BuilderProtocol
     private var registrationCoordinator: RegistrationCoordinator?
     private var interactivePopGestureHandler: InteractivePopGestureHandler?
     private let rootController: RootController
-    private let window: UIWindow
-    private let builder = Builder()
-    private let firebase = MockFirebaseAuthManager()
-    private let firebaseDataManager = FirebaseDataManager()
+
+    private let authManager: FirebaseAuthManagerProtocol
+    private let dataManager: FirebaseDataManagerProtocol
 
     private let offlineAlertController = OfflineAlertController()
-
 
     private(set) lazy var router: Router = {
         Router(
@@ -30,21 +31,24 @@ final class AppCoordinator: AppCoordinatorProtocol {
     private lazy var deepLinkHandler: DeepLinkHandlerProtocol = {
         DeepLinkHandler(
             router: router,
-            firebaseDataManager: firebaseDataManager
+            firebaseDataManager: dataManager
         )
     }()
 
     // MARK: - Init
 
-    init(window: UIWindow) {
+    init(window: UIWindow, builder: BuilderProtocol, authManager: FirebaseAuthManagerProtocol, dataManager: FirebaseDataManagerProtocol) {
         self.window = window
+        self.builder = builder
         self.rootController = RootController(window: window)
+        self.authManager = authManager
+        self.dataManager = dataManager
     }
 
     // MARK: - Public
 
     func start() {
-        if firebase.isAuthorized {
+        if authManager.isAuthorized {
             showHome()
         } else {
             showOnboarding()
@@ -53,12 +57,12 @@ final class AppCoordinator: AppCoordinatorProtocol {
     }
 
     func showHome() {
-        let vc = builder.createHomeVC(router: router, coordinator: self)
+        let vc = builder.createHomeVC(router: router)
         setRoot(vc)
     }
 
     func showOnboarding() {
-        let presenter = builder.createRegistrationCoordinator(router: router)
+        let presenter = builder.createRegistrationPresenter(router: router)
         registrationCoordinator = RegistrationCoordinator(presenter: presenter, window: window, router: router)
         registrationCoordinator?.onRegistrationComplete = { [weak self] in
             guard let self = self else { return }

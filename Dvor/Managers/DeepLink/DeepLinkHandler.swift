@@ -61,9 +61,9 @@ protocol DeepLinkHandlerProtocol {
 final class DeepLinkHandler: DeepLinkHandlerProtocol {
     
     private let router: RouterMainProtocol
-    private let firebaseDataManager: FirebaseDataManager
+    private let firebaseDataManager: FirebaseDataManagerProtocol
     
-    init(router: RouterMainProtocol, firebaseDataManager: FirebaseDataManager) {
+    init(router: RouterMainProtocol, firebaseDataManager: FirebaseDataManagerProtocol) {
         self.router = router
         self.firebaseDataManager = firebaseDataManager
     }

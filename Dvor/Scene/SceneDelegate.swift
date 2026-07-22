@@ -5,14 +5,20 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     private var coordinator: AppCoordinator?
+    private let container: AppContainerProtocol = AppContainer()
+    private lazy var builder: BuilderProtocol = Builder(managers: container)
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         guard let windowScene = scene as? UIWindowScene else { return }
-
         let window = UIWindow(windowScene: windowScene)
-
-        coordinator = AppCoordinator(window: window)
+        
+        coordinator = AppCoordinator(
+            window: window,
+            builder: builder,
+            authManager: container.authManager,
+            dataManager: container.dataManager
+        )
         coordinator?.start()
 
         window.makeKeyAndVisible()

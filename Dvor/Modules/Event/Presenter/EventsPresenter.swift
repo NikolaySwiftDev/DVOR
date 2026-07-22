@@ -20,14 +20,11 @@ protocol EventsPresenterProtocol: AnyObject {
     func pushDetailVC(model: EventModel)
     func pushProfileVC()
     func pushCreateEvent()
-    
-    func signOut()
-    
+        
     init(view: EventsProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         firebase: FirebaseAuthManagerProtocol,
-         coordinator: AppCoordinatorProtocol)
+         firebase: FirebaseAuthManagerProtocol)
 }
 
 final class EventsPresenter: EventsPresenterProtocol {
@@ -56,13 +53,11 @@ final class EventsPresenter: EventsPresenterProtocol {
     required init(view: EventsProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
-                  firebase: FirebaseAuthManagerProtocol,
-                  coordinator: AppCoordinatorProtocol) {
+                  firebase: FirebaseAuthManagerProtocol) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
-        self.coordinator = coordinator
     }
     
     //MARK: - General processing of results
@@ -238,54 +233,12 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     //MARK: - Push to the create screen
     func pushCreateEvent() {
-//        guard firebase.currentUser?.uid != nil else {
         guard firebase.currentUserId != nil else {
             router?.showAlertWithTitle(EventsPresenterStrings.needToRegisterToCreate)
             return
         }
         router?.pushCreateEvent(date: lastFilterDate)
     }
-    
-    //MARK: - Sign Out
-    func signOut() {
-        router?.showAlertConfigur(title: EventsPresenterStrings.signOutTitle,
-                                  message: EventsPresenterStrings.signOutMessage,
-                                  titleActionButton: EventsPresenterStrings.yes, handelr: { [weak self] in
-            guard let self = self else { return }
-            
-            if let userID = firebase.currentUserId {
-                network?.removeUser(userID: userID, completion: { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success():
-                        self.firebase.signOut { [weak self] result in
-                            guard let self = self else { return }
-                            switch result {
-                            case .success:
-                                coordinator?.start()
-                            case .failure(let failure):
-                                self.router?.showAlertWithTitle(failure.localizedDescription)
-                            }
-                        }
-                    case .failure(let failure):
-                        self.router?.showAlertWithTitle(failure.localizedDescription)
-                    }
-                })
-            } else {
-                self.firebase.signOut { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success:
-                        coordinator?.start()
-                    case .failure(let failure):
-                        self.router?.showAlertWithTitle(failure.localizedDescription)
-                    }
-                }
-            }
-            
-        })
-    }
-    
 
     //MARK: - Deinit
     deinit {

@@ -95,6 +95,7 @@ final class UserCardView: UIView {
         setupStats(with: model)
         
         // Personal info
+        cityInfoView.setValue(model.city)
         experienceInfoView.setValue(model.experience)
     }
     
@@ -110,10 +111,7 @@ final class UserCardView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         
-        [avatarImageView, fullNameLabel, positionLabel, statsStackView,
-         separatorView1, infoTitleLabel, /*cityInfoView,*/ /*ageInfoView,*/
-         experienceInfoView,
-         separatorView2].forEach {
+        [avatarImageView, fullNameLabel, positionLabel, statsStackView, separatorView1, infoTitleLabel, cityInfoView, experienceInfoView, separatorView2].forEach {
             contentView.addSubview($0)
         }
     }
@@ -162,11 +160,15 @@ final class UserCardView: UIView {
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
                 
-        experienceInfoView.snp.makeConstraints { make in
+        cityInfoView.snp.makeConstraints { make in
             make.top.equalTo(infoTitleLabel.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
         }
-        
+
+        experienceInfoView.snp.makeConstraints { make in
+            make.top.equalTo(cityInfoView.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+        }
         
         separatorView2.snp.makeConstraints { make in
             make.top.equalTo(experienceInfoView.snp.bottom).offset(20)

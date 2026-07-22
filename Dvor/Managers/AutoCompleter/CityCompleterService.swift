@@ -106,4 +106,4 @@ struct CityModel: Equatable, Codable {
     }
 }
 
-let mockCity = CityModel(name: "", countryCode: "", latitude: 0, longitude: 0)
+let mockCity = CityModel(name: "", countryCode: "", administrativeArea: "", latitude: 0, longitude: 0)
