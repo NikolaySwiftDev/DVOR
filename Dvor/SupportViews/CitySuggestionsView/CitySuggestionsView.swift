@@ -2,6 +2,8 @@ import UIKit
 
 final class CitySuggestionsView: UIView {
     
+    private static let cellReuseId = "CitySuggestionCell"
+    
     //MARK: - Public
     var onCitySelected: ((CityModel) -> Void)?
     var onInvalidSelection: (() -> Void)?
@@ -15,6 +17,7 @@ final class CitySuggestionsView: UIView {
         }
     }
     
+
     private let tableView: UITableView = {
         let tv = UITableView()
         tv.layer.cornerRadius = 8
@@ -81,7 +84,8 @@ extension CitySuggestionsView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
+        let cell = tableView.dequeueReusableCell(withIdentifier: Self.cellReuseId)
+            ?? UITableViewCell(style: .subtitle, reuseIdentifier: Self.cellReuseId)
         cell.textLabel?.text = suggestions[indexPath.row].title
         cell.detailTextLabel?.text = suggestions[indexPath.row].subtitle
         return cell

@@ -76,6 +76,7 @@ extension CityCompleterService: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         completions = completer.results.filter { result in
             guard !result.subtitle.isEmpty else { return false }
+            guard result.title.rangeOfCharacter(from: .decimalDigits) == nil else { return false } // delete if need
             let looksLikeCity = !result.subtitle.contains(",")
             return looksLikeCity
         }

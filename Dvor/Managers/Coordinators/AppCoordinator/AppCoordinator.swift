@@ -63,7 +63,7 @@ final class AppCoordinator: AppCoordinatorProtocol {
 
     func showOnboarding() {
         let presenter = builder.createRegistrationPresenter(router: router)
-        registrationCoordinator = RegistrationCoordinator(presenter: presenter, window: window, router: router)
+        registrationCoordinator = RegistrationCoordinator(presenter: presenter, rootController: rootController, router: router)
         registrationCoordinator?.onRegistrationComplete = { [weak self] in
             guard let self = self else { return }
             registrationCoordinator = nil
@@ -89,4 +89,3 @@ final class AppCoordinator: AppCoordinatorProtocol {
         deepLinkHandler.handle(deepLink)
     }
 }
-

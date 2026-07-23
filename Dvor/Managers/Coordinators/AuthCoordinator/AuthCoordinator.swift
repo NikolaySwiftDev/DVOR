@@ -1,7 +1,7 @@
 import UIKit
 
 protocol Coordinator: AnyObject {
-    init(presenter: RegistPresenterProtocol?, window: UIWindow, router: RouterMainProtocol)
+    init(presenter: RegistPresenterProtocol?, rootController: RootController, router: RouterMainProtocol)
     func start()
 }
 
@@ -20,17 +20,15 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     var presenter: RegistPresenterProtocol?
     var onRegistrationComplete: (() -> Void)?
     
-    private let window: UIWindow
     private let rootController: RootController
     private let router: RouterMainProtocol
     
     private var registrationData = RegistrationData()
     
     // MARK: - Initialization
-    init(presenter: RegistPresenterProtocol?, window: UIWindow, router: RouterMainProtocol) {
+    init(presenter: RegistPresenterProtocol?, rootController: RootController, router: RouterMainProtocol) {
         self.presenter = presenter
-        self.window = window
-        self.rootController = RootController(window: window)
+        self.rootController = rootController
         self.router = router
     }
     

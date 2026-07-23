@@ -21,7 +21,8 @@ final class CityViewController: BaseRegistrationViewController {
     }
     
     override func nextButtonTapped() {
-        onNext?(city ?? mockCity)
+        guard let city = city else { return }
+        onNext?(city)
     }
     
     @objc private func geoButtonTapped() {
@@ -114,9 +115,5 @@ extension CityViewController {
         suggestionsView.onInvalidSelection = { [weak self] in
             self?.city = nil
         }
-    }
-    
-    private func checkValidButton() -> Bool {
-        city != nil
     }
 }
