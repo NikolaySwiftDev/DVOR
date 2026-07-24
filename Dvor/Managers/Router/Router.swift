@@ -22,6 +22,7 @@ protocol RouterMainProtocol: RouterMain {
     func pushDetailOrgInfo(model: OrganizatorModel)
     func pushRatingVC(model: UserModel)
     func pushCreateEvent(date: Date)
+    func pushEditProfile()
 
     // Alerts
     func showAlertWithTitle(_ title: String)
@@ -42,6 +43,7 @@ protocol RouterMainProtocol: RouterMain {
 }
 
 final class Router: RouterMainProtocol {
+
     
     // MARK: - Properties
     var navigationController: UINavigationController
@@ -106,6 +108,12 @@ final class Router: RouterMainProtocol {
         vc.modalPresentationStyle = .popover
         presentVC(vc)
     }
+    
+    func pushEditProfile() {
+        let vc = builder.createEditProfile(router: self)
+        pushVC(vc)
+    }
+    
 
     // MARK: - Alerts
 

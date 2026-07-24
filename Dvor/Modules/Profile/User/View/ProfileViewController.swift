@@ -4,13 +4,14 @@ import SnapKit
 
 final class ProfileViewController: UIViewController {
     
-    var presenter: ProfilePresenter?
+    var presenter: ProfilePresenterProtocol?
     var model: UserModel?
         
     //MARK: - Properties
     private let titleLabel = UILabel.init(text: "common.profile".loc, font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
     private let userCard = UserCardView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
+    private let editButton = UIButton.createStandartButton(title: "Edit profile", backgroundColor: .black, target: self, action: #selector(editButtonTapped))
 
     init(model: UserModel? = nil) {
         self.model = model
@@ -34,9 +35,14 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    //MARK: -Back Button Tapped
+    //MARK: - Back Button Tapped
     @objc private func backButtonTapped() {
         presenter?.popVC()
+    }
+    
+    //MARK: - Back Button Tapped
+    @objc private func editButtonTapped() {
+        presenter?.editProfile()
     }
     
     //MARK: - Deinit
@@ -61,6 +67,7 @@ private extension ProfileViewController {
         view.backgroundColor = Constants.Colors.backgroungColor
         view.addSubview(backButton)
         view.addSubview(titleLabel)
+        view.addSubview(editButton)
     }
     
     private func setupConstraint() {
@@ -72,6 +79,12 @@ private extension ProfileViewController {
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalTo(backButton.snp.centerY)
             make.leading.trailing.equalToSuperview().inset(80)
+        }
+        
+        editButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.width.equalTo(100)
         }
     }
     

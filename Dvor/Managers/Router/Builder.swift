@@ -9,10 +9,12 @@ protocol BuilderProtocol: AnyObject {
     func createRatingVC(router: RouterMainProtocol, model: UserModel) -> UIViewController
     func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController
     func createHomeVC(router: RouterMainProtocol) -> UIViewController
+    func createEditProfile(router: RouterMainProtocol) -> UIViewController
     func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController
 }
 
 class Builder: BuilderProtocol {
+
     private let managers: AppContainerProtocol
     
     init(managers: AppContainerProtocol) {
@@ -93,5 +95,11 @@ class Builder: BuilderProtocol {
         return view
     }
     
-    
+    //MARK: - Edit Profile
+    func createEditProfile(router: RouterMainProtocol) -> UIViewController {
+        let view = EditProfileViewController()
+        let presenter = EditProfilePresenter(view: view, router: router, network: managers.dataManager)
+        view.presenter = presenter
+        return view
+    }
 }

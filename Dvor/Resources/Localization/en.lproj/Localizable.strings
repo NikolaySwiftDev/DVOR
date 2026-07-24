@@ -212,3 +212,5 @@
 "network.offline_title" = "No Internet Connection";
 "network.offline_message" = "Please check your connection and try again.";
 "network.retry" = "Retry";
+
+"common.editProfile"= "Edit profile";
