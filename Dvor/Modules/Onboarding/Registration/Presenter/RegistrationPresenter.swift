@@ -36,7 +36,9 @@ protocol RegistPresenterProtocol: AnyObject {
          network: FirebaseDataManagerProtocol,
          photoManager: PhotoManagerProtocol,
          notifManager: NotificationManagerProtocol,
-         locationManager: LocationManagerProtocol)
+         locationManager: LocationManagerProtocol,
+         appCoordinator: AppCoordinatorProtocol?
+    )
 }
 
 final class RegistPresenter: RegistPresenterProtocol {
@@ -48,19 +50,23 @@ final class RegistPresenter: RegistPresenterProtocol {
     let photoManager: PhotoManagerProtocol
     let notifManager: NotificationManagerProtocol
     let locationManager: LocationManagerProtocol
+    let appCoordinator: AppCoordinatorProtocol?
     
     required init(router: RouterMainProtocol,
                   firebase: FirebaseAuthManagerProtocol,
                   network: FirebaseDataManagerProtocol,
                   photoManager: PhotoManagerProtocol,
                   notifManager: NotificationManagerProtocol,
-                  locationManager: LocationManagerProtocol) {
+                  locationManager: LocationManagerProtocol,
+                  appCoordinator: AppCoordinatorProtocol?
+    ) {
         self.router = router
         self.firebase = firebase
         self.network = network
         self.photoManager = photoManager
         self.notifManager = notifManager
         self.locationManager = locationManager
+        self.appCoordinator = appCoordinator
     }
     
     func popVC() {
@@ -146,18 +152,9 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
-                break // fix
-
+                appCoordinator?.showHome()
             case .failure(let error):
-                router?.showAlertConfigur(
-                    title: RegistPresenterStrings.writeErrorTitle,
-                    message: error.localizedDescription,
-                    titleActionButton: RegistPresenterStrings.continueButton,
-                    handelr: { [weak self] in
-                        guard let self = self else { return }
-//                        self.router?.showMainFlow()
-                    }
-                )
+                router?.showAlertWithTitle(error.localizedDescription)
             }
         })
     }

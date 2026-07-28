@@ -20,7 +20,6 @@ protocol RouterMainProtocol: RouterMain {
     func pushProfileVC(model: UserModel?)
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
-//    func pushRatingVC(model: UserModel)
     func pushCreateEvent(date: Date)
 
     // Alerts
@@ -83,11 +82,6 @@ final class Router: RouterMainProtocol {
         let vc = builder.createProfileVC(router: self, model: model)
         pushVC(vc)
     }
-
-//    func pushRatingVC(model: UserModel) {
-//        let vc = builder.createRatingVC(router: self, model: model)
-//        pushVC(vc)
-//    }
 
     func pushCreateEvent(date: Date) {
         let vc = builder.createCreateEventVC(router: self, date: date)

@@ -99,7 +99,7 @@ extension CreateAvatarViewController {
         )
 
         changeNextButtonView(
-            title: isValid ? "Continue".loc : "Skip".loc,
+            title: isValid ? isEdit ? "Update": "Continue".loc : "Skip".loc,
             titleColor: isValid ? Constants.Colors.titleColor : Constants.Colors.textColor,
             backColor: isValid ? Constants.Colors.buttonActiveColor : Constants.Colors.buttonInActiveColor
         )

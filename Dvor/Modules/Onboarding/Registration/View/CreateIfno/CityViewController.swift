@@ -11,7 +11,7 @@ final class CityViewController: BaseRegistrationViewController {
     var onNext: ((CityModel) -> Void)?
     var isEdit: Bool = false
     
-    private let cityTextField = AuthTextFieldView(placeholder: "cityview.placeholder".loc)
+    private let cityTextField = CustomTextFieldView(placeholder: "cityview.placeholder".loc)
     private let suggestionsView = CitySuggestionsView()
     private let geoButton = UIButton.createStandartButton(title: "Geo".loc, titleColor: .black)
     

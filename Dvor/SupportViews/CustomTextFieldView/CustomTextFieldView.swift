@@ -1,7 +1,7 @@
 import UIKit
 import SnapKit
 
-final class AuthTextFieldView: UIView, UITextFieldDelegate {
+final class CustomTextFieldView: UIView, UITextFieldDelegate {
 
     // MARK: - Subviews
     let textField: UITextField = {

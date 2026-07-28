@@ -99,13 +99,6 @@
 
 "common.continue" = "Continue";
 
-"rating.title" = "Rating";
-"rating.important" = "IMPORTANT";
-"rating.description" = "You will be able to rate other players only if you are registered for the event and after it has ended 😊";
-
-"rating.attitude.title" = "Player attitude";
-"rating.attitude.description" = "Rate your interactions with this player both on and off the field.";
-
 "common.save" = "Save";
 
 "places.full" = "Already full";

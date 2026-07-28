@@ -48,7 +48,7 @@ extension UIViewController {
     }
     
     //MARK: - Create TF View
-    func createTFView(text: String, tf: AuthTextFieldView) -> UIView {
+    func createTFView(text: String, tf: CustomTextFieldView) -> UIView {
         let view = UIView()
         
         let label = UILabel(text: text, font: .poppins(weight: .medium, size: .small))
@@ -71,15 +71,15 @@ extension UIViewController {
     }
 
     //MARK: - Check TF Is Not Empty
-    func checkCountTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
+    func checkCountTFIsNotEmpty(text: String, tf: CustomTextFieldView) {
         text.count == 0 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
     }
     
-    func checkTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
+    func checkTFIsNotEmpty(text: String, tf: CustomTextFieldView) {
         text.count < 4 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
     }
     
-    func checkTimeTFIsNotEmpty(text: String, tf: AuthTextFieldView) {
+    func checkTimeTFIsNotEmpty(text: String, tf: CustomTextFieldView) {
         if text.isValidTime {
             text.count == 4 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
         } else {

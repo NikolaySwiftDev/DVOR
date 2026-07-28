@@ -8,7 +8,7 @@ final class InfoInputViewController: BaseRegistrationViewController {
     var isEdit: Bool = false
     
     //MARK: - UI
-    private let nameTF = AuthTextFieldView(placeholder: "infoInput.nikname".loc)
+    private let nameTF = CustomTextFieldView(placeholder: "infoInput.nikname".loc)
 
     //MARK: - Life cycle
     override func viewDidLoad() {

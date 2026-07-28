@@ -62,7 +62,7 @@ final class AppCoordinator: AppCoordinatorProtocol {
     }
 
     func showOnboarding() {
-        let presenter = builder.createRegistrationPresenter(router: router)
+        let presenter = builder.createRegistrationPresenter(router: router, coordinator: self)
         registrationCoordinator = RegistrationCoordinator(presenter: presenter, rootController: rootController, router: router)
         registrationCoordinator?.onRegistrationComplete = { [weak self] in
             guard let self = self else { return }

@@ -193,7 +193,7 @@ private extension DetailViewController {
             make.top.equalTo(mapView.snp.bottom).offset(DetailConstants.paddingStandart)
             make.leading.equalToSuperview().offset(DetailConstants.paddingHorizontal)
             make.trailing.equalToSuperview().inset(DetailConstants.paddingHorizontal)
-            make.bottom.equalToSuperview().inset(DetailConstants.heightTabbar)
+            make.bottom.equalToSuperview().inset(DetailConstants.paddingStandart)
         }
     }
 }
@@ -204,7 +204,6 @@ fileprivate struct DetailConstants {
     static let paddingHorizontal: CGFloat = 20
     static let cornerRadius: CGFloat = 10
     static let heightBackBtn: CGFloat = 25
-    static let heightTabbar: CGFloat = 90
     static let heightMapImg: CGFloat = UIScreen.main.bounds.height / 4.7
     static let numberView: Int = 33
     
