@@ -39,13 +39,12 @@ class BaseRegistrationViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupConstraints()
-//        configureEnadle(false)
     }
     
     // MARK: -  Hide back button
     func setInfoForNavigationView(model: BaseRegistPosition) {
         progressBar.setProgress(model.progress, animated: true)
-        progressBar.isHidden = model.showTitleView
+        progressBar.isHidden = false //fix mb
         
         pageLabel.text = model.page
         profileTitleLabel.text = model.titleMain
@@ -72,6 +71,15 @@ class BaseRegistrationViewController: UIViewController {
     // MARK: - Configure Bottom Padding Next Buttom
     func configureBottomPaddingButtom(isActiveTF: Bool, isNumberPad: Bool = true) {
         adjustNextButtonBottom(nextButton, in: view, isActiveTF: isActiveTF, isNumberPad: isNumberPad)
+    }
+    
+    func hidePageControllView() {
+        progressBar.isHidden = true
+        pageLabel.isHidden = true
+    }
+    
+    func updateButtonTitle(_ title: String) {
+        nextButton.setTitle(title, for: .normal)
     }
     
     // MARK: - Back Button Action

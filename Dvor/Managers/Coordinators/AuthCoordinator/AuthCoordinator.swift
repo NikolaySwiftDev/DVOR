@@ -49,10 +49,8 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
         let vc = InfoInputViewController(presenter: presenter)
         vc.setInfoForNavigationView(model: .info)
         vc.configureEnadle(false)
-        vc.onNext = { [weak self] name, surname, dateBD in
-            self?.registrationData.name = name
-            self?.registrationData.surname = surname
-            self?.registrationData.dateBD = dateBD
+        vc.onNext = { [weak self] nickname in
+            self?.registrationData.name = nickname
             self?.showUserDataInput()
         }
         router.pushVC(vc)
@@ -147,10 +145,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 // MARK: - Data Model
 struct RegistrationData: Codable {
     var id: String = ""
-    var email: String = ""
     var name: String = "Name"
-    var surname: String = "Surname"
-    var dateBD: Date?
     var position: String = "Goalkeeper"
     var experience: String = "1 year"
     var image: Data?

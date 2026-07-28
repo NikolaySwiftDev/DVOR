@@ -2,76 +2,15 @@ import Foundation
 import FirebaseAuth
 
 protocol FirebaseAuthManagerProtocol: AnyObject {
-//    var currentUser: User? { get } for firebase
     var currentUserId: String? { get }
     var currentCity: CityModel? { get }
     var isAuthorized: Bool { get }
-    var isEmailVerified: Bool { get }
+    var isVerified: Bool { get }
 
-//    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) for firebase
     func signUp(city: CityModel)
-
-//    func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) for firebase
-    func signIn(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void)
-
-    func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void)
-    func reloadUser(completion: @escaping (Result<Void, Error>) -> Void)
-    
+    func signIn( completion: @escaping (Result<String, Error>) -> Void)
     func signOut(completion: @escaping (Result<Void, Error>) -> Void)
 }
-
-//final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
-//
-//    var currentUser: User? { Auth.auth().currentUser }
-//    var isAuthorized: Bool { currentUser != nil }
-//    var isEmailVerified: Bool { currentUser?.isEmailVerified ?? false }
-//
-//    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
-//        guard validateEmail(email) else { completion(.failure(AuthError.invalidEmail)); return }
-//        guard password.count >= 6 else { completion(.failure(AuthError.weakPassword)); return }
-//        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-//            if let error = error as? NSError,
-//               error.code == AuthErrorCode.emailAlreadyInUse.rawValue {
-//                completion(.failure(AuthError.emailAlreadyInUse)); return
-//            }
-//            error != nil ? completion(.failure(error!)) : completion(.success(result!.user))
-//        }
-//    }
-//
-//    func signIn(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
-//        Auth.auth().signIn(withEmail: email, password: password) { result, error in
-//            error != nil ? completion(.failure(error!)) : completion(.success(result!.user))
-//        }
-//    }
-//    
-//    func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void) {
-//        guard let user = currentUser else { completion(.failure(AuthError.noUser)); return }
-//        user.sendEmailVerification { error in
-//            error != nil ? completion(.failure(error!)) : completion(.success(()))
-//        }
-//    }
-//
-//    func reloadUser(completion: @escaping (Result<Void, Error>) -> Void) {
-//        guard let user = currentUser else { completion(.failure(AuthError.noUser)); return }
-//        user.reload { error in
-//            error != nil ? completion(.failure(error!)) : completion(.success(()))
-//        }
-//    }
-//
-//    func signOut(completion: @escaping (Result<Void, Error>) -> Void) {
-//        do {
-//            try Auth.auth().signOut()
-//            completion(.success(()))
-//        } catch {
-//            completion(.failure(error))
-//        }
-//    }
-//
-//    private func validateEmail(_ email: String) -> Bool {
-//        email.range(of: #"^\S+@\S+\.\S+$"#, options: .regularExpression) != nil
-//    }
-//}
-
 
 final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
     
@@ -102,7 +41,7 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
         set { defaults.set(newValue, forKey: Keys.isAuthorized) }
     }
 
-    var isEmailVerified: Bool { true }
+    var isVerified: Bool { true }
 
     // MARK: - Auth Methods
 
@@ -117,24 +56,10 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
         isAuthorized = true
     }
 
-    func signIn(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func signIn(completion: @escaping (Result<String, Error>) -> Void) {
         guard let userId = defaults.string(forKey: Keys.userId) else { return }
         isAuthorized = true
         completion(.success(userId))
-    }
-
-    func sendEmailVerification(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard isAuthorized else {
-            return completion(.failure(AuthError.noUser))
-        }
-        completion(.success(()))
-    }
-
-    func reloadUser(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard isAuthorized else {
-            return completion(.failure(AuthError.noUser))
-        }
-        completion(.success(()))
     }
 
     func signOut(completion: @escaping (Result<Void, Error>) -> Void) {

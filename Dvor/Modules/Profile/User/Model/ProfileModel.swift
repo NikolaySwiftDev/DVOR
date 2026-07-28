@@ -4,9 +4,6 @@ struct UserModel: Codable {
     var id: String
     let image: Data?
     let name: String
-    let surname: String
-    let dateBirthday: Date?
-    let mobile: String
     let experience: String
     
     //For geo
@@ -16,7 +13,6 @@ struct UserModel: Codable {
     let latitude: Double?
     let longitude: Double?
 
-    var email: String = ""
     var gender: String = "m"
 
     // for card
@@ -38,16 +34,12 @@ struct UserModel: Codable {
         id: String,
         image: Data? = nil,
         name: String,
-        surname: String,
-        dateBirthday: Date? = nil,
-        mobile: String,
         experience: String,
         city: String,
         countryCode: String,
         administrativeArea: String?,
         latitude: Double,
         longitude: Double,
-        email: String = "",
         gender: String = "m",
         position: String,
         followers: Int = 0,
@@ -64,16 +56,12 @@ struct UserModel: Codable {
         self.id = id
         self.image = image
         self.name = name
-        self.surname = surname
-        self.dateBirthday = dateBirthday
-        self.mobile = mobile
         self.experience = experience
         self.city = city
         self.latitude = latitude
         self.longitude = longitude
         self.countryCode = countryCode
         self.administrativeArea = administrativeArea
-        self.email = email
         self.gender = gender
         self.position = position
         self.followers = followers
@@ -93,16 +81,12 @@ struct UserModel: Codable {
             "id": id,
             "image": image?.base64EncodedString() ?? "",
             "name": name,
-            "surname": surname,
-            "dateBirthday": dateBirthday?.timeIntervalSince1970 ?? 0,
-            "mobile": mobile,
             "experience": experience,
             "city": city,
             "latitude": latitude as Any,
             "longitude": longitude as Any,
             "countryCode": countryCode,
             "administrativeArea": administrativeArea as Any,
-            "email": email,
             "gender": gender,
             "position": position,
             "followers": followers,
@@ -121,9 +105,6 @@ struct UserModel: Codable {
     init?(from dictionary: [String: Any]) {
         guard let id = dictionary["id"] as? String,
               let name = dictionary["name"] as? String,
-              let surname = dictionary["surname"] as? String,
-              let timestamp = dictionary["dateBirthday"] as? TimeInterval,
-              let mobile = dictionary["mobile"] as? String,
               let experience = dictionary["experience"] as? String,
               let city = dictionary["city"] as? String,
               let position = dictionary["position"] as? String else {
@@ -139,9 +120,6 @@ struct UserModel: Codable {
         }
 
         self.name = name
-        self.surname = surname
-        self.dateBirthday = Date(timeIntervalSince1970: timestamp)
-        self.mobile = mobile
         self.experience = experience
         self.city = city
         self.countryCode = dictionary["countryCode"] as? String ?? ""
@@ -149,7 +127,6 @@ struct UserModel: Codable {
         self.latitude = dictionary["latitude"] as? Double
         self.longitude = dictionary["longitude"] as? Double
 
-        self.email = dictionary["email"] as? String ?? ""
         self.gender = dictionary["gender"] as? String ?? "m"
         self.position = position
         self.followers = dictionary["followers"] as? Int ?? 0
@@ -168,15 +145,7 @@ struct UserModel: Codable {
 // MARK: - Auxiliary methods
 extension UserModel {
     var fullName: String {
-        return "\(name) \(surname)"
-    }
-    
-    var age: Int? {
-        guard let date = dateBirthday else { return nil }
-        let calendar = Calendar.current
-        let now = Date()
-        let ageComponents = calendar.dateComponents([.year], from: date, to: now)
-        return ageComponents.year ?? 0
+        return "\(name)"
     }
 }
 

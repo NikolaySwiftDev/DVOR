@@ -57,7 +57,12 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
     
     func editProfile() {
-        router.pushEditProfile()
+        guard let model = user else {
+            router.showAlertWithTitle("User is empty")
+            return
+        }
+        
+        router.showEditAlert(model: model)
     }
 
     func popVC() {

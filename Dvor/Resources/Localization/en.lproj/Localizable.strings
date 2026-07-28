@@ -59,9 +59,6 @@
 "events.yours" = "Yours";
 
 "auth.continue" = "Continue";
-"auth.email" = "Email";
-"auth.password" = "Password";
-"auth.authorization" = "Authorization";
 "auth.skip" = "Skip";
 "auth.enter" = "Enter";
 "auth.registration" = "Registration";
@@ -95,8 +92,6 @@
 
 "profile.city" = "City";
 
-"registration.email_not_verified" = "Email has not been verified yet";
-"registration.verification_email_sent" = "Verification email sent again";
 "registration.photo_picker_error" = "Photo selection error";
 "registration.notifications_disabled" = "Notifications are disabled";
 "registration.unauthorized_user" = "Error: user is not authorized";
@@ -119,9 +114,6 @@
 "places.remaining.few" = "%d places left";
 "places.remaining.many" = "%d places left";
 
-"auth.invalid_email" = "Invalid email";
-"auth.weak_password" = "Password must be at least 6 characters long";
-"auth.email_already_in_use" = "Email already registered";
 "auth.no_user" = "No user found";
 
 "firebase.invalid_event_id" = "The event ID cannot be empty";
@@ -149,6 +141,8 @@
 
 "common.save_error" = "Save error";
 "common.profile" = "Profile";
+"common.user" = "Info user";
+"common.cancel" = "Cancel";
 
 "create_avatar.choose_photo" = "Choose photo";
 "create_avatar.change_photo" = "Change photo";
@@ -156,15 +150,12 @@
 "regist.succes_regsit"="Successful registration";
 "regist.moving"="Moving on to the list of matches...";
 
-"enteremail.char"="Minimum of 6 characters";
 
-"base_regist.enter_email" = "Enter your email";
 "base_regist.profile" = "Profile";
 "base_regist.avatar" = "Avatar";
 "base_regist.city" = "City";
 "base_regist.enable_notifications" = "Enable notifications";
 
-"base_regist.enter_email_description" = "To sign in to the application";
 "base_regist.enter_profile_data" = "Enter your personal information";
 "base_regist.select_experience" = "Select your playing experience and position";
 "base_regist.select_avatar" = "Choose a profile photo";
@@ -207,6 +198,8 @@
 "registration.location_restricted" = "Location services are restricted on this device.";
 "registration.location_unavailable" = "Couldn't determine your location. Please try again.";
 "registration.city_not_found" = "Couldn't determine the city from your current location.";
+"registration.success_update"="Data updated successfully";
+"registration.go_back"="Do you want to go back?";
 
 "network.offline_error" = "No internet connection";
 "network.offline_title" = "No Internet Connection";
@@ -214,3 +207,9 @@
 "network.retry" = "Retry";
 
 "common.editProfile"= "Edit profile";
+"alert.change"="What do you want to change?";
+"alert.nickname"="Nickname";
+"alert.avatar"="Avatar";
+"alert.geo"="Geo";
+"Update"="Update";
+

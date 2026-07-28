@@ -1,20 +1,20 @@
 
 import UIKit
-import SnapKit
-
 final class ProfileViewController: UIViewController {
     
     var presenter: ProfilePresenterProtocol?
     var model: UserModel?
-        
-    //MARK: - Properties
-    private let titleLabel = UILabel.init(text: "common.profile".loc, font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
+    
+    private let isOwnProfile: Bool
+
+    private let titleLabel = UILabel.init(text: ProfileViewConstants.title, font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
     private let userCard = UserCardView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
     private let editButton = UIButton.createStandartButton(title: "Edit profile", backgroundColor: .black, target: self, action: #selector(editButtonTapped))
 
     init(model: UserModel? = nil) {
         self.model = model
+        self.isOwnProfile = (model == nil)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -22,36 +22,42 @@ final class ProfileViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - View did load
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupConstraint()
-        
-        if let model = model {
-            configureUserCard(with: model)
-        } else {
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadProfile()
+    }
+    
+    //MARK: - Loading
+    private func loadProfile() {
+        if isOwnProfile {
+            // Свой профиль — всегда фетчим актуальные данные (важно после Edit)
             presenter?.getProfileInto()
+        } else if let model = model {
+            // Чужой профиль — используем модель из init, без фетча
+            configureUserCard(with: model)
         }
     }
     
-    //MARK: - Back Button Tapped
     @objc private func backButtonTapped() {
         presenter?.popVC()
     }
     
-    //MARK: - Back Button Tapped
     @objc private func editButtonTapped() {
+        guard isOwnProfile else { return }
         presenter?.editProfile()
     }
     
-    //MARK: - Deinit
     deinit {
-        // print(#function, "ProfileViewController")
+         print(#function, "ProfileViewController")
     }
 }
 
-//MARK: - Profile Protocol
 extension ProfileViewController: ProfileProtocol {
     func success(model: UserModel) {
         self.model = model
@@ -61,9 +67,9 @@ extension ProfileViewController: ProfileProtocol {
     func error(error: Error) {}
 }
 
-//MARK: - Setup view and constraints and config
 private extension ProfileViewController {
     private func setupView() {
+        editButton.isHidden = !isOwnProfile
         view.backgroundColor = Constants.Colors.backgroungColor
         view.addSubview(backButton)
         view.addSubview(titleLabel)
@@ -84,7 +90,7 @@ private extension ProfileViewController {
         editButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.width.equalTo(100)
+            make.width.equalTo(ProfileViewConstants.buttonSize)
         }
     }
     
@@ -92,9 +98,16 @@ private extension ProfileViewController {
         userCard.configure(with: model)
         view.addSubview(userCard)
         userCard.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom).offset(20)
+            make.top.equalTo(backButton.snp.bottom).offset(ProfileViewConstants.horizPadding)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
 
+fileprivate struct ProfileViewConstants {
+    static let title: String = "common.profile".loc
+    static let editImage: String = "person.crop.circle.badge.plus"
+    
+    static let buttonSize: CGFloat = 100
+    static let horizPadding: CGFloat = 20
+}

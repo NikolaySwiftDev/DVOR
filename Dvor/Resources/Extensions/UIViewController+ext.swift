@@ -87,22 +87,6 @@ extension UIViewController {
         }
     }
 
-    //MARK: - Common email + password validation for Auth / Registration
-    @discardableResult
-    func validateEmailAndPassword(emailField: AuthTextFieldView,
-                                  passwordField: AuthTextFieldView) -> Bool {
-        let email = emailField.textField.text ?? ""
-        let password = passwordField.textField.text ?? ""
-
-        let isEmailValid = email.isValidEmail()
-        let isPasswordValid = password.count >= 6
-
-        isEmailValid ? emailField.updateBorderColor() : emailField.updateBorderColor(.clear)
-        isPasswordValid ? passwordField.updateBorderColor() : passwordField.updateBorderColor(.clear)
-
-        return isEmailValid && isPasswordValid
-    }
-
     //MARK: - Next button common helpers
     func setNextButtonState(_ button: UIButton, isEnabled: Bool) {
         button.backgroundColor = isEnabled

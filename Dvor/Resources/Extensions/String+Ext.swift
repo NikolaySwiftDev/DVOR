@@ -6,11 +6,6 @@ extension String {
         return NSLocalizedString(self, comment: "")
     }
     
-    func isValidEmail() -> Bool {
-        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self)
-    }
-    
     func formattedAsRussianPhone() -> String {
         let cleanNumber = self.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
         let maxLength = 11

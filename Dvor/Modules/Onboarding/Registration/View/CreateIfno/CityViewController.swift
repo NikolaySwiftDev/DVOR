@@ -9,6 +9,7 @@ final class CityViewController: BaseRegistrationViewController {
     }
     
     var onNext: ((CityModel) -> Void)?
+    var isEdit: Bool = false
     
     private let cityTextField = AuthTextFieldView(placeholder: "cityview.placeholder".loc)
     private let suggestionsView = CitySuggestionsView()
@@ -22,7 +23,11 @@ final class CityViewController: BaseRegistrationViewController {
     
     override func nextButtonTapped() {
         guard let city = city else { return }
-        onNext?(city)
+        if isEdit {
+            presenter?.updateCity(city: city)
+        } else {
+            onNext?(city)
+        }
     }
     
     @objc private func geoButtonTapped() {
@@ -44,7 +49,8 @@ final class CityViewController: BaseRegistrationViewController {
     }
     
     deinit {
-        // print("Deinit City VC")
+        isEdit = false
+//        print("Deinit CityViewController")
     }
     
 }

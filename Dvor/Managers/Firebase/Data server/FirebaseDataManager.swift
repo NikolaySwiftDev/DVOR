@@ -20,7 +20,7 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     func removeUser(userID: String, completion: @escaping (Result<Void, Error>) -> Void)
     
     //Update
-    func updateUserFollowers()
+    func updateUser(userId: String, fields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void)
 
 }
 
@@ -70,6 +70,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     
     //MARK: - Fetch All Users From Event
     func fetchAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void) {
+        let lock = NSLock()
         let uniqueIDs = Array(Set(usersID)).filter { !$0.isEmpty }
         
         guard !uniqueIDs.isEmpty || !orgId.isEmpty else {
@@ -91,7 +92,9 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                 if let userData = snapshot.value as? [String: Any],
                    let user = UserModel(from: userData) {
                     DispatchQueue.main.async {
+//                        lock.lock()
                         users.append(user)
+//                        lock.unlock()
                     }
                 }
             }
@@ -221,8 +224,20 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
 
     //MARK: - Updating subscribers
-    func updateUserFollowers() {
-        print("Update users followers")
+    // MARK: - Updating user fields
+    func updateUser(userId: String, fields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
+        guard !userId.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+
+        database.child(usersPath).child(userId).updateChildValues(fields) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
     }
 
     //MARK: - deleting an event

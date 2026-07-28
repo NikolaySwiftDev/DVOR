@@ -20,30 +20,21 @@ protocol RouterMainProtocol: RouterMain {
     func pushProfileVC(model: UserModel?)
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
-    func pushRatingVC(model: UserModel)
+//    func pushRatingVC(model: UserModel)
     func pushCreateEvent(date: Date)
-    func pushEditProfile()
 
     // Alerts
     func showAlertWithTitle(_ title: String)
     func showBottomSheetAlertForUser(model: UserModel)
-    func showAlertConfigur(
-        title: String,
-        message: String?,
-        titleActionButton: String?,
-        handelr: @escaping () -> Void
-    )
-    func showShareSheet(
-        items: [Any],
-        completion: @escaping (Bool) -> Void
-    )
+    func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping () -> Void)
+    func showShareSheet(items: [Any], completion: @escaping (Bool) -> Void)
+    func showEditAlert(model: UserModel)
 
     // Map
     func showLocationOnMap(location: String)
 }
 
 final class Router: RouterMainProtocol {
-
     
     // MARK: - Properties
     var navigationController: UINavigationController
@@ -93,10 +84,10 @@ final class Router: RouterMainProtocol {
         pushVC(vc)
     }
 
-    func pushRatingVC(model: UserModel) {
-        let vc = builder.createRatingVC(router: self, model: model)
-        pushVC(vc)
-    }
+//    func pushRatingVC(model: UserModel) {
+//        let vc = builder.createRatingVC(router: self, model: model)
+//        pushVC(vc)
+//    }
 
     func pushCreateEvent(date: Date) {
         let vc = builder.createCreateEventVC(router: self, date: date)
@@ -108,96 +99,65 @@ final class Router: RouterMainProtocol {
         vc.modalPresentationStyle = .popover
         presentVC(vc)
     }
-    
-    func pushEditProfile() {
-        let vc = builder.createEditProfile(router: self)
-        pushVC(vc)
-    }
-    
 
     // MARK: - Alerts
 
     func showAlertWithTitle(_ title: String) {
 
-        let alert = UIAlertController(
-            title: title,
-            message: nil,
-            preferredStyle: .alert
-        )
-
-        alert.addAction(
-            UIAlertAction(
-                title: "Ok".loc,
-                style: .default
-            )
-        )
-
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok".loc, style: .default))
         presentVC(alert)
     }
 
-    func showAlertConfigur(
-        title: String,
-        message: String?,
-        titleActionButton: String?,
-        handelr: @escaping () -> Void
-    ) {
+    func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping () -> Void) {
 
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: .alert
-        )
-
-        alert.addAction(
-            UIAlertAction(
-                title: titleActionButton,
-                style: .default
-            ) { _ in
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: titleActionButton,
+                                      style: .default) { _ in
                 handelr()
             }
         )
 
-        alert.addAction(
-            UIAlertAction(
-                title: "Cancel".loc,
-                style: .cancel
-            )
-        )
-
+        alert.addAction(UIAlertAction(title: "common.cancel".loc, style: .cancel))
         presentVC(alert)
     }
 
     func showBottomSheetAlertForUser(model: UserModel) {
 
-        let alert = UIAlertController(
-            title: "Info user".loc,
-            message: nil,
-            preferredStyle: .actionSheet
-        )
+        let alert = UIAlertController(title: "common.user".loc, message: nil, preferredStyle: .actionSheet)
 
-        alert.addAction(
-            UIAlertAction(
-                title: "Profile".loc,
-                style: .default
-            ) { [weak self] _ in
-                self?.pushProfileVC(model: model)
-            }
-        )
+        alert.addAction( UIAlertAction(title: "common.profile".loc,
+                                       style: .default) { [weak self] _ in
+            self?.pushProfileVC(model: model)
+        })
 
-        alert.addAction(
-            UIAlertAction(
-                title: "Cancel".loc,
-                style: .destructive
-            )
-        )
+        alert.addAction(UIAlertAction( title: "common.cancel".loc,style: .destructive))
 
         presentVC(alert)
     }
+    
+    
+    func showEditAlert(model: UserModel) {
+        let alert = UIAlertController(title: "alert.change".loc, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "alert.nickname".loc, style: .default) { [weak self] _ in
+            self?.pushEditNickname(model: model)
+        })
+        
+        alert.addAction(UIAlertAction(title: "alert.avatar".loc, style: .default) { [weak self] _ in
+            self?.pushEditAvatar(model: model)
+        })
+        
+        alert.addAction(UIAlertAction(title: "alert.geo".loc, style: .default) { [weak self] _ in
+            self?.pushEditGeo(model: model)
+        })
+        
+        alert.addAction(UIAlertAction( title: "common.cancel".loc,style: .destructive))
+        
+        presentVC(alert)
+    }
+    
 
-    func showShareSheet(
-        items: [Any],
-        completion: @escaping (Bool) -> Void
-    ) {
+    func showShareSheet(items: [Any], completion: @escaping (Bool) -> Void) {
 
         let activityVC = UIActivityViewController(
             activityItems: items,
@@ -239,4 +199,24 @@ final class Router: RouterMainProtocol {
             item.openInMaps()
         }
     }
+
+
+}
+
+extension Router {
+    private func pushEditNickname(model: UserModel) {
+        let vc = builder.createEditNickname(router: self, userModel: model)
+        pushVC(vc)
+    }
+    
+    private func pushEditAvatar(model: UserModel) {
+        let vc = builder.createEditAvatar(router: self, userModel: model)
+        pushVC(vc)
+    }
+    
+    private func pushEditGeo(model: UserModel) {
+        let vc = builder.createEditGeo(router: self, userModel: model)
+        pushVC(vc)
+    }
+    
 }

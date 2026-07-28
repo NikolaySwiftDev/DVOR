@@ -2,12 +2,10 @@
 import Foundation
 
 enum BaseRegistPosition {
-    case email, info, experience, avatar, geo, pushNotif
+    case info, experience, avatar, geo, pushNotif
 
     var titleMain: String {
         switch self {
-        case .email:
-            BaseRegistStrings.enterEmail
         case .info, .experience:
             BaseRegistStrings.profile
         case .avatar:
@@ -21,8 +19,6 @@ enum BaseRegistPosition {
 
     var titleDesc: String {
         switch self {
-        case .email:
-            BaseRegistStrings.enterEmailDescription
         case .info:
             BaseRegistStrings.enterProfileData
         case .experience:
@@ -38,8 +34,6 @@ enum BaseRegistPosition {
 
     var page: String {
         switch self {
-        case .email:
-            ""
         case .info:
             "1/5"
         case .experience:
@@ -55,8 +49,6 @@ enum BaseRegistPosition {
 
     var progress: Float {
         switch self {
-        case .email:
-            0
         case .info:
             0.2
         case .experience:
@@ -69,20 +61,14 @@ enum BaseRegistPosition {
             1
         }
     }
-
-    var showTitleView: Bool {
-        self == .email
-    }
 }
 
 fileprivate struct BaseRegistStrings {
-    static let enterEmail = "base_regist.enter_email".loc
     static let profile = "base_regist.profile".loc
     static let avatar = "base_regist.avatar".loc
     static let city = "base_regist.city".loc
     static let enableNotifications = "base_regist.enable_notifications".loc
 
-    static let enterEmailDescription = "base_regist.enter_email_description".loc
     static let enterProfileData = "base_regist.enter_profile_data".loc
     static let selectExperience = "base_regist.select_experience".loc
     static let selectAvatar = "base_regist.select_avatar".loc

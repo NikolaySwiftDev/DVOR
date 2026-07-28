@@ -3,10 +3,9 @@ import UIKit
 final class InfoInputViewController: BaseRegistrationViewController {
     
     //MARK: - Properties
-    var onNext: ((String, String, Date?) -> Void)?
-    private var name = ""
-    private var surname = ""
-    private var dateBD: Date? = nil
+    var onNext: ((String) -> Void)?
+    private var nickname = ""
+    var isEdit: Bool = false
     
     //MARK: - UI
     private let nameTF = AuthTextFieldView(placeholder: "infoInput.nikname".loc)
@@ -20,14 +19,23 @@ final class InfoInputViewController: BaseRegistrationViewController {
 
     //MARK: - Next Button Action
     override func nextButtonTapped() {
-        guard name != "" else { return }
-        onNext?(name, surname, dateBD)
+        guard nickname != "" else { return }
+        if isEdit {
+            presenter?.updateNickname(nickname: nickname)
+        } else {
+            onNext?(nickname)
+        }
     }
     
     //MARK: - Check Valid Button
     private func checkValidButton() -> Bool {
-        guard name != "" else { return false }
+        guard nickname != "" else { return false }
         return true
+    }
+    
+    deinit {
+        isEdit = false
+//        print("Deinit CreateAvatarViewController")
     }
 }
 
@@ -84,7 +92,7 @@ private extension InfoInputViewController {
         
         switch textField.tag {
         case 0:
-            name = text
+            nickname = text
             configureEnadle(checkValidButton())
             checkCountTFIsNotEmpty(text: text, tf: nameTF)
             
@@ -98,7 +106,7 @@ private extension InfoInputViewController {
         
         let nameView = createTFView(text: "infoInput.nikname".loc, tf: nameTF)
         
-        let stack = UIStackView(arrangedSubviews: [nameView/*, surnameView*/])
+        let stack = UIStackView(arrangedSubviews: [nameView])
         stack.axis = .horizontal
         stack.spacing = 10
         stack.distribution = .fillEqually

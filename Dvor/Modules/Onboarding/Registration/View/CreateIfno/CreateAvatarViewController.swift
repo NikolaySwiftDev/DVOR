@@ -6,7 +6,8 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
     //MARK: - Properties
     private var avatar: UIImage?
     var onNext: ((UIImage?) -> Void)?
-    
+    var isEdit: Bool = false
+
     //MARK: - UI
     private lazy var avatarImageView = UIImageView(systemImage: "person.and.background.dotted", cornerRadius: 125)
     
@@ -31,7 +32,20 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
     
     //MARK: - Next Button Action
     override func nextButtonTapped() {
-        onNext?(avatar)
+        guard let avatar = avatar else {
+            presenter?.popVC()
+            return
+        }
+        if isEdit {
+            presenter?.updateAvatar(avatar: avatar)
+        } else {
+            onNext?(avatar)
+        }
+    }
+    
+    deinit {
+        isEdit = false
+//        print("Deinit CreateAvatarViewController")
     }
 }
 

@@ -14,9 +14,6 @@ protocol RegistProtocol: AnyObject {
 
 protocol RegistPresenterProtocol: AnyObject {
     func popVC()
-
-    func checkEmailVerification()
-    func resendVerificationEmail()
         
     func pickPhoto()
     
@@ -28,6 +25,11 @@ protocol RegistPresenterProtocol: AnyObject {
     func setViewController(_ vc: UIViewController)
     
     func requestCurrentCity(completion: @escaping (CityModel?) -> Void)
+    
+    func updateCity(city: CityModel)
+    func updateAvatar(avatar: UIImage)
+    func updateNickname(nickname: String)
+    
 
     init(router: RouterMainProtocol,
          firebase: FirebaseAuthManagerProtocol,
@@ -64,40 +66,6 @@ final class RegistPresenter: RegistPresenterProtocol {
     func popVC() {
         router?.popVC()
     }
-    
-    func checkEmailVerification() {
-        view?.showLoading()
-        firebase.reloadUser { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                if self.firebase.isEmailVerified {
-                    self.view?.showSuccess()
-                } else {
-                    self.router?.showAlertWithTitle(RegistPresenterStrings.emailNotVerified)
-                    self.view?.showError(RegistPresenterStrings.emailNotVerified)
-                }
-            case .failure(let error):
-                self.view?.showError(error.localizedDescription)
-            }
-        }
-    }
-
-    
-    func resendVerificationEmail() {
-        view?.showLoading()
-        firebase.sendEmailVerification { [weak self] result in
-            guard let self = self else { return }
-            self.view?.hideLoading()
-            switch result {
-            case .success:
-                self.router?.showAlertWithTitle(RegistPresenterStrings.verificationEmailSent)
-            case .failure(let error):
-                self.view?.showError(error.localizedDescription)
-            }
-        }
-    }
-
     
     func pickPhoto() {
         view?.showLoading()
@@ -165,16 +133,12 @@ final class RegistPresenter: RegistPresenterProtocol {
         let data = UserModel(id: userId,
                              image: model.image,
                              name: model.name,
-                             surname: model.surname,
-                             dateBirthday: model.dateBD,
-                             mobile: model.email,
                              experience: model.experience,
                              city: model.city,
                              countryCode: model.countryCode ?? "",
                              administrativeArea: model.administrativeArea,
                              latitude: model.latitude ?? 0,
                              longitude: model.longitude ?? 0,
-                             email: model.email,
                              position: model.position
         )
         
@@ -217,20 +181,122 @@ final class RegistPresenter: RegistPresenterProtocol {
         }
     }
     
+    func updateCity(city: CityModel) {
+        guard let userId = firebase.currentUserId else {
+            router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
+            return
+        }
 
+        let fields: [String: Any] = [
+            "city": city.name,
+            "countryCode": city.countryCode,
+            "administrativeArea": city.administrativeArea as Any,
+            "latitude": city.latitude,
+            "longitude": city.longitude
+        ]
+
+        view?.showLoading()
+        network.updateUser(userId: userId, fields: fields) { [weak self] result in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+            switch result {
+            case .success:
+                self.view?.showSuccess()
+                router?.showAlertConfigur(title: RegistPresenterStrings.successUpdate,
+                                          message: RegistPresenterStrings.goback,
+                                          titleActionButton: RegistPresenterStrings.yes,
+                                          handelr: { [weak self] in
+                    guard let self = self else { return }
+                    self.router?.popVC()
+                })
+            case .failure(let error):
+                self.router?.showAlertWithTitle(error.localizedDescription)
+            }
+        }
+    }
+    
+    func updateAvatar(avatar: UIImage) {
+        guard let userId = firebase.currentUserId else {
+            router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
+            return
+        }
+
+        guard let imageData = avatar.jpegData(compressionQuality: 0.3) else {
+            view?.showError(RegistPresenterStrings.photoPickerError)
+            return
+        }
+
+        let base64String = imageData.base64EncodedString()
+        let fields: [String: Any] = ["image": base64String]
+
+        network.updateUser(userId: userId, fields: fields) { [weak self] result in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+            switch result {
+            case .success:
+                self.view?.updateAvatarImage(avatar)
+                self.view?.showSuccess()
+                router?.showAlertConfigur(title: RegistPresenterStrings.successUpdate,
+                                          message: RegistPresenterStrings.goback,
+                                          titleActionButton: RegistPresenterStrings.yes,
+                                          handelr: { [weak self] in
+                    guard let self = self else { return }
+                    self.router?.popVC()
+                })
+            case .failure(let error):
+                self.router?.showAlertWithTitle(error.localizedDescription)
+            }
+        }
+    }
+
+    func updateNickname(nickname: String) {
+        guard let userId = firebase.currentUserId else {
+            router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
+            return
+        }
+
+        let trimmed = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            view?.showError(RegistPresenterStrings.emptyNicknameError)
+            return
+        }
+        
+        view?.showLoading()
+        let fields: [String: Any] = ["name": trimmed]
+        network.updateUser(userId: userId, fields: fields) { [weak self] result in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+            switch result {
+            case .success:
+                self.view?.showSuccess()
+                router?.showAlertConfigur(title: RegistPresenterStrings.successUpdate,
+                                          message: RegistPresenterStrings.goback,
+                                          titleActionButton: RegistPresenterStrings.yes,
+                                          handelr: { [weak self] in
+                    guard let self = self else { return }
+                    self.router?.popVC()
+                })
+                
+            case .failure(let error):
+                self.router?.showAlertWithTitle(error.localizedDescription)
+            }
+        }
+    }
+    
     deinit {
-        // print("Deinit Registr Presenter")
+        print("Deinit RegistPresenter")
     }
 }
 
 fileprivate struct RegistPresenterStrings {
-    static let emailNotVerified = "registration.email_not_verified".loc
-    static let verificationEmailSent = "registration.verification_email_sent".loc
-
     static let photoPickerError = "registration.photo_picker_error".loc
     static let notificationsDisabled = "registration.notifications_disabled".loc
+    static let emptyNicknameError = "registration.empty_nickname_error".loc
+    static let successUpdate = "registration.success_update".loc
+    static let goback = "registration.go_back".loc
 
     static let unauthorizedUser = "registration.unauthorized_user".loc
     static let writeErrorTitle = "registration.write_error_title".loc
     static let continueButton = "common.continue".loc
+    static let yes = "Yes".loc
 }
