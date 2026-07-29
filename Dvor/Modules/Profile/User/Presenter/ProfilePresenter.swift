@@ -15,6 +15,7 @@ protocol ProfilePresenterProtocol: AnyObject {
     
     func getProfileInto()
     func editProfile()
+    func deleteProfile()
     func popVC()
 }
 
@@ -64,7 +65,32 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         
         router.showEditAlert(model: model)
     }
-
+    
+    func deleteProfile() {
+        router.showAlertConfigur(title: ProfileViewConstants.alerttitledelete,
+                                 message: ProfileViewConstants.alertdesc,
+                                 titleActionButton: "Yes".loc,
+                                 handelr: { [weak self] in
+            guard let self = self else { return }
+            firebase.signOut(completion: { [weak self] in
+                guard let self = self, let id = user?.id else {return}
+                network.removeUser(userID: id, completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success():
+//                        coordinator?.showOnboarding()
+                        router.pushVC(EventsViewController()) //fix
+                    case .failure(let error):
+                        router.showAlertWithTitle(error.localizedDescription)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            self.router.popVC()
+                        }
+                    }
+                })
+            })
+        })
+    }
+    
     func popVC() {
         router.popVC()
     }

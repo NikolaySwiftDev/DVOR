@@ -8,8 +8,8 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
     var isVerified: Bool { get }
 
     func signUp(city: CityModel)
-    func signIn( completion: @escaping (Result<String, Error>) -> Void)
-    func signOut(completion: @escaping (Result<Void, Error>) -> Void)
+    func signIn( completion: @escaping (String) -> Void)
+    func signOut(completion: @escaping () -> Void)
 }
 
 final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
@@ -56,16 +56,16 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
         isAuthorized = true
     }
 
-    func signIn(completion: @escaping (Result<String, Error>) -> Void) {
+    func signIn(completion: @escaping (String) -> Void) {
         guard let userId = defaults.string(forKey: Keys.userId) else { return }
         isAuthorized = true
-        completion(.success(userId))
+        completion(userId)
     }
 
-    func signOut(completion: @escaping (Result<Void, Error>) -> Void) {
+    func signOut(completion: @escaping () -> Void) {
         isAuthorized = false
         defaults.removeObject(forKey: Keys.userId)
         defaults.removeObject(forKey: Keys.city)
-        completion(.success(()))
+        completion()
     }
 }

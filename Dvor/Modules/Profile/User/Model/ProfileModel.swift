@@ -168,3 +168,17 @@ extension UserModel {
                   longitude: self.longitude ?? 0)
     }
 }
+
+struct ProfileViewConstants {
+    static let title: String = "common.profile".loc
+    static let editButton: String = "common.editProfile".loc
+    static let deleteButton: String = "common.delete".loc
+    
+    static let editImage: String = "person.crop.circle.badge.plus"
+    
+    static let buttonSize: CGFloat = 100
+    static let horizPadding: CGFloat = 20
+    
+    static let alerttitledelete = "alert_title.delete".loc
+    static let alertdesc = "alert_desc.refund".loc
+}

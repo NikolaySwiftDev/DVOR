@@ -200,9 +200,13 @@
 "network.retry" = "Retry";
 
 "common.editProfile"= "Edit profile";
+"common.delete"= "Delete profile";
 "alert.change"="What do you want to change?";
 "alert.nickname"="Nickname";
 "alert.avatar"="Avatar";
 "alert.geo"="Geo";
 "Update"="Update";
+
+"alert_title.delete"="Do you really want to delete your account?";
+"alert_desc.refund"="Your account will be deleted without the possibility of refund";
 

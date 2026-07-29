@@ -281,7 +281,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
     
     deinit {
-        print("Deinit RegistPresenter")
+//        print("Deinit RegistPresenter")
     }
 }
 

@@ -10,7 +10,8 @@ final class ProfileViewController: UIViewController {
     private let titleLabel = UILabel.init(text: ProfileViewConstants.title, font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
     private let userCard = UserCardView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
-    private let editButton = UIButton.createStandartButton(title: "Edit profile", backgroundColor: .black, target: self, action: #selector(editButtonTapped))
+    private let editButton = UIButton.createStandartButton(title: ProfileViewConstants.editButton, backgroundColor: .black,cornerRadius: 8, target: self, action: #selector(editButtonTapped))
+    private let deleteButton = UIButton.createStandartButton(title: ProfileViewConstants.deleteButton, backgroundColor: .black, target: self, action: #selector(deleteButtonTapped))
 
     init(model: UserModel? = nil) {
         self.model = model
@@ -36,10 +37,8 @@ final class ProfileViewController: UIViewController {
     //MARK: - Loading
     private func loadProfile() {
         if isOwnProfile {
-            // Свой профиль — всегда фетчим актуальные данные (важно после Edit)
             presenter?.getProfileInto()
         } else if let model = model {
-            // Чужой профиль — используем модель из init, без фетча
             configureUserCard(with: model)
         }
     }
@@ -53,8 +52,13 @@ final class ProfileViewController: UIViewController {
         presenter?.editProfile()
     }
     
+    @objc private func deleteButtonTapped() {
+        guard isOwnProfile else { return }
+        presenter?.deleteProfile()
+    }
+    
     deinit {
-         print(#function, "ProfileViewController")
+//         print(#function, "ProfileViewController")
     }
 }
 
@@ -70,10 +74,13 @@ extension ProfileViewController: ProfileProtocol {
 private extension ProfileViewController {
     private func setupView() {
         editButton.isHidden = !isOwnProfile
+        deleteButton.isHidden = !isOwnProfile
         view.backgroundColor = Constants.Colors.backgroungColor
+        view.addSubview(userCard)
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(editButton)
+        view.addSubview(deleteButton)
     }
     
     private func setupConstraint() {
@@ -92,22 +99,27 @@ private extension ProfileViewController {
             make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.width.equalTo(ProfileViewConstants.buttonSize)
         }
+        
+        userCard.snp.makeConstraints { make in
+            make.top.equalTo(backButton.snp.bottom).offset(ProfileViewConstants.horizPadding)
+            make.leading.trailing.equalToSuperview()
+            if isOwnProfile {
+                make.bottom.equalTo(deleteButton.snp.top).offset(-Constants.Constraint.horizPadding)
+            } else {
+                make.bottom.equalToSuperview()
+            }
+        }
+        
+        deleteButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(Constants.Constraint.verticalPadding)
+            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding * 1.5)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
     }
     
     private func configureUserCard(with model: UserModel) {
         userCard.configure(with: model)
-        view.addSubview(userCard)
-        userCard.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom).offset(ProfileViewConstants.horizPadding)
-            make.leading.trailing.bottom.equalToSuperview()
-        }
+
     }
 }
-
-fileprivate struct ProfileViewConstants {
-    static let title: String = "common.profile".loc
-    static let editImage: String = "person.crop.circle.badge.plus"
-    
-    static let buttonSize: CGFloat = 100
-    static let horizPadding: CGFloat = 20
-}
+ 
