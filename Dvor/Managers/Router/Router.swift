@@ -5,6 +5,7 @@ import MapKit
 protocol RouterMain: AnyObject {
     var navigationController: UINavigationController { get set }
     var builder: BuilderProtocol { get set }
+    var appCoordinator: AppCoordinatorProtocol? { get set }
 }
 
 protocol RouterMainProtocol: RouterMain {
@@ -38,6 +39,7 @@ final class Router: RouterMainProtocol {
     // MARK: - Properties
     var navigationController: UINavigationController
     var builder: BuilderProtocol
+    weak var appCoordinator: AppCoordinatorProtocol?
 
     // MARK: - Init
 
@@ -79,7 +81,7 @@ final class Router: RouterMainProtocol {
     }
 
     func pushProfileVC(model: UserModel?) {
-        let vc = builder.createProfileVC(router: self, model: model)
+        let vc = builder.createProfileVC(router: self, model: model, appCoordinator: appCoordinator)
         pushVC(vc)
     }
 

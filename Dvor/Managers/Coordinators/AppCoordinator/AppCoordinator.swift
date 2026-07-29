@@ -22,10 +22,12 @@ final class AppCoordinator: AppCoordinatorProtocol {
     private let offlineAlertController = OfflineAlertController()
 
     private(set) lazy var router: Router = {
-        Router(
+        let router = Router(
             navigationController: UINavigationController(),
             builder: builder
         )
+        router.appCoordinator = self
+        return router
     }()
 
     private lazy var deepLinkHandler: DeepLinkHandlerProtocol = {
@@ -87,5 +89,9 @@ final class AppCoordinator: AppCoordinatorProtocol {
     func handle(url: URL) {
         let deepLink = DeepLink.parse(from: url)
         deepLinkHandler.handle(deepLink)
+    }
+    
+    deinit {
+        print(#function + "AppCoordinator")
     }
 }

@@ -11,7 +11,8 @@ protocol ProfilePresenterProtocol: AnyObject {
     init(view: ProfileProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         firebase: FirebaseAuthManagerProtocol)
+         firebase: FirebaseAuthManagerProtocol,
+         appCoordinator: AppCoordinatorProtocol?)
     
     func getProfileInto()
     func editProfile()
@@ -27,15 +28,18 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     let router: RouterMainProtocol
     let network: FirebaseDataManagerProtocol
     let firebase: FirebaseAuthManagerProtocol
+    let appCoordinator: AppCoordinatorProtocol?
     
     init(view: ProfileProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         firebase: FirebaseAuthManagerProtocol) {
+         firebase: FirebaseAuthManagerProtocol,
+         appCoordinator: AppCoordinatorProtocol?) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
+        self.appCoordinator = appCoordinator
     }
     
     func getProfileInto() {
@@ -78,8 +82,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
                     guard let self = self else { return }
                     switch result {
                     case .success():
-//                        coordinator?.showOnboarding()
-                        router.pushVC(EventsViewController()) //fix
+                        appCoordinator?.showOnboarding()
                     case .failure(let error):
                         router.showAlertWithTitle(error.localizedDescription)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

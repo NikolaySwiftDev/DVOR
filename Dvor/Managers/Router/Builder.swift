@@ -11,7 +11,7 @@ protocol BuilderProtocol: AnyObject {
     func createEditNickname(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createEditAvatar(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createEditGeo(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
-    func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController
+    func createProfileVC(router: RouterMainProtocol, model: UserModel?, appCoordinator: AppCoordinatorProtocol?) -> UIViewController
 }
 
 class Builder: BuilderProtocol {
@@ -48,12 +48,13 @@ class Builder: BuilderProtocol {
     }
     
     //MARK: -  Profile Builder
-    func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController {
+    func createProfileVC(router: RouterMainProtocol, model: UserModel?, appCoordinator: AppCoordinatorProtocol?) -> UIViewController {
         let view = ProfileViewController(model: model)
         let presenter = ProfilePresenter(view: view,
                                          router: router,
                                          network: managers.dataManager,
-                                         firebase: managers.authManager)
+                                         firebase: managers.authManager,
+                                         appCoordinator: appCoordinator)
         view.presenter = presenter
         return view
     }
