@@ -62,21 +62,8 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         
         guard let city = firebaseAuth.currentCity else { return }
         self.city = city
+        print("City ==== ", city)
         view?.success(city: city.name)
-        
-//        network.fetchUser(idUser: orgID) { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let success):
-//                let city = CityModel(name: success.city, countryCode: success.countryCode, administrativeArea: success.administrativeArea, latitude: success.latitude ?? 0, longitude: success.longitude ?? 0)
-//                self.city = city
-//                print(city.countryCode)
-//                view?.success(city: city.name)
-//            case .failure(let failure):
-//                print(failure.localizedDescription)
-//            }
-//        }
-        
     }
     
     //MARK: - Record events in the database

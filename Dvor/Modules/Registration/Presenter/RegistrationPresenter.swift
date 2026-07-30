@@ -195,14 +195,16 @@ final class RegistPresenter: RegistPresenterProtocol {
         view?.showLoading()
         network.updateUser(userId: userId, fields: fields) { [weak self] result in
             guard let self = self else { return }
-            self.view?.hideLoading()
             switch result {
             case .success:
-                self.view?.showSuccess()
-                router?.showAlertConfigur(title: RegistPresenterStrings.successUpdate,
-                                          message: RegistPresenterStrings.goback,
-                                          titleActionButton: RegistPresenterStrings.yes,
-                                          handelr: { [weak self] in
+                let city = CityModel(name: city.name,
+                                     countryCode: city.countryCode,
+                                     administrativeArea: city.administrativeArea,
+                                     latitude: city.latitude,
+                                     longitude: city.longitude)
+                firebase.updateCity(city: city)
+                router?.showAlertWithCompletion(RegistPresenterStrings.successUpdate,
+                                                completion: {  [weak self] in
                     guard let self = self else { return }
                     self.router?.popVC()
                 })
@@ -258,14 +260,12 @@ final class RegistPresenter: RegistPresenterProtocol {
             return
         }
         
-        view?.showLoading()
         let fields: [String: Any] = ["name": trimmed]
         network.updateUser(userId: userId, fields: fields) { [weak self] result in
             guard let self = self else { return }
             self.view?.hideLoading()
             switch result {
             case .success:
-                self.view?.showSuccess()
                 router?.showAlertConfigur(title: RegistPresenterStrings.successUpdate,
                                           message: RegistPresenterStrings.goback,
                                           titleActionButton: RegistPresenterStrings.yes,

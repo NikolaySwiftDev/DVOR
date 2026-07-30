@@ -25,6 +25,7 @@ protocol RouterMainProtocol: RouterMain {
 
     // Alerts
     func showAlertWithTitle(_ title: String)
+    func showAlertWithCompletion(_ title: String, completion: (()->())?)
     func showBottomSheetAlertForUser(model: UserModel)
     func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping () -> Void)
     func showShareSheet(items: [Any], completion: @escaping (Bool) -> Void)
@@ -35,7 +36,7 @@ protocol RouterMainProtocol: RouterMain {
 }
 
 final class Router: RouterMainProtocol {
-    
+
     // MARK: - Properties
     var navigationController: UINavigationController
     var builder: BuilderProtocol
@@ -102,6 +103,14 @@ final class Router: RouterMainProtocol {
 
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok".loc, style: .default))
+        presentVC(alert)
+    }
+    
+    func showAlertWithCompletion(_ title: String, completion: (() -> ())?) {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok".loc, style: .default) {  _ in
+            completion?()
+        })
         presentVC(alert)
     }
 

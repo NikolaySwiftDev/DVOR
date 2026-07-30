@@ -37,6 +37,7 @@ final class LocationManager: NSObject, LocationManagerProtocol {
     override init() {
         super.init()
         manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyKilometer
     }
 
     // MARK: - Public
@@ -62,6 +63,9 @@ final class LocationManager: NSObject, LocationManagerProtocol {
 
     private func requestLocation() {
         retryCount = 0
+        if let cached = manager.location, cached.timestamp.timeIntervalSinceNow > -300 {
+            reverseGeocode(cached)
+        }
         manager.requestLocation()
     }
 

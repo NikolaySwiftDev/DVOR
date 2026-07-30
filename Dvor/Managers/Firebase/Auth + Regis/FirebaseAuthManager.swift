@@ -1,5 +1,4 @@
 import Foundation
-import FirebaseAuth
 
 protocol FirebaseAuthManagerProtocol: AnyObject {
     var currentUserId: String? { get }
@@ -10,6 +9,7 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
     func signUp(city: CityModel)
     func signIn( completion: @escaping (String) -> Void)
     func signOut(completion: @escaping () -> Void)
+    func updateCity(city: CityModel)
 }
 
 final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
@@ -67,5 +67,10 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
         defaults.removeObject(forKey: Keys.userId)
         defaults.removeObject(forKey: Keys.city)
         completion()
+    }
+    
+    func updateCity(city: CityModel) {
+        guard let data = try? JSONEncoder().encode(city) else { return }
+        defaults.set(data, forKey: Keys.city)
     }
 }
