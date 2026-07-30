@@ -24,6 +24,7 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     
     //Check
     func hasEventOnSameDay(userId: String, date: Date, excludingEventId: String, completion: @escaping (Result<Bool, Error>) -> Void)
+    func countEvents(forOrganizer orgId: String, on date: Date, completion: @escaping (Result<Int, Error>) -> Void)
 
 
 }
@@ -357,6 +358,33 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                 completion(.success(foundConflict))
             }
         }
+    }
+    
+    func countEvents(forOrganizer orgId: String, on date: Date, completion: @escaping (Result<Int, Error>) -> Void) {
+        database.child(eventsPath)
+            .queryOrdered(byChild: "orgId")
+            .queryEqual(toValue: orgId)
+            .observeSingleEvent(of: .value) { snapshot in
+                guard snapshot.exists() else {
+                    completion(.success(0))
+                    return
+                }
+                
+                let calendar = Calendar.current
+                var count = 0
+                
+                for child in snapshot.children {
+                    guard let childSnapshot = child as? DataSnapshot,
+                          let value = childSnapshot.value as? [String: Any],
+                          let event = EventModel(from: value) else { continue }
+                    
+                    if calendar.isDate(event.date, inSameDayAs: date) {
+                        count += 1
+                    }
+                }
+                
+                completion(.success(count))
+            }
     }
     
     //MARK: - Safe decrement (never goes below 0)

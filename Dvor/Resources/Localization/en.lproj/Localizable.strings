@@ -28,7 +28,8 @@
 "detail.not_participating" = "You are not participating in this event";
 "detail.unsubscribed" = "You have unsubscribed from the event";
 "detail.delete_error" = "Error during deletion";
-"detail.already_Has_Event_This_Day" = "Already hase event this day";
+"detail.already_Has_Event_This_Day" = "You are already participating in another event on this day";
+"create_event.daily_limit" = "The daily event limit has been reached. Try selecting a different date";
 
 "organizer_title" = "Organizer";
 "about_title" = "About";

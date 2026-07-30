@@ -46,6 +46,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     }
     
     private var city: CityModel?
+    private let maxEventsPerDay = 2
     
     // MARK: - Methods
     func popVC() {
@@ -62,17 +63,34 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         
         guard let city = firebaseAuth.currentCity else { return }
         self.city = city
-        print("City ==== ", city)
         view?.success(city: city.name)
     }
     
     //MARK: - Record events in the database
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String) {
-//        guard let orgID = firebase.currentUser?.uid else {
         guard let orgID = firebaseAuth.currentUserId else {
             router?.showAlertWithTitle(CreateEventPresenterStrings.signUp)
             return
         }
+        
+        network.countEvents(forOrganizer: orgID, on: date) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let count):
+                guard count < self.maxEventsPerDay else {
+                    self.router?.showAlertWithTitle(CreateEventPresenterStrings.dailyLimitReached)
+                    return
+                }
+                self.createEvent(orgID: orgID, players: players, date: date, time: time, address: address, place: place)
+            case .failure(let error):
+                self.router?.showAlertWithTitle(CreateEventPresenterStrings.saveError)
+                self.view?.error(error: error)
+            }
+        }
+    }
+    
+    private func createEvent(orgID: String, players: Int, date: Date, time: String, address: String, place: String) {
         let model = EventModel(date: date,
                                time: time,
                                name: "",
@@ -114,4 +132,5 @@ fileprivate struct CreateEventPresenterStrings {
     static let signUp = "create_event.sign_up".loc
     static let saveError = "common.save_error".loc
     static let infoAlert = "create_event.info_alert".loc
+    static let dailyLimitReached = "create_event.daily_limit".loc
 }
