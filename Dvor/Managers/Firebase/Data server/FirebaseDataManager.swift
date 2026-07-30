@@ -21,6 +21,10 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     
     //Update
     func updateUser(userId: String, fields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void)
+    
+    //Check
+    func hasEventOnSameDay(userId: String, date: Date, excludingEventId: String, completion: @escaping (Result<Bool, Error>) -> Void)
+
 
 }
 
@@ -204,7 +208,8 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     func writeUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
         let usersRef = database.child(eventsPath).child(idEvent).child(usersPath)
         
-        usersRef.observeSingleEvent(of: .value) { snapshot in
+        usersRef.observeSingleEvent(of: .value) { [weak self] snapshot in
+            guard let self else { return }
             var currentUsers = snapshot.value as? [String] ?? []
             
             if currentUsers.contains(idUser) {
@@ -214,10 +219,13 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             
             currentUsers.append(idUser)
             
-            usersRef.setValue(currentUsers) { error, _ in
+            usersRef.setValue(currentUsers) { [weak self] error, _ in
+                guard let self else { return }
                 if let error = error {
                     completion(.failure(error))
                 } else {
+                    self.database.child(self.usersPath).child(idUser).child("plays")
+                        .setValue(ServerValue.increment(1))
                     completion(.success(currentUsers))
                 }
             }
@@ -269,7 +277,8 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     func removeUserFromEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
         let usersRef = database.child(eventsPath).child(idEvent).child(usersPath)
         
-        usersRef.observeSingleEvent(of: .value) { snapshot in
+        usersRef.observeSingleEvent(of: .value) { [weak self] snapshot in
+            guard let self else { return }
             var currentUsers = snapshot.value as? [String] ?? []
             
             guard let userIndex = currentUsers.firstIndex(of: idUser) else {
@@ -280,10 +289,12 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             currentUsers.remove(at: userIndex)
             
             usersRef.setValue(currentUsers) { [weak self] error, _ in
+                guard let self else { return }
                 if let error = error {
                     completion(.failure(error))
                 } else {
-                    self?.database.child("userEvents").child(idUser).child(idEvent).removeValue()
+                    self.database.child("userEvents").child(idUser).child(idEvent).removeValue()
+                    self.decrementPlaysSafely(userId: idUser)
                     completion(.success(currentUsers))
                 }
             }
@@ -311,6 +322,51 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                     }
                 }
             }
+        }
+    }
+    
+    //MARK: - Has Event On Same Day
+
+    func hasEventOnSameDay(userId: String, date: Date, excludingEventId: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+        database.child("userEvents").child(userId).observeSingleEvent(of: .value) { [weak self] snapshot in
+            guard let self else { return }
+            
+            let eventIds = (snapshot.value as? [String: Bool])?.keys.filter { $0 != excludingEventId } ?? []
+            
+            guard !eventIds.isEmpty else {
+                completion(.success(false))
+                return
+            }
+            
+            let calendar = Calendar.current
+            var foundConflict = false
+            let group = DispatchGroup()
+            
+            for eventId in eventIds {
+                group.enter()
+                self.fetchEvent(idEvent: eventId) { result in
+                    defer { group.leave() }
+                    if case .success(let event) = result,
+                       calendar.isDate(event.date, inSameDayAs: date) {
+                        foundConflict = true
+                    }
+                }
+            }
+            
+            group.notify(queue: .main) {
+                completion(.success(foundConflict))
+            }
+        }
+    }
+    
+    //MARK: - Safe decrement (never goes below 0)
+    private func decrementPlaysSafely(userId: String) {
+        let playsRef = database.child(usersPath).child(userId).child("plays")
+        
+        playsRef.runTransactionBlock { currentData in
+            let currentValue = currentData.value as? Int ?? 0
+            currentData.value = max(0, currentValue - 1)
+            return .success(withValue: currentData)
         }
     }
     

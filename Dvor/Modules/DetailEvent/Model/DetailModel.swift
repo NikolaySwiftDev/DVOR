@@ -52,6 +52,7 @@ enum DetailPresenterConstants {
     static let saveError = "detail.save_error".loc
 
     static let notParticipating = "detail.not_participating".loc
+    static let alreadyHasEventThisDay = "detail.already_Has_Event_This_Day".loc
     static let unsubscribed = "detail.unsubscribed".loc
     static let deleteError = "detail.delete_error".loc
 }

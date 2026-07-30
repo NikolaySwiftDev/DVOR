@@ -92,6 +92,6 @@ final class AppCoordinator: AppCoordinatorProtocol {
     }
     
     deinit {
-        print(#function + "AppCoordinator")
+//        print(#function + "AppCoordinator")
     }
 }

@@ -28,6 +28,7 @@
 "detail.not_participating" = "You are not participating in this event";
 "detail.unsubscribed" = "You have unsubscribed from the event";
 "detail.delete_error" = "Error during deletion";
+"detail.already_Has_Event_This_Day" = "Already hase event this day";
 
 "organizer_title" = "Organizer";
 "about_title" = "About";

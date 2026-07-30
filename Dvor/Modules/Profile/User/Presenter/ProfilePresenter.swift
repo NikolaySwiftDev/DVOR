@@ -12,6 +12,7 @@ protocol ProfilePresenterProtocol: AnyObject {
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
+         notification: NotificationManagerProtocol,
          appCoordinator: AppCoordinatorProtocol?)
     
     func getProfileInto()
@@ -28,17 +29,20 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     let router: RouterMainProtocol
     let network: FirebaseDataManagerProtocol
     let firebase: FirebaseAuthManagerProtocol
+    let notification: NotificationManagerProtocol
     let appCoordinator: AppCoordinatorProtocol?
     
     init(view: ProfileProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
+         notification: NotificationManagerProtocol,
          appCoordinator: AppCoordinatorProtocol?) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
+        self.notification = notification
         self.appCoordinator = appCoordinator
     }
     
@@ -76,6 +80,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
                                  titleActionButton: "Yes".loc,
                                  handelr: { [weak self] in
             guard let self = self else { return }
+            notification.cancelAllNotifications()
             firebase.signOut(completion: { [weak self] in
                 guard let self = self, let id = user?.id else {return}
                 network.removeUser(userID: id, completion: { [weak self] result in

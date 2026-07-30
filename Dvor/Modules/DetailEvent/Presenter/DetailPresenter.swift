@@ -20,7 +20,7 @@ protocol DetailPresenterProtocol: AnyObject {
     var org: OrganizatorModel? { get set }
     
     func fetchAllUsers(usersID: [String], orgID: String)
-    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool, city: CityModel)
+    func addUserToEvent(idEvent: String, date: Date, time: String, isComplete: Bool, city: CityModel)
     func removeUserFromEvent(idEvent: String)
     
     func popVC()
@@ -71,7 +71,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
     
     //MARK: - Add user
-    func addUserToEvent(idEvent: String, date: Date, isComplete: Bool, city: CityModel) {
+    func addUserToEvent(idEvent: String, date: Date, time: String, isComplete: Bool, city: CityModel) {
         guard idEvent != "" else {
             router.showAlertWithTitle(DetailPresenterConstants.selectEvent)
             return
@@ -92,16 +92,31 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
 
+        network.hasEventOnSameDay(userId: idUser, date: date, excludingEventId: idEvent) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let hasConflict):
+                guard !hasConflict else {
+                    self.router.showAlertWithTitle(DetailPresenterConstants.alreadyHasEventThisDay)
+                    return
+                }
+                self.proceedWithJoining(idEvent: idEvent, idUser: idUser, date: date, time: time, isComplete: isComplete)
+            case .failure(let error):
+                self.router.showAlertWithTitle(error.localizedDescription)
+            }
+        }
+    }
+
+    private func proceedWithJoining(idEvent: String, idUser: String, date: Date, time: String, isComplete: Bool) {
         network.writeUserToEvent(idEvent: idEvent, idUser: idUser) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):
                 view?.updateUsers(model: success)
-                let hours = Calendar.current.component(.hour, from: date)
                 notification.createNotification(
                     identifier: idEvent,
                     title: DetailPresenterConstants.matchReminder,
-                    body: "\(DetailPresenterConstants.eventTomorrowAt) \(hours)",
+                    body: "\(DetailPresenterConstants.eventTomorrowAt) \(" ") \(time)",
                     date: date
                 )
                 router.showAlertWithTitle(

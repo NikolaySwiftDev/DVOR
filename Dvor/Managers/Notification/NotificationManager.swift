@@ -1,10 +1,17 @@
 import UserNotifications
 
 protocol NotificationManagerProtocol: AnyObject {
+    //Auth notif
     func requestAuthorization(completion: @escaping (Bool, Error?) -> Void)
-    func createNotification(identifier: String, title: String, body: String, date: Date)
-    func cancelNotification(identifier: String)
     func getAuthorizationStatus(completion: @escaping (UNAuthorizationStatus) -> Void)
+
+    //Create
+    func createNotification(identifier: String, title: String, body: String, date: Date)
+    
+    //Cancel
+    func cancelNotification(identifier: String)
+    func cancelAllNotifications()
+    
 }
 
 final class NotificationManager: NotificationManagerProtocol {
@@ -27,11 +34,19 @@ final class NotificationManager: NotificationManagerProtocol {
     func createNotification(identifier: String, title: String, body: String, date: Date) {
         let content = createNotificationContent(title: title, body: body)
         
-        let dayBefore = Calendar.current.date(byAdding: .day, value: -1, to: date)!
-        let notificationDate = Calendar.current.date(bySettingHour: 12, minute: 34, second: 0, of: dayBefore)!
+        guard !Calendar.current.isDateInToday(date) else {
+            print("Notification skipped: event is today")
+            return
+        }
         
-        guard Calendar.current.isDateInToday(notificationDate) else {
-            print("Notification skipped: date is today")
+        guard let dayBefore = Calendar.current.date(byAdding: .day, value: -1, to: date),
+              let notificationDate = Calendar.current.date(bySettingHour: 12, minute: 25, second: 0, of: dayBefore) else {
+            print("Notification skipped: could not compute notification date")
+            return
+        }
+        
+        guard notificationDate > Date() else {
+            print("Notification skipped: notification date is in the past")
             return
         }
         

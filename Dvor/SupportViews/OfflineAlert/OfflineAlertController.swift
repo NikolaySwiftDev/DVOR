@@ -94,7 +94,7 @@ final class OfflineAlertController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-         print("Deinit OfflineAlertController")
+//         print("Deinit OfflineAlertController")
     }
 }
 

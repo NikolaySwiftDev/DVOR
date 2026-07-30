@@ -54,6 +54,7 @@ class Builder: BuilderProtocol {
                                          router: router,
                                          network: managers.dataManager,
                                          firebase: managers.authManager,
+                                         notification: managers.notificationManager,
                                          appCoordinator: appCoordinator)
         view.presenter = presenter
         return view
