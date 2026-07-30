@@ -185,8 +185,8 @@ final class UserCardView: UIView {
         statsStackView.addArrangedSubview(playsView)
         
         // LVL
-        let lvlView = createStatView(title: UserCardViewConstan.level, value: String(format: "%.0f", stats.level))
-        statsStackView.addArrangedSubview(lvlView)
+//        let lvlView = createStatView(title: UserCardViewConstan.level, value: String(format: "%.0f", stats.level))
+//        statsStackView.addArrangedSubview(lvlView)
     }
     
     private func createStatView(title: String, value: String) -> UIView {

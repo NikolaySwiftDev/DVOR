@@ -183,7 +183,6 @@ final class EventsPresenter: EventsPresenterProtocol {
             return
         }
         
-//        guard let currentUserId = firebase.currentUser?.uid else {
         guard let currentUserId = firebase.currentUserId else {
             router?.showAlertWithTitle(EventsPresenterStrings.needToLogIn)
             return
@@ -207,7 +206,6 @@ final class EventsPresenter: EventsPresenterProtocol {
             switch result {
             case .success(_):
                 fetchEvents()
-//                router?.showAlertWithTitle(success)
             case .failure(let error):
                 router?.showAlertWithTitle(EventsPresenterStrings.deleteError)
                 view?.error(error: error)

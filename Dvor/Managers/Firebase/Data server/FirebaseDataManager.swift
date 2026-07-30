@@ -257,7 +257,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         
         eventRef.observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let self else { return }
-            let userIds = (snapshot.value as? [String: Any])?[self.usersPath] as? [String] ?? []
+            let userIds = (snapshot.value as? [String: Any])?[usersPath] as? [String] ?? []
             
             eventRef.removeValue { error, _ in
                 if let error = error {
@@ -267,6 +267,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                 
                 for userId in userIds {
                     self.database.child("userEvents").child(userId).child(eventId).removeValue()
+                    self.decrementPlaysSafely(userId: userId)
                 }
                 
                 completion(.success(FirebaseDataManagerConstants.eventDeleted))
