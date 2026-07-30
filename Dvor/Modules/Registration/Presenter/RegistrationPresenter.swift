@@ -235,10 +235,8 @@ final class RegistPresenter: RegistPresenterProtocol {
             case .success:
                 self.view?.updateAvatarImage(avatar)
                 self.view?.showSuccess()
-                router?.showAlertConfigur(title: RegistPresenterStrings.successUpdate,
-                                          message: RegistPresenterStrings.goback,
-                                          titleActionButton: RegistPresenterStrings.yes,
-                                          handelr: { [weak self] in
+                router?.showAlertWithCompletion(RegistPresenterStrings.successUpdate,
+                                                completion: {  [weak self] in
                     guard let self = self else { return }
                     self.router?.popVC()
                 })
@@ -266,10 +264,8 @@ final class RegistPresenter: RegistPresenterProtocol {
             self.view?.hideLoading()
             switch result {
             case .success:
-                router?.showAlertConfigur(title: RegistPresenterStrings.successUpdate,
-                                          message: RegistPresenterStrings.goback,
-                                          titleActionButton: RegistPresenterStrings.yes,
-                                          handelr: { [weak self] in
+                router?.showAlertWithCompletion(RegistPresenterStrings.successUpdate,
+                                                completion: {  [weak self] in
                     guard let self = self else { return }
                     self.router?.popVC()
                 })
@@ -290,7 +286,6 @@ fileprivate struct RegistPresenterStrings {
     static let notificationsDisabled = "registration.notifications_disabled".loc
     static let emptyNicknameError = "registration.empty_nickname_error".loc
     static let successUpdate = "registration.success_update".loc
-    static let goback = "registration.go_back".loc
 
     static let unauthorizedUser = "registration.unauthorized_user".loc
     static let writeErrorTitle = "registration.write_error_title".loc

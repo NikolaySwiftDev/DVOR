@@ -192,7 +192,6 @@
 "registration.location_unavailable" = "Couldn't determine your location. Please try again.";
 "registration.city_not_found" = "Couldn't determine the city from your current location.";
 "registration.success_update"="Data updated successfully";
-"registration.go_back"="Do you want to go back?";
 
 "network.offline_error" = "No internet connection";
 "network.offline_title" = "No Internet Connection";

@@ -32,11 +32,11 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
     
     //MARK: - Next Button Action
     override func nextButtonTapped() {
-        guard let avatar = avatar else {
-            presenter?.popVC()
-            return
-        }
         if isEdit {
+            guard let avatar = avatar else {
+                presenter?.popVC()
+                return
+            }
             presenter?.updateAvatar(avatar: avatar)
         } else {
             onNext?(avatar)
