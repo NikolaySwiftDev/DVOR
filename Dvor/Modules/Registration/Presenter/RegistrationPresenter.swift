@@ -1,4 +1,3 @@
-
 import Foundation
 import UIKit
 
@@ -34,9 +33,9 @@ protocol RegistPresenterProtocol: AnyObject {
     init(router: RouterMainProtocol,
          firebase: FirebaseAuthManagerProtocol,
          network: FirebaseDataManagerProtocol,
-         photoManager: PhotoManagerProtocol,
-         notifManager: NotificationManagerProtocol,
-         locationManager: LocationManagerProtocol,
+         photoManager: PhotoManagerProtocol?,
+         notifManager: NotificationManagerProtocol?,
+         locationManager: LocationManagerProtocol?,
          appCoordinator: AppCoordinatorProtocol?
     )
 }
@@ -47,18 +46,18 @@ final class RegistPresenter: RegistPresenterProtocol {
     let router: RouterMainProtocol?
     let firebase: FirebaseAuthManagerProtocol
     let network: FirebaseDataManagerProtocol
-    let photoManager: PhotoManagerProtocol
-    let notifManager: NotificationManagerProtocol
-    let locationManager: LocationManagerProtocol
+    let photoManager: PhotoManagerProtocol?
+    let notifManager: NotificationManagerProtocol?
+    let locationManager: LocationManagerProtocol?
     let appCoordinator: AppCoordinatorProtocol?
     
     required init(router: RouterMainProtocol,
                   firebase: FirebaseAuthManagerProtocol,
                   network: FirebaseDataManagerProtocol,
-                  photoManager: PhotoManagerProtocol,
-                  notifManager: NotificationManagerProtocol,
-                  locationManager: LocationManagerProtocol,
-                  appCoordinator: AppCoordinatorProtocol?
+                  photoManager: PhotoManagerProtocol? = nil,
+                  notifManager: NotificationManagerProtocol? = nil,
+                  locationManager: LocationManagerProtocol? = nil,
+                  appCoordinator: AppCoordinatorProtocol? = nil
     ) {
         self.router = router
         self.firebase = firebase
@@ -74,6 +73,11 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
     
     func pickPhoto() {
+        guard let photoManager else {
+            view?.showError(RegistPresenterStrings.photoPickerError)
+            return
+        }
+        
         view?.showLoading()
         photoManager.pickPhoto(from: router, maxSize: SizeLimits.mb8) { [weak self] result in
             guard let self = self else { return }
@@ -83,7 +87,6 @@ final class RegistPresenter: RegistPresenterProtocol {
                 self.view?.showSuccess()
                 self.view?.hideLoading()
 
-                
             case .failure(let error):
                 self.view?.hideLoading()
                 if error != .cancelled {
@@ -103,6 +106,8 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
     
     func appendNotification() {
+        guard let notifManager else { return }
+        
         view?.showLoading()
         notifManager.requestAuthorization { [weak self] granted, error  in
             guard let self = self else { return }
@@ -169,6 +174,11 @@ final class RegistPresenter: RegistPresenterProtocol {
     
     // MARK: - Location -> City
     func requestCurrentCity(completion: @escaping (CityModel?) -> Void) {
+        guard let locationManager else {
+            completion(nil)
+            return
+        }
+        
         locationManager.requestCurrentCity { [weak self] city, error  in
             guard let self = self else { return }
             if let error {

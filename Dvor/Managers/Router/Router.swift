@@ -204,8 +204,6 @@ final class Router: RouterMainProtocol {
             item.openInMaps()
         }
     }
-
-
 }
 
 extension Router {
@@ -223,5 +221,4 @@ extension Router {
         let vc = builder.createEditGeo(router: self, userModel: model)
         pushVC(vc)
     }
-    
 }

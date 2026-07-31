@@ -4,6 +4,10 @@ import UIKit
 
 protocol BuilderProtocol: AnyObject {
     func createRegistrationPresenter(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol?) -> RegistPresenter
+    func createEditPresenter(router: RouterMainProtocol,
+                              photoManager: PhotoManagerProtocol?,
+                              notifManager: NotificationManagerProtocol?,
+                              locationManager: LocationManagerProtocol?) -> RegistPresenter
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController
@@ -22,8 +26,9 @@ class Builder: BuilderProtocol {
         self.managers = managers
     }
     
+    // MARK: - Full registration flow (onboarding) — needs every manager at once
     func createRegistrationPresenter(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol?) -> RegistPresenter {
-        let presenter = RegistPresenter(
+        RegistPresenter(
             router: router,
             firebase: managers.authManager,
             network: managers.dataManager,
@@ -32,8 +37,22 @@ class Builder: BuilderProtocol {
             locationManager: managers.makeLocationManager(),
             appCoordinator: coordinator
         )
-        
-        return presenter
+    }
+    
+    // MARK: - Single-field profile edits — only the manager the screen actually needs
+    func createEditPresenter(router: RouterMainProtocol,
+                              photoManager: PhotoManagerProtocol? = nil,
+                              notifManager: NotificationManagerProtocol? = nil,
+                              locationManager: LocationManagerProtocol? = nil) -> RegistPresenter {
+        RegistPresenter(
+            router: router,
+            firebase: managers.authManager,
+            network: managers.dataManager,
+            photoManager: photoManager,
+            notifManager: notifManager,
+            locationManager: locationManager,
+            appCoordinator: nil
+        )
     }
         
     //MARK: -  Home Builder
@@ -94,7 +113,8 @@ class Builder: BuilderProtocol {
     
     //MARK: - Edit Profile
     func createEditNickname(router: RouterMainProtocol, userModel: UserModel) -> UIViewController {
-        let view = InfoInputViewController(presenter: createRegistrationPresenter(router: router, coordinator: nil))
+        let presenter = createEditPresenter(router: router)
+        let view = InfoInputViewController(presenter: presenter)
         view.isEdit = true
         view.setInfoForNavigationView(model: .info)
         view.configureEnadle(false)
@@ -106,7 +126,7 @@ class Builder: BuilderProtocol {
     }
     
     func createEditAvatar(router: any RouterMainProtocol, userModel: UserModel) -> UIViewController {
-        let presenter = createRegistrationPresenter(router: router, coordinator: nil)
+        let presenter = createEditPresenter(router: router, photoManager: managers.makePhotoManager())
         let view = CreateAvatarViewController(presenter: presenter)
         view.isEdit = true
         view.setInfoForNavigationView(model: .avatar)
@@ -120,7 +140,8 @@ class Builder: BuilderProtocol {
     }
     
     func createEditGeo(router: any RouterMainProtocol, userModel: UserModel) -> UIViewController {
-        let view = CityViewController(presenter: createRegistrationPresenter(router: router, coordinator: nil))
+        let presenter = createEditPresenter(router: router, locationManager: managers.makeLocationManager())
+        let view = CityViewController(presenter: presenter)
         view.isEdit = true
         view.setInfoForNavigationView(model: .geo)
         view.configureEnadle(false)

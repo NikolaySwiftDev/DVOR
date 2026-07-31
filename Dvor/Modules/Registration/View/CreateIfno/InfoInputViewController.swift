@@ -35,7 +35,7 @@ final class InfoInputViewController: BaseRegistrationViewController {
     
     deinit {
         isEdit = false
-//        print("Deinit CreateAvatarViewController")
+        print("Deinit CreateAvatarViewController")
     }
 }
 
@@ -56,19 +56,6 @@ extension InfoInputViewController: UITextFieldDelegate {
             return cleanString.count <= 8
         }
         return true
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        switch textField.tag {
-        case 0,1:
-            configureBottomPaddingButtom(isActiveTF: true, isNumberPad: false)
-        default:
-            configureBottomPaddingButtom(isActiveTF: true)
-        }
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        configureBottomPaddingButtom(isActiveTF: false)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

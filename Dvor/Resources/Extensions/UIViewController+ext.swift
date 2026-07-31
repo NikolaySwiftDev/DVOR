@@ -1,11 +1,8 @@
 import UIKit
 
 struct BaseConstants {
-    static let bottomPaddingNumberPad: CGFloat = (UIScreen.main.bounds.height / 3)
-    static let bottomPaddingKeyboard: CGFloat = (UIScreen.main.bounds.height / 2.7)
     static let progressHeight: CGFloat = 4
     static let backButtonSize: CGFloat = 24
-
 }
 
 extension UIViewController {
@@ -93,25 +90,5 @@ extension UIViewController {
         ? Constants.Colors.buttonActiveColor
         : Constants.Colors.buttonInActiveColor
         button.isEnabled = isEnabled
-    }
-
-    func adjustNextButtonBottom(_ button: UIButton,
-                                in view: UIView,
-                                isActiveTF: Bool,
-                                isNumberPad: Bool = true) {
-        let newInset = isActiveTF
-        ? (isNumberPad ? BaseConstants.bottomPaddingNumberPad
-                       : BaseConstants.bottomPaddingKeyboard)
-        : Constants.Constraint.horizPadding
-
-        UIView.animate(withDuration: 0.25,
-                       delay: 0,
-                       options: [.curveEaseInOut, .beginFromCurrentState],
-                       animations: {
-            button.snp.updateConstraints { make in
-                make.bottom.equalTo(view.safeAreaLayoutGuide).inset(newInset)
-            }
-            view.layoutIfNeeded()
-        }, completion: nil)
     }
 }

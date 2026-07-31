@@ -70,14 +70,6 @@ extension CityViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        configureBottomPaddingButtom(isActiveTF: true, isNumberPad: false)
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        configureBottomPaddingButtom(isActiveTF: false)
-    }
 }
 
 //MARK: - setupLayout + config

@@ -1,13 +1,12 @@
 import UIKit
 import SnapKit
 
-
-
 class BaseRegistrationViewController: UIViewController {
     
     //MARK: - Properties
     var presenter: RegistPresenterProtocol?
     private var heightKeyboard: CGFloat = Constants.Constraint.verticalPadding
+    private var nextButtonBottomConstraint: Constraint?
     
     // MARK: - UI
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
@@ -34,17 +33,23 @@ class BaseRegistrationViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print(#function, self)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupConstraints()
+        subscribeToKeyboard()
     }
     
     // MARK: -  Hide back button
     func setInfoForNavigationView(model: BaseRegistPosition) {
         progressBar.setProgress(model.progress, animated: true)
-        progressBar.isHidden = false //fix mb
+        progressBar.isHidden = false
         
         pageLabel.text = model.page
         profileTitleLabel.text = model.titleMain
@@ -68,11 +73,6 @@ class BaseRegistrationViewController: UIViewController {
         nextButton.isEnabled = true
     }
     
-    // MARK: - Configure Bottom Padding Next Buttom
-    func configureBottomPaddingButtom(isActiveTF: Bool, isNumberPad: Bool = true) {
-        adjustNextButtonBottom(nextButton, in: view, isActiveTF: isActiveTF, isNumberPad: isNumberPad)
-    }
-    
     func hidePageControllView() {
         progressBar.isHidden = true
         pageLabel.isHidden = true
@@ -90,6 +90,51 @@ class BaseRegistrationViewController: UIViewController {
     // MARK: - Next Button Action
     @objc open func nextButtonTapped() {
         print(#function)
+    }
+    
+    // MARK: - Keyboard Handling
+    private func subscribeToKeyboard() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillChangeFrame(_:)),
+            name: UIResponder.keyboardWillChangeFrameNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func keyboardWillChangeFrame(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let window = view.window else { return }
+        
+        let convertedFrame = window.convert(keyboardFrame, to: view)
+        let overlap = max(0, view.bounds.maxY - convertedFrame.minY)
+        let extraInset = max(0, overlap - view.safeAreaInsets.bottom)
+        let newInset = extraInset > 0 ? extraInset + Constants.Constraint.verticalPadding : Constants.Constraint.verticalPadding
+        
+        animateButtonBottomInset(newInset, userInfo: userInfo)
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        animateButtonBottomInset(Constants.Constraint.verticalPadding, userInfo: notification.userInfo)
+    }
+    
+    private func animateButtonBottomInset(_ inset: CGFloat, userInfo: [AnyHashable: Any]?) {
+        nextButtonBottomConstraint?.update(inset: inset)
+        
+        let duration = (userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.25
+        let curveRaw = (userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UInt(UIView.AnimationCurve.easeInOut.rawValue)
+        let options = UIView.AnimationOptions(rawValue: curveRaw << 16)
+        
+        UIView.animate(withDuration: duration, delay: 0, options: options) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
 
@@ -136,10 +181,9 @@ private extension BaseRegistrationViewController {
         }
         
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(heightKeyboard)
+            nextButtonBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).inset(heightKeyboard).constraint
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
 }
-

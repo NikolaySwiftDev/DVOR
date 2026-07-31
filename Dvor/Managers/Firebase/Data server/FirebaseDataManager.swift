@@ -38,11 +38,11 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     init() {
         Database.database().isPersistenceEnabled = true
         database = Database.database(url: FirebaseDataManagerConstants.databaseURL).reference()
-        print("Init FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
+//        print("Init FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
     }
 
     deinit {
-        print("Deinit FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
+//        print("Deinit FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
     }
     
     //MARK: - Fetch Events

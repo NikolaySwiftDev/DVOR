@@ -17,12 +17,12 @@ final class FirebaseCommentsManager: FirebaseCommentsManagerProtocol {
     
     init() {
         database = Database.database(url: FirebaseDataManagerConstants.databaseURL).reference()
-        print("Init CommentsManager", Unmanaged.passUnretained(self).toOpaque())
+//        print("Init CommentsManager", Unmanaged.passUnretained(self).toOpaque())
     }
 
-    deinit {
-        print("Deinit CommentsManager", Unmanaged.passUnretained(self).toOpaque())
-    }
+//    deinit {
+//        print("Deinit CommentsManager", Unmanaged.passUnretained(self).toOpaque())
+//    }
     
     // MARK: - Fetch Comments
     func fetchComments(idEvent: String, completion: @escaping (Result<[CommentModel], Error>) -> Void) {
