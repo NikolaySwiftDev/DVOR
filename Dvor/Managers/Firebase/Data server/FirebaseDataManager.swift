@@ -38,6 +38,11 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     init() {
         Database.database().isPersistenceEnabled = true
         database = Database.database(url: FirebaseDataManagerConstants.databaseURL).reference()
+        print("Init FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
+    }
+
+    deinit {
+        print("Deinit FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
     }
     
     //MARK: - Fetch Events
@@ -75,7 +80,6 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     
     //MARK: - Fetch All Users From Event
     func fetchAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void) {
-        let lock = NSLock()
         let uniqueIDs = Array(Set(usersID)).filter { !$0.isEmpty }
         
         guard !uniqueIDs.isEmpty || !orgId.isEmpty else {
@@ -91,15 +95,14 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         for userID in uniqueIDs {
             group.enter()
             
-            usersRef.child(userID).observeSingleEvent(of: .value) { snapshot in
+            usersRef.child(userID).observeSingleEvent(of: .value) { [weak self] snapshot in
+                guard let self = self else { return }
                 defer { group.leave() }
                 
                 if let userData = snapshot.value as? [String: Any],
                    let user = UserModel(from: userData) {
                     DispatchQueue.main.async {
-//                        lock.lock()
                         users.append(user)
-//                        lock.unlock()
                     }
                 }
             }
@@ -108,7 +111,8 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         if !orgId.isEmpty {
             group.enter()
             
-            usersRef.child(orgId).observeSingleEvent(of: .value) { snapshot in
+            usersRef.child(orgId).observeSingleEvent(of: .value) { [weak self] snapshot in
+                guard let self = self else { return }
                 defer { group.leave() }
                 
                 if let orgData = snapshot.value as? [String: Any],
@@ -397,9 +401,5 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             currentData.value = max(0, currentValue - 1)
             return .success(withValue: currentData)
         }
-    }
-    
-    deinit {
-        // print("Deinit Firebase real data base")
     }
 }

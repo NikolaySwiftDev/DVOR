@@ -19,7 +19,7 @@ final class PhotoManager: NSObject {
     private var maxSize: Int?
     
     deinit {
-        // print("Deinit PhotoManager")
+         print("Deinit PhotoManager")
     }
 }
 

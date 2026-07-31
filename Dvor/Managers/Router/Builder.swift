@@ -27,9 +27,9 @@ class Builder: BuilderProtocol {
             router: router,
             firebase: managers.authManager,
             network: managers.dataManager,
-            photoManager: managers.photoManager,
-            notifManager: managers.notificationManager,
-            locationManager: managers.locationManager,
+            photoManager: managers.makePhotoManager(),
+            notifManager: managers.makeNotificationManager(),
+            locationManager: managers.makeLocationManager(),
             appCoordinator: coordinator
         )
         
@@ -54,7 +54,7 @@ class Builder: BuilderProtocol {
                                          router: router,
                                          network: managers.dataManager,
                                          firebase: managers.authManager,
-                                         notification: managers.notificationManager,
+                                         notification: managers.makeNotificationManager(),
                                          appCoordinator: appCoordinator)
         view.presenter = presenter
         return view
@@ -67,7 +67,8 @@ class Builder: BuilderProtocol {
                                         router: router,
                                         network: managers.dataManager,
                                         firebase: managers.authManager,
-                                        notification: managers.notificationManager)
+                                        notification: managers.makeNotificationManager(),
+                                        comments: managers.makeCommentsManager())
         view.presenter = presenter
         return view
     }

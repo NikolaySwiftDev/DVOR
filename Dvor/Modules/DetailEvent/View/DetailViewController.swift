@@ -5,7 +5,6 @@ final class DetailViewController: UIViewController {
     //MARK: - Properties
     var presenter: DetailPresenterProtocol?
     var detail: DetailModel
-    var viewPosition: DetailSegmentViewPosition = .info
 
     private let mapView = DetailMapView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
@@ -60,6 +59,7 @@ final class DetailViewController: UIViewController {
         configure()
         setupContraints()
         presenter?.fetchAllUsers(usersID: detail.users, orgID: detail.orgID)
+        presenter?.fetchComments(idEvent: detail.id)
     }
     
     //MARK: - Back Button Tapped
@@ -88,7 +88,7 @@ final class DetailViewController: UIViewController {
     }
  
     deinit {
-        // print("Deinit Detail Event")
+//         print("Deinit DetailViewController")
     }
 }
 
@@ -113,6 +113,17 @@ extension DetailViewController: DetailProtocol {
     
     func hideLoading() {
         hideLoadingView(with: view, tag: DetailConstants.numberView, state: .delete)
+    }
+    
+    func successComments(comments: [CommentModel]) {
+        segmentView.commentsView.configure(comments: comments)
+    }
+}
+
+//MARK: - Comments Protocol
+extension DetailViewController: CommentsViewDelegate {
+    func didSendComment(text: String) {
+        presenter?.addComment(idEvent: detail.id, text: text)
     }
 }
 
@@ -153,6 +164,7 @@ private extension DetailViewController {
     
     private func configure() {
         segmentView.usersView.delegate = self
+        segmentView.commentsView.delegate = self
         mapView.delegate = self
         mapView.configure(with: detail.fullAdress)
     }
@@ -212,5 +224,3 @@ fileprivate struct DetailConstants {
     static let numberView: Int = 33
     
 }
- 
-

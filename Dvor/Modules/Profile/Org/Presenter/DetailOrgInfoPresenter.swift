@@ -19,8 +19,7 @@ final class DetailOrgInfoPresenter: DetailOrgInfoPresenterProtocol {
     }
     
     deinit {
-        // print("deinit DetailOrgInfoPresenterProtocol")
-
+         print("deinit DetailOrgInfoPresenterProtocol")
     }
 }
 

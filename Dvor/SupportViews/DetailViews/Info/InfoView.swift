@@ -65,6 +65,10 @@ final class InfoView: UIView {
 
         applyAccessibility()
     }
+    
+    deinit {
+//        print("deinit Info view")
+    }
 }
 
 private extension InfoView {

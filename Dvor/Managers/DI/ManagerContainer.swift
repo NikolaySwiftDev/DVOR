@@ -1,17 +1,40 @@
 import Foundation
 
-protocol AppContainerProtocol: AnyObject {
+protocol AppContainerProtocol {
+
     var authManager: FirebaseAuthManagerProtocol { get }
     var dataManager: FirebaseDataManagerProtocol { get }
-    var notificationManager: NotificationManagerProtocol { get }
-    var locationManager: LocationManagerProtocol { get }
-    var photoManager: PhotoManagerProtocol { get }
+
+    func makeCommentsManager() -> FirebaseCommentsManagerProtocol
+    func makePhotoManager() -> PhotoManagerProtocol
+    func makeNotificationManager() -> NotificationManagerProtocol
+    func makeLocationManager() -> LocationManagerProtocol
 }
 
 final class AppContainer: AppContainerProtocol {
-    lazy var authManager: FirebaseAuthManagerProtocol = MockFirebaseAuthManager()
-    lazy var dataManager: FirebaseDataManagerProtocol = FirebaseDataManager()
-    lazy var notificationManager: NotificationManagerProtocol = NotificationManager()
-    lazy var locationManager: LocationManagerProtocol = LocationManager()
-    lazy var photoManager: PhotoManagerProtocol = PhotoManager()
+
+    let authManager: FirebaseAuthManagerProtocol
+    let dataManager: FirebaseDataManagerProtocol
+
+    init() {
+        self.authManager = MockFirebaseAuthManager()
+        self.dataManager = FirebaseDataManager()
+    }
+
+
+    func makeCommentsManager() -> FirebaseCommentsManagerProtocol {
+        FirebaseCommentsManager()
+    }
+
+    func makePhotoManager() -> PhotoManagerProtocol {
+        PhotoManager()
+    }
+
+    func makeNotificationManager() -> NotificationManagerProtocol {
+        NotificationManager()
+    }
+
+    func makeLocationManager() -> LocationManagerProtocol {
+        LocationManager()
+    }
 }

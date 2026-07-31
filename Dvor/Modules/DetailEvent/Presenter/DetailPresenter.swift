@@ -6,6 +6,7 @@ protocol DetailProtocol: AnyObject {
     func updateUsers(model: [String])
     func error(error: String)
     func hideLoading()
+    func successComments(comments: [CommentModel])
 }
 
 protocol DetailPresenterProtocol: AnyObject {
@@ -13,15 +14,21 @@ protocol DetailPresenterProtocol: AnyObject {
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
-         notification: NotificationManagerProtocol
+         notification: NotificationManagerProtocol,
+         comments: FirebaseCommentsManagerProtocol
     )
     
     var users: [UserModel]? { get set }
     var org: OrganizatorModel? { get set }
+    var comments: [CommentModel]? { get set }
     
     func fetchAllUsers(usersID: [String], orgID: String)
     func addUserToEvent(idEvent: String, date: Date, time: String, isComplete: Bool, city: CityModel)
     func removeUserFromEvent(idEvent: String)
+    
+    func fetchComments(idEvent: String)
+    func addComment(idEvent: String, text: String)
+    func removeComment(idEvent: String, commentId: String)
     
     func popVC()
     func shareEvent(eventID: String)
@@ -35,22 +42,26 @@ final class DetailPresenter: DetailPresenterProtocol {
     weak var view: DetailProtocol?
     var users: [UserModel]?
     var org: OrganizatorModel?
+    var comments: [CommentModel]?
     let router: RouterMainProtocol
     let network: FirebaseDataManagerProtocol
     let firebase: FirebaseAuthManagerProtocol
     let notification: NotificationManagerProtocol
+    let commentsManager: FirebaseCommentsManagerProtocol
 
     required init(view: DetailProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
                   firebase: FirebaseAuthManagerProtocol,
-                  notification: NotificationManagerProtocol
+                  notification: NotificationManagerProtocol,
+                  comments: FirebaseCommentsManagerProtocol
     ) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
         self.notification = notification
+        self.commentsManager = comments
     }
     
     //MARK: - Fetch all users
@@ -159,6 +170,77 @@ final class DetailPresenter: DetailPresenterProtocol {
         })
     }
 
+    //MARK: - Fetch comments
+    func fetchComments(idEvent: String) {
+        view?.load()
+        commentsManager.fetchComments(idEvent: idEvent) { [weak self] result in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+            switch result {
+            case .success(let comments):
+                self.comments = comments
+                self.view?.successComments(comments: comments)
+            case .failure(let error):
+                self.view?.error(error: error.localizedDescription)
+            }
+        }
+    }
+
+    //MARK: - Add comment
+    func addComment(idEvent: String, text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        guard let idUser = firebase.currentUserId else {
+            router.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            return
+        }
+
+        network.fetchUser(idUser: idUser) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let user):
+                let newComment = CommentModel(
+                    id: "",
+                    userId: idUser,
+                    userName: user.name,
+                    userImage: user.image,
+                    text: trimmed,
+                    date: Date()
+                )
+                self.commentsManager.addComment(idEvent: idEvent, comment: newComment) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let comment):
+                        var updated = self.comments ?? []
+                        updated.append(comment)
+                        self.comments = updated
+                        self.view?.successComments(comments: updated)
+                    case .failure(let error):
+                        self.view?.error(error: error.localizedDescription)
+                    }
+                }
+            case .failure(let error):
+                self.view?.error(error: error.localizedDescription)
+            }
+        }
+    }
+
+    //MARK: - Remove comment
+    func removeComment(idEvent: String, commentId: String) {
+        commentsManager.deleteComment(idEvent: idEvent, commentId: commentId) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                let updated = (self.comments ?? []).filter { $0.id != commentId }
+                self.comments = updated
+                self.view?.successComments(comments: updated)
+            case .failure(let error):
+                self.view?.error(error: error.localizedDescription)
+            }
+        }
+    }
+
     func shareEvent(eventID: String) {
         let shareURL = "dvor://openScreen?screen=detail&eventId="
         let fullURL = shareURL + eventID
@@ -186,6 +268,6 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
     
     deinit {
-        // print("Deinit Detail Presenter")
+         print("Deinit Detail Presenter")
     }
 }

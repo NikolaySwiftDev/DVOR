@@ -102,4 +102,8 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     func popVC() {
         router.popVC()
     }
+    
+    deinit {
+        print(#function, self)
+    }
 }

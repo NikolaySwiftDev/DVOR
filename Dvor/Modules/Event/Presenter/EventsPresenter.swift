@@ -240,6 +240,6 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Deinit
     deinit {
-        // print("Deinit HomePresenter")
+         print("Deinit EventPresenter")
     }
 }

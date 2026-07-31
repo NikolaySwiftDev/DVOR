@@ -33,6 +33,10 @@ final class UsersView: UIView {
         self.orgModel = orgModel
         tableView.reloadData()
     }
+    
+    deinit {
+//        print("deinit users view")
+    }
 }
 
 private extension UsersView {

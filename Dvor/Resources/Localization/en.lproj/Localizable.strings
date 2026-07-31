@@ -120,6 +120,12 @@
 "firebase.invalid_user_data" = "Invalid user data format";
 "firebase.user_not_found_in_event" = "The user was not found in the event";
 
+"comments.invalid_event_id" = "The event ID cannot be empty";
+"comments.invalid_comment_id" = "The comment ID cannot be empty";
+"comments.invalid_comment_data" = "Incorrect comment data format";
+"comments.placeholder"="Text ...";
+"comments.empty"="Empty comments";
+
 "firebase.event_added" = "Event added";
 "firebase.user_added" = "User added";
 "firebase.event_deleted" = "Event deleted";
