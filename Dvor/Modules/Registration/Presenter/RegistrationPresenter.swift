@@ -30,7 +30,7 @@ protocol RegistPresenterProtocol: AnyObject {
     func updateNickname(nickname: String)
     
 
-    init(router: RouterMainProtocol,
+    init(router: RouterMainProtocol?,
          firebase: FirebaseAuthManagerProtocol,
          network: FirebaseDataManagerProtocol,
          photoManager: PhotoManagerProtocol?,
@@ -51,7 +51,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     let locationManager: LocationManagerProtocol?
     let appCoordinator: AppCoordinatorProtocol?
     
-    required init(router: RouterMainProtocol,
+    required init(router: RouterMainProtocol?,
                   firebase: FirebaseAuthManagerProtocol,
                   network: FirebaseDataManagerProtocol,
                   photoManager: PhotoManagerProtocol? = nil,
@@ -93,13 +93,6 @@ final class RegistPresenter: RegistPresenterProtocol {
                     let errorMessage = error.errorDescription ?? RegistPresenterStrings.photoPickerError
                     self.view?.showError(errorMessage)
                     self.router?.showAlertWithTitle(errorMessage)
-                }
-                
-                if error == .sizeExceeded(maxSize: SizeLimits.mb8) {
-                    let errorMessage = error.errorDescription ?? RegistPresenterStrings.photoPickerError
-                    self.view?.showError(errorMessage)
-                    self.router?.showAlertWithTitle(errorMessage)
-                    
                 }
             }
         }
