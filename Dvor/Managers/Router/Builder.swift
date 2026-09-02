@@ -4,6 +4,7 @@ import UIKit
 
 protocol BuilderProtocol: AnyObject {
     func createRegistrationPresenter(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol?) -> RegistPresenter
+    func createAuthVC(router: RouterMainProtocol) -> UIViewController
     func createEditPresenter(router: RouterMainProtocol,
                               photoManager: PhotoManagerProtocol?,
                               notifManager: NotificationManagerProtocol?,
@@ -53,6 +54,15 @@ class Builder: BuilderProtocol {
             locationManager: locationManager,
             appCoordinator: nil
         )
+    }
+    
+    //MARK: -  Auth Builder
+    func createAuthVC(router: RouterMainProtocol) -> UIViewController {
+        let view = MainCoordinateViewController()
+        let presenter = MainCoordinatePresenter(router: router)
+        view.presenter = presenter
+        return view
+        
     }
         
     //MARK: -  Home Builder

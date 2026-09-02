@@ -127,7 +127,8 @@ final class RegistPresenter: RegistPresenterProtocol {
             longitude: model.longitude ?? 0
         )
 
-        firebase.signUp(city: city)
+
+//        firebase.signUp(city: city) --- fix
 
         guard let userId = firebase.currentUserId else {
             router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)

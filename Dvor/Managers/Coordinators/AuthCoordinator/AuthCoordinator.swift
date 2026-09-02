@@ -6,6 +6,7 @@ protocol Coordinator: AnyObject {
 }
 
 protocol RegistrationCoordinatorProtocol: Coordinator {
+    func showEmail()
     func showInfoInput()
     func showUserDataInput()
     func createAvatar()
@@ -35,6 +36,10 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     // MARK: - Start
     func start() {
         showWelcome()
+    }
+    
+    func showEmail() {
+        let vc = AuthViewController()
     }
     
     func showWelcome() {

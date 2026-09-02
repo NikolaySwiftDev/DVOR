@@ -217,3 +217,17 @@
 "alert_title.delete"="Do you really want to delete your account?";
 "alert_desc.refund"="Your account will be deleted without the possibility of refund";
 
+"auth_error_invalid_email_format" = "Please enter a valid email address";
+"auth_error_weak_password_format" = "Password must be at least 6 characters";
+"auth_error_email_already_in_use" = "An account with this email already exists";
+"auth_error_invalid_email" = "This email address is invalid";
+"auth_error_weak_password" = "This password is too weak";
+"auth_error_wrong_password" = "Incorrect password";
+"auth_error_user_not_found" = "No account found with this email";
+"auth_error_user_disabled" = "This account has been disabled";
+"auth_error_too_many_requests" = "Too many attempts. Please try again later";
+"auth_error_network" = "Network error. Please check your connection";
+"auth_error_operation_not_allowed" = "Email/password sign-in is not enabled";
+"auth_error_invalid_credential" = "Invalid credentials";
+"auth_error_missing_uid" = "Failed to retrieve user ID";
+"auth_error_unknown" = "Something went wrong. Please try again";

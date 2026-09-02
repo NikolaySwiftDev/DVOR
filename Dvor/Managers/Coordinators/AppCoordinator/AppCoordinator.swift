@@ -53,13 +53,19 @@ final class AppCoordinator: AppCoordinatorProtocol {
         if authManager.isAuthorized {
             showHome()
         } else {
-            showOnboarding()
+            showRegistration()
+//            showOnboarding()
         }
         offlineAlertController.start(window: window)
     }
 
     func showHome() {
         let vc = builder.createHomeVC(router: router)
+        setRoot(vc)
+    }
+    
+    func showRegistration() {
+        let vc = builder.createAuthVC(router: router)
         setRoot(vc)
     }
 

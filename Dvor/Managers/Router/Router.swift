@@ -18,6 +18,9 @@ protocol RouterMainProtocol: RouterMain {
     func setVC(_ vc: UIViewController)
 
     // Screens
+    func pushHomeVC()
+    func pushRegistVC()
+    func pushAuthVC()
     func pushProfileVC(model: UserModel?)
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
@@ -74,7 +77,18 @@ final class Router: RouterMainProtocol {
         navigationController.setViewControllers([vc], animated: true)
     }
 
-    // MARK: - Detail
+    func pushHomeVC() {
+        let vc = builder.createHomeVC(router: self)
+        setVC(vc)
+    }
+    
+    func pushAuthVC() {
+        print("Push Auth")
+    }
+    
+    func pushRegistVC() {
+        appCoordinator?.showOnboarding()
+    }
 
     func pushDetailVC(model: DetailModel) {
         let vc = builder.createDetailVC(router: self, model: model)

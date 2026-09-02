@@ -67,7 +67,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     func editProfile() {
         guard let model = user else {
-            router.showAlertWithTitle("User is empty")
+            router.showAlertWithTitle("User is empty".loc)
             return
         }
         
@@ -81,20 +81,28 @@ final class ProfilePresenter: ProfilePresenterProtocol {
                                  handelr: { [weak self] in
             guard let self = self else { return }
             notification.cancelAllNotifications()
-            firebase.signOut(completion: { [weak self] in
-                guard let self = self, let id = user?.id else {return}
-                network.removeUser(userID: id, completion: { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success():
-                        appCoordinator?.showOnboarding()
-                    case .failure(let error):
-                        router.showAlertWithTitle(error.localizedDescription)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            self.router.popVC()
+
+            firebase.signOut(completion: { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case .success:
+                    guard let id = self.user?.id else { return }
+                    self.network.removeUser(userID: id, completion: { [weak self] result in
+                        guard let self = self else { return }
+                        switch result {
+                        case .success():
+                            self.appCoordinator?.showOnboarding()
+                        case .failure(let error):
+                            self.router.showAlertWithTitle(error.localizedDescription)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                self.router.popVC()
+                            }
                         }
-                    }
-                })
+                    })
+                case .failure(let error):
+                    self.router.showAlertWithTitle(error.errorDescription ?? "auth_error_unknown".loc)
+                }
             })
         })
     }
