@@ -54,7 +54,6 @@ final class AppCoordinator: AppCoordinatorProtocol {
             showHome()
         } else {
             showRegistration()
-//            showOnboarding()
         }
         offlineAlertController.start(window: window)
     }
@@ -65,7 +64,7 @@ final class AppCoordinator: AppCoordinatorProtocol {
     }
     
     func showRegistration() {
-        let vc = builder.createAuthVC(router: router)
+        let vc = builder.createRegistration(router: router)
         setRoot(vc)
     }
 

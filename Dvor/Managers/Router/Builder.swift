@@ -5,6 +5,7 @@ import UIKit
 protocol BuilderProtocol: AnyObject {
     func createRegistrationPresenter(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol?) -> RegistPresenter
     func createAuthVC(router: RouterMainProtocol) -> UIViewController
+    func createRegistration(router: RouterMainProtocol) -> UIViewController
     func createEditPresenter(router: RouterMainProtocol,
                               photoManager: PhotoManagerProtocol?,
                               notifManager: NotificationManagerProtocol?,
@@ -20,6 +21,7 @@ protocol BuilderProtocol: AnyObject {
 }
 
 class Builder: BuilderProtocol {
+
 
     private let managers: AppContainerProtocol
     
@@ -56,8 +58,16 @@ class Builder: BuilderProtocol {
         )
     }
     
+    func createAuthVC(router: any RouterMainProtocol) -> UIViewController {
+        let view = AuthViewController()
+        let presenter = AuthPresenter(router: router, firebase: managers.authManager)
+        view.presenter = presenter
+        return view
+    }
+    
+    
     //MARK: -  Auth Builder
-    func createAuthVC(router: RouterMainProtocol) -> UIViewController {
+    func createRegistration(router: RouterMainProtocol) -> UIViewController {
         let view = MainCoordinateViewController()
         let presenter = MainCoordinatePresenter(router: router)
         view.presenter = presenter

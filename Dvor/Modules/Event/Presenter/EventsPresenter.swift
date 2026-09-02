@@ -111,15 +111,19 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     //MARK: - Filtering Events by Date
     func filterEventsWithDate(date: Date) {
+        lastFilterDate = date
         guard let events = events else { return }
+        guard let myID = firebase.currentUserId, let userCity = firebase.currentCity else {
+            router?.showAlertWithTitle(EventsPresenterStrings.needToRegiste)
+            return
+        }
+
         if personlaMode {
             let calendar = Calendar.current
             filteredEvents = events.filter {
                 calendar.isDate($0.date, inSameDayAs: date)
             }
             
-//            guard let myID = firebase.currentUser?.uid else { return }
-            guard let myID = firebase.currentUserId else { return }
             filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
             lastFilterDate = date
             view?.success(date: title)
@@ -128,8 +132,6 @@ final class EventsPresenter: EventsPresenterProtocol {
             filteredEvents = events.filter {
                 calendar.isDate($0.date, inSameDayAs: date)
             }
-
-            guard let userCity = firebase.currentCity else { return }
 
             filteredEvents = filteredEvents?.filter { event in
                 let eventCity = CityModel(
@@ -141,7 +143,7 @@ final class EventsPresenter: EventsPresenterProtocol {
                 )
                 return eventCity == userCity
             }
-            lastFilterDate = date
+            
             view?.success(date: lastFilterDate.toString())
         }
     }
@@ -226,6 +228,10 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Push to the profile screen
     func pushProfileVC() {
+        guard firebase.currentUserId != nil else {
+            router?.showAlertWithTitle(EventsPresenterStrings.needToCheck)
+            return
+        }
         router?.pushProfileVC(model: nil)
     }
     

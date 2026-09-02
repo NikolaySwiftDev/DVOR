@@ -53,6 +53,8 @@
 "cannot_delete_not_owned" = "You cannot delete an event you didn't create";
 "delete_error" = "Delete error";
 "need_to_register_to_create" = "You need to register to create an event";
+"need_to_register_to_check" = "You need to register in order to check your profile.";
+"need_to_registe" = "You need to register to use the app.";
 "sign_out_title" = "Sign out?";
 "sign_out_message" = "Are you sure you want to sign out?";
 "yes" = "Yes";
@@ -152,11 +154,13 @@
 "regist.moving"="Moving on to the list of matches...";
 
 
+"base_regist.email" = "Email";
 "base_regist.profile" = "Profile";
 "base_regist.avatar" = "Avatar";
 "base_regist.city" = "City";
 "base_regist.enable_notifications" = "Enable notifications";
 
+"base_regist.enter_email" = "Enter your email";
 "base_regist.enter_profile_data" = "Enter your personal information";
 "base_regist.select_experience" = "Select your playing experience and position";
 "base_regist.select_avatar" = "Choose a profile photo";
@@ -231,3 +235,6 @@
 "auth_error_invalid_credential" = "Invalid credentials";
 "auth_error_missing_uid" = "Failed to retrieve user ID";
 "auth_error_unknown" = "Something went wrong. Please try again";
+
+""="";
+""="";

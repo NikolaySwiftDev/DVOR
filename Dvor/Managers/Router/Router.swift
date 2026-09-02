@@ -83,7 +83,8 @@ final class Router: RouterMainProtocol {
     }
     
     func pushAuthVC() {
-        print("Push Auth")
+        let vc = builder.createAuthVC(router: self)
+        pushVC(vc)
     }
     
     func pushRegistVC() {

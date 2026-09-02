@@ -105,7 +105,7 @@ private extension MainCoordinateViewController {
 }
 
 fileprivate struct AuthModel {
-    static let skipButtonTitle = "Пропустить"
-    static let enterButtonTitle = "Войти"
-    static let registButtonTitle = "Регистрация"
+    static let skipButtonTitle = "auth.skip".loc
+    static let enterButtonTitle = "auth.enter".loc
+    static let registButtonTitle = "auth.registration".loc
 }

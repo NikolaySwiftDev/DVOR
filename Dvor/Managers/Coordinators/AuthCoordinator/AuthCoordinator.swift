@@ -35,11 +35,17 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     
     // MARK: - Start
     func start() {
-        showWelcome()
+        showEmail()
     }
     
     func showEmail() {
-        let vc = AuthViewController()
+        let vc = EnterEmailViewController(presenter: presenter)
+        vc.setInfoForNavigationView(model: .email)
+        vc.configureEnadle(false)
+        vc.onNext = { [weak self] email in
+            self?.registrationData.email = email
+        }
+        router.pushVC(vc)
     }
     
     func showWelcome() {
@@ -150,6 +156,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 // MARK: - Data Model
 struct RegistrationData: Codable {
     var id: String = ""
+    var email: String = ""
     var name: String = "Name"
     var position: String = "Goalkeeper"
     var experience: String = "1 year"

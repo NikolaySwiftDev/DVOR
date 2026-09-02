@@ -119,43 +119,49 @@ final class RegistPresenter: RegistPresenterProtocol {
 
     func completeRegistration(model: RegistrationData) {
 
-        let city = CityModel(
-            name: model.city,
-            countryCode: model.countryCode ?? "",
-            administrativeArea: model.administrativeArea,
-            latitude: model.latitude ?? 0,
-            longitude: model.longitude ?? 0
-        )
+//        let city = CityModel(
+//            name: model.city,
+//            countryCode: model.countryCode ?? "",
+//            administrativeArea: model.administrativeArea,
+//            latitude: model.latitude ?? 0,
+//            longitude: model.longitude ?? 0
+//        )
 
 
-//        firebase.signUp(city: city) --- fix
-
-        guard let userId = firebase.currentUserId else {
-            router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
-            return
-        }
-        
-        let data = UserModel(id: userId,
-                             image: model.image,
-                             name: model.name,
-                             experience: model.experience,
-                             city: model.city,
-                             countryCode: model.countryCode ?? "",
-                             administrativeArea: model.administrativeArea,
-                             latitude: model.latitude ?? 0,
-                             longitude: model.longitude ?? 0,
-                             position: model.position
-        )
-        
-        network.writeUser(model: data, completion: { [weak self] result in
+        firebase.signUp(email: model.email, password: "123456") { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):
-                appCoordinator?.showHome()
+                guard let userId = firebase.currentUserId else {
+                    router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
+                    return
+                }
+                
+                let data = UserModel(id: userId,
+                                     image: model.image,
+                                     name: model.name,
+                                     experience: model.experience,
+                                     city: model.city,
+                                     countryCode: model.countryCode ?? "",
+                                     administrativeArea: model.administrativeArea,
+                                     latitude: model.latitude ?? 0,
+                                     longitude: model.longitude ?? 0,
+                                     position: model.position
+                )
+                
+                network.writeUser(model: data, completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(_):
+                        appCoordinator?.showHome()
+                    case .failure(let error):
+                        router?.showAlertWithTitle(error.localizedDescription)
+                    }
+                })
             case .failure(let error):
                 router?.showAlertWithTitle(error.localizedDescription)
             }
-        })
+        }
     }
     
     func pushViewController(_ vc: UIViewController) {
