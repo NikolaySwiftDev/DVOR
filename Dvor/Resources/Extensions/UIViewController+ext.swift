@@ -72,6 +72,14 @@ extension UIViewController {
         text.count == 0 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
     }
     
+    func checkPasswordTFIsNotEmpty(text: String, tf: CustomTextFieldView) {
+        text.count >= 6 ? tf.updateBorderColor() :  tf.updateBorderColor(.clear)
+    }
+    
+    func checkEmailTFisValid(text: String, tf: CustomTextFieldView) {
+        !text.isValidEmail ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
+    }
+    
     func checkTFIsNotEmpty(text: String, tf: CustomTextFieldView) {
         text.count < 4 ? tf.updateBorderColor(.clear) : tf.updateBorderColor()
     }

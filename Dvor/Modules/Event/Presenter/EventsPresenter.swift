@@ -112,8 +112,10 @@ final class EventsPresenter: EventsPresenterProtocol {
     //MARK: - Filtering Events by Date
     func filterEventsWithDate(date: Date) {
         lastFilterDate = date
+        
         guard let events = events else { return }
         guard let myID = firebase.currentUserId, let userCity = firebase.currentCity else {
+            view?.success(date: lastFilterDate.toString())
             router?.showAlertWithTitle(EventsPresenterStrings.needToRegiste)
             return
         }

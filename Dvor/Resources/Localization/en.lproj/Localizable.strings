@@ -64,7 +64,7 @@
 
 "auth.continue" = "Continue";
 "auth.skip" = "Skip";
-"auth.enter" = "Enter";
+"auth.enter" = "Login";
 "auth.registration" = "Registration";
 
 "onboarding.first.title" = "Your match\nin a couple of taps";

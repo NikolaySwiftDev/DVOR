@@ -8,7 +8,6 @@ protocol RegistProtocol: AnyObject {
     func hideLoading()
     
     func updateAvatarImage(_ image: UIImage)
-    func showInfoInput()
 }
 
 protocol RegistPresenterProtocol: AnyObject {
@@ -118,17 +117,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
 
     func completeRegistration(model: RegistrationData) {
-
-//        let city = CityModel(
-//            name: model.city,
-//            countryCode: model.countryCode ?? "",
-//            administrativeArea: model.administrativeArea,
-//            latitude: model.latitude ?? 0,
-//            longitude: model.longitude ?? 0
-//        )
-
-
-        firebase.signUp(email: model.email, password: "123456") { [weak self] result in
+        firebase.signUp(email: model.email, password: model.password) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):

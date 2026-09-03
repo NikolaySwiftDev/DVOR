@@ -1,139 +1,187 @@
-
 import UIKit
 
 final class EnterEmailViewController: BaseRegistrationViewController {
-    
-    //MARK: - Properties
-    var onNext: ((String) -> Void)?
-    var pushCreateInfo: (() -> Void)?
 
+    // MARK: - Properties
 
-    //MARK: - UI
-    private let emailTF = CustomTextFieldView(placeholder: "dvor@gmail.com")
-    private let passwordTF = CustomTextFieldView(placeholder: "Минимум 6 символов")
-    
-    private let descEmailLabel = UILabel(text: "Почта", font: .poppins(weight: .medium, size: .small))
-    private let descPasswodLabel = UILabel(text: "Пароль", font: .poppins(weight: .medium, size: .small))
-    
+    var onNext: ((String, String) -> Void)?
+
     private var email = ""
+    private var password = ""
+
+    // MARK: - UI
+
+    private let emailTF = CustomTextFieldView(
+        placeholder: "dvor@gmail.com"
+    )
+
+    private let passwordTF = CustomTextFieldView(
+        placeholder: "Минимум 6 символов"
+    )
+
+    private let descEmailLabel = UILabel(
+        text: "Почта",
+        font: .poppins(weight: .medium, size: .small)
+    )
+
+    private let descPasswodLabel = UILabel(
+        text: "Пароль",
+        font: .poppins(weight: .medium, size: .small)
+    )
     
-    //MARK: - Life cycle
+    private let togglePasswordButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.tintColor = .darkGray
+        button.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        return button
+    }()
+
+    // MARK: - Life Cycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupLayout()
-        setupTextField()
+        setupTextFields()
+    }
+
+    // MARK: - Setup Text Fields
+    private func setupTextFields() {
+        setupEmailTextField()
+        setupPasswordTextField()
+    }
+
+    private func setupEmailTextField() {
+        let textField = emailTF.textField
+
+        textField.delegate = self
+        textField.textContentType = .emailAddress
+        textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+        textField.autocorrectionType = .no
+
+        textField.addTarget(self,action: #selector(textFieldDidChange),for: .editingChanged)
+    }
+
+    private func setupPasswordTextField() {
+        let textField = passwordTF.textField
+
+        textField.delegate = self
+        textField.textContentType = .newPassword
+        textField.isSecureTextEntry = true
+        textField.autocapitalizationType = .none
+        textField.autocorrectionType = .no
+
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+
+        togglePasswordButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        hideLoading()
+    @objc private func togglePasswordVisibility() {
+        let textField = passwordTF.textField
+        textField.isSecureTextEntry.toggle()
+
+        if let existingText = textField.text {
+            textField.text = nil
+            textField.text = existingText
+        }
+
+        let imageName = textField.isSecureTextEntry ? "eye.slash" : "eye"
+        togglePasswordButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
-    
-    //MARK: - Setup Layout
+
+    // MARK: - Actions
+
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        guard let text = textField.text else {
+            return
+        }
+
+        if textField === emailTF.textField {
+            email = text
+            checkEmailTFisValid(text: text,tf: emailTF)
+            
+        } else if textField === passwordTF.textField {
+            password = text
+            checkPasswordTFIsNotEmpty(text: text, tf: passwordTF)
+        }
+
+        configureEnadle(checkValidButton())
+    }
+
+    // MARK: - Validation
+
+    private func checkValidButton() -> Bool {
+        email.isValidEmail && password.count >= 6
+    }
+
+    // MARK: - Next
+
+    override func nextButtonTapped() {
+        guard checkValidButton() else {
+            return
+        }
+
+        onNext?(email, password)
+    }
+
+    // MARK: - Deinit
+
+    deinit {
+        print("Deinit ---- EnterEmailViewController")
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+private extension EnterEmailViewController {
+    // MARK: - Setup Layout
     private func setupLayout() {
         view.backgroundColor = Constants.Colors.backgroungColor
-        
-        view.addSubview(emailTF)
+
         view.addSubview(descEmailLabel)
-        
-        view.addSubview(passwordTF)
+        view.addSubview(emailTF)
         view.addSubview(descPasswodLabel)
-        
+        view.addSubview(passwordTF)
+        passwordTF.addSubview(togglePasswordButton)
+
         descEmailLabel.snp.makeConstraints { make in
             make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
-        
+
         emailTF.snp.makeConstraints { make in
             make.top.equalTo(descEmailLabel.snp.bottom).offset(5)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
-        
+
         descPasswodLabel.snp.makeConstraints { make in
             make.top.equalTo(emailTF.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
-        
+
         passwordTF.snp.makeConstraints { make in
             make.top.equalTo(descPasswodLabel.snp.bottom).offset(5)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
         
-     
-    }
-
-    //MARK: - Setup Text Field
-    private func setupTextField() {
-        emailTF.textField.delegate = self
-        emailTF.textField.textContentType = .emailAddress
-        emailTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        
-        passwordTF.textField.delegate = self
-        passwordTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-    }
-    
-    @objc private func textFieldDidChange() {
-//        let isValid = validateEmailAndPassword(emailField: emailTF,
-//                                               passwordField: passwordTF)
-//        configureEnadle(isValid)
-    }
-    
-    
-    override func nextButtonTapped() {
-        guard
-            let email = emailTF.textField.text, /*email.isValidEmail(),*/
-            let password = passwordTF.textField.text, password.count >= 6
-        else { return }
-        
-        self.email = email
-//        presenter?.signUp(email: email, password: password)
-    }
-
-    
-    deinit {
-        print("Deinit ---- EnterEmailViewController")
+        togglePasswordButton.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(22)
+            make.width.equalTo(31)
+        }
     }
 }
-
-//MARK: - UITextFieldDelegate
+    
 extension EnterEmailViewController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-//        configureBottomPaddingButtom(isActiveTF: true, isNumberPad: false)
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-//        configureBottomPaddingButtom(isActiveTF: false)
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 
-extension EnterEmailViewController: RegistProtocol {
-    func updateAvatarImage(_ image: UIImage) {}
-    
-    func showInfoInput() {
-        pushCreateInfo?()
-    }
 
-    func showError(_ message: String) {
-        emailTF.textField.text = ""
-        passwordTF.textField.text = ""
-        
-        emailTF.updateBorderColor(.clear)
-        passwordTF.updateBorderColor(.clear)
-    }
-    
-    func showSuccess() {
-        onNext?(email)
-    }
-        
-    func showLoading() {
-        hideLoadingView(with: view, tag: 120, state: .add)
-        
-    }
 
-    func hideLoading() {
-        hideLoadingView(with: view, tag: 120, state: .delete)
-    }
-}
