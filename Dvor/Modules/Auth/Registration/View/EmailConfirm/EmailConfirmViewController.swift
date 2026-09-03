@@ -4,7 +4,7 @@ final class EnterEmailViewController: BaseRegistrationViewController {
 
     // MARK: - Properties
 
-    var onNext: ((String, String) -> Void)?
+    var onNext: ((String) -> Void)?
 
     private var email = ""
     private var password = ""
@@ -121,8 +121,7 @@ final class EnterEmailViewController: BaseRegistrationViewController {
         guard checkValidButton() else {
             return
         }
-
-        onNext?(email, password)
+        presenter?.signUp(email: email, password: password)
     }
 
     // MARK: - Deinit
@@ -184,4 +183,22 @@ extension EnterEmailViewController: UITextFieldDelegate {
 }
 
 
-
+extension EnterEmailViewController: RegistProtocol {
+    func showError(_ message: String) {
+        print(message)
+    }
+    
+    func showSuccess() {
+        onNext?(email)
+    }
+    
+    func showLoading() {
+        hideLoadingView(with: view, tag: 67, state: .add)
+    }
+    
+    func hideLoading() {
+        hideLoadingView(with: view, tag: 67, state: .delete)
+    }
+    
+    func updateAvatarImage(_ image: UIImage) {}
+}

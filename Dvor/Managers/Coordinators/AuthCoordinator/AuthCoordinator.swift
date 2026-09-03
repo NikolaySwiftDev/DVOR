@@ -35,25 +35,20 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     
     // MARK: - Start
     func start() {
-        showWelcome()
+//        showWelcome()
+        showEmail()
     }
-    
-    func showWelcome() {
-        let vc = WelcomeOnboardingViewController()
-        vc.finish = { [weak self] in
-            self?.showEmail()
-        }
-        setRoot(vc)
-    }
-    
+        
     func showEmail() {
         let vc = EnterEmailViewController(presenter: presenter)
         vc.setInfoForNavigationView(model: .email)
         vc.configureEnadle(false)
-        vc.onNext = { [weak self] email, password in
+        vc.onNext = { [weak self] email in
             self?.registrationData.email = email
-            self?.registrationData.password = password
             self?.showInfoInput()
+        }
+        if let registPresenter = presenter as? RegistPresenter {
+            registPresenter.view = vc
         }
         router.pushVC(vc)
     }
@@ -158,7 +153,6 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 struct RegistrationData: Codable {
     var id: String = ""
     var email: String = ""
-    var password: String = ""
     var name: String = "Name"
     var position: String = "Goalkeeper"
     var experience: String = "1 year"

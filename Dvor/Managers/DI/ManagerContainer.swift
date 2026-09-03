@@ -17,7 +17,7 @@ final class AppContainer: AppContainerProtocol {
     let dataManager: FirebaseDataManagerProtocol
 
     init() {
-        self.authManager = MockFirebaseAuthManager()
+        self.authManager = FirebaseAuthManager()
         self.dataManager = FirebaseDataManager()
     }
 

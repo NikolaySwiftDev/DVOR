@@ -58,6 +58,8 @@ final class EventsPresenter: EventsPresenterProtocol {
         self.router = router
         self.network = network
         self.firebase = firebase
+        
+        print(firebase.currentCity)
     }
     
     //MARK: - General processing of results
@@ -114,12 +116,14 @@ final class EventsPresenter: EventsPresenterProtocol {
         lastFilterDate = date
         
         guard let events = events else { return }
-        guard let myID = firebase.currentUserId, let userCity = firebase.currentCity else {
+        guard let myID = firebase.currentUserId/*, let userCity = firebase.currentCity*/ else {
             view?.success(date: lastFilterDate.toString())
             router?.showAlertWithTitle(EventsPresenterStrings.needToRegiste)
             return
         }
 
+        let userCity = firebase.currentCity
+        
         if personlaMode {
             let calendar = Calendar.current
             filteredEvents = events.filter {

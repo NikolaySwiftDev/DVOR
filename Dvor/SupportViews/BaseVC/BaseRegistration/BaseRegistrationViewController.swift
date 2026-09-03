@@ -5,6 +5,7 @@ class BaseRegistrationViewController: UIViewController {
     
     //MARK: - Properties
     var presenter: RegistPresenterProtocol?
+//    var authPresenter: SignUpPresenterProtocol?
     private var heightKeyboard: CGFloat = Constants.Constraint.verticalPadding
     private var nextButtonBottomConstraint: Constraint?
     

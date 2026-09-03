@@ -10,24 +10,21 @@ protocol RegistProtocol: AnyObject {
     func updateAvatarImage(_ image: UIImage)
 }
 
-protocol RegistPresenterProtocol: AnyObject {
+protocol SignUpPresenterProtocol: AnyObject {
+    func signUp(email: String, password: String)
+}
+
+protocol RegistPresenterProtocol: SignUpPresenterProtocol {
     func popVC()
-        
     func pickPhoto()
-    
     func appendNotification()
-    
     func completeRegistration(model: RegistrationData)
-    
     func pushViewController(_ vc: UIViewController)
     func setViewController(_ vc: UIViewController)
-    
     func requestCurrentCity(completion: @escaping (CityModel?) -> Void)
-    
     func updateCity(city: CityModel)
     func updateAvatar(avatar: UIImage)
     func updateNickname(nickname: String)
-    
 
     init(router: RouterMainProtocol?,
          firebase: FirebaseAuthManagerProtocol,
@@ -38,7 +35,6 @@ protocol RegistPresenterProtocol: AnyObject {
          appCoordinator: AppCoordinatorProtocol?
     )
 }
-
 final class RegistPresenter: RegistPresenterProtocol {
 
     weak var view: RegistProtocol?
@@ -115,42 +111,55 @@ final class RegistPresenter: RegistPresenterProtocol {
             view?.hideLoading()
         }
     }
+    
+    // MARK: - Sign Up
+
+    func signUp(email: String, password: String) {
+        view?.showLoading()
+        firebase.signUp(email: email, password: password) { [weak self] result in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+            switch result {
+            case .success:
+                view?.showSuccess()
+            case .failure(let error):
+                self.router?.showAlertWithTitle(error.localizedDescription)
+            }
+        }
+    }
 
     func completeRegistration(model: RegistrationData) {
-        firebase.signUp(email: model.email, password: model.password) { [weak self] result in
+        guard let userId = firebase.currentUserId else {
+            router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
+            return
+        }
+
+        
+        let city = CityModel(name: model.city, countryCode: model.countryCode ?? "", administrativeArea: model.administrativeArea, latitude: model.latitude ?? 0, longitude: model.longitude ?? 0)
+        
+        firebase.updateCity(city: city)
+        
+        let data = UserModel(id: userId,
+                             image: model.image,
+                             name: model.name,
+                             experience: model.experience,
+                             city: model.city,
+                             countryCode: model.countryCode ?? "",
+                             administrativeArea: model.administrativeArea,
+                             latitude: model.latitude ?? 0,
+                             longitude: model.longitude ?? 0,
+                             position: model.position
+        )
+
+        network.writeUser(model: data, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):
-                guard let userId = firebase.currentUserId else {
-                    router?.showAlertWithTitle(RegistPresenterStrings.unauthorizedUser)
-                    return
-                }
-                
-                let data = UserModel(id: userId,
-                                     image: model.image,
-                                     name: model.name,
-                                     experience: model.experience,
-                                     city: model.city,
-                                     countryCode: model.countryCode ?? "",
-                                     administrativeArea: model.administrativeArea,
-                                     latitude: model.latitude ?? 0,
-                                     longitude: model.longitude ?? 0,
-                                     position: model.position
-                )
-                
-                network.writeUser(model: data, completion: { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success(_):
-                        appCoordinator?.showHome()
-                    case .failure(let error):
-                        router?.showAlertWithTitle(error.localizedDescription)
-                    }
-                })
+                appCoordinator?.showHome()
             case .failure(let error):
-                router?.showAlertWithTitle(error.localizedDescription)
+              router?.showAlertWithTitle(error.localizedDescription)
             }
-        }
+        })
     }
     
     func pushViewController(_ vc: UIViewController) {

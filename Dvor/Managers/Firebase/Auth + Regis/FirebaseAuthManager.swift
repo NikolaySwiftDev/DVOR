@@ -9,8 +9,6 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
 
     func signUp(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void)
     func signIn(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void)
-    func validateEmail(_ email: String) -> Bool
-    func validatePassword(_ password: String) -> Bool
     func updateCity(city: CityModel)
     func signOut(completion: @escaping (Result<Void, AuthError>) -> Void)
     
@@ -48,16 +46,6 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
 
     // MARK: - Регистрация нового пользователя
     func signUp(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void) {
-        guard validateEmail(email) else {
-            completion(.failure(.invalidEmailFormat))
-            return
-        }
-
-        guard validatePassword(password) else {
-            completion(.failure(.weakPasswordFormat))
-            return
-        }
-
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -94,17 +82,6 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
                 completion(.success(uid))
             }
         }
-    }
-
-    // MARK: - Валидация email
-    func validateEmail(_ email: String) -> Bool {
-        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
-    }
-
-    // MARK: - Валидация пароля
-    func validatePassword(_ password: String) -> Bool {
-        return password.count >= 6
     }
 
     // MARK: - Маппинг ошибок Firebase → AuthError
@@ -196,16 +173,6 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
     var isVerified: Bool { true }
 
     func signUp(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void) {
-        guard validateEmail(email) else {
-            completion(.failure(.invalidEmailFormat))
-            return
-        }
-
-        guard validatePassword(password) else {
-            completion(.failure(.weakPasswordFormat))
-            return
-        }
-
         let newUserId = UUID().uuidString
         defaults.set(newUserId, forKey: Keys.userId)
         isAuthorized = true
@@ -223,15 +190,6 @@ final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             completion(.success(userId))
         }
-    }
-
-    func validateEmail(_ email: String) -> Bool {
-        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
-    }
-
-    func validatePassword(_ password: String) -> Bool {
-        return password.count >= 6
     }
 
     func signOut(completion: @escaping (Result<Void, AuthError>) -> Void) {
