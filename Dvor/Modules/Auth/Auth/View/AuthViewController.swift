@@ -44,6 +44,10 @@ final class AuthViewController: UIViewController {
         setupConstraints()
         setupTextField()
     }
+    
+    deinit {
+        removeKeyboardObservers()
+    }
 }
 
 // MARK: - Actions

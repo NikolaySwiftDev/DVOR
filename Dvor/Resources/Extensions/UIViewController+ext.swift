@@ -6,6 +6,8 @@ struct BaseConstants {
     static let backButtonSize: CGFloat = 24
 }
 
+private var keyboardObservers: [NSObjectProtocol] = []
+
 extension UIViewController {
     
     enum LoadingState {
@@ -103,17 +105,20 @@ extension UIViewController {
 }
 
 extension UIViewController {
-
     
     //FIX ARC
     func observeKeyboard(for constraint: Constraint, additionalInset: CGFloat = Constants.Constraint.verticalPadding) {
-        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: .main) { [weak self] notification in
+        let center = NotificationCenter.default
+
+        let changeObserver = center.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: .main) { [weak self] notification in
             self?.updateKeyboardConstraint(constraint, notification: notification, additionalInset: additionalInset)
         }
 
-        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { [weak self] notification in
+        let hideObserver = center.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { [weak self] notification in
             self?.updateKeyboardConstraint(constraint, notification: notification, additionalInset: additionalInset)
         }
+
+        keyboardObservers = [changeObserver, hideObserver]
     }
 
     fileprivate func updateKeyboardConstraint(_ constraint: Constraint, notification: Notification, additionalInset: CGFloat) {
@@ -137,5 +142,10 @@ extension UIViewController {
         UIView.animate(withDuration: duration, delay: 0, options: options) {
             self.view.layoutIfNeeded()
         }
+    }
+    
+    func removeKeyboardObservers() {
+        keyboardObservers.forEach { NotificationCenter.default.removeObserver($0) }
+        keyboardObservers.removeAll()
     }
 }

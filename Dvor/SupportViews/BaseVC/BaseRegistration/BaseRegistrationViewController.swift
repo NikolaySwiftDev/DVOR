@@ -35,7 +35,8 @@ class BaseRegistrationViewController: UIViewController {
     
     deinit {
         print(#function, self)
-        NotificationCenter.default.removeObserver(self)
+        removeKeyboardObservers()
+        //        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Life cycle
@@ -43,7 +44,7 @@ class BaseRegistrationViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupConstraints()
-        subscribeToKeyboard()
+//        subscribeToKeyboard()
     }
     
     // MARK: -  Hide back button
@@ -93,49 +94,49 @@ class BaseRegistrationViewController: UIViewController {
     }
     
     // MARK: - Keyboard Handling
-    private func subscribeToKeyboard() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillChangeFrame(_:)),
-            name: UIResponder.keyboardWillChangeFrameNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide(_:)),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
-    }
-    
-    @objc private func keyboardWillChangeFrame(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let window = view.window else { return }
-        
-        let convertedFrame = window.convert(keyboardFrame, to: view)
-        let overlap = max(0, view.bounds.maxY - convertedFrame.minY)
-        let extraInset = max(0, overlap - view.safeAreaInsets.bottom)
-        let newInset = extraInset > 0 ? extraInset + Constants.Constraint.verticalPadding : Constants.Constraint.verticalPadding
-        
-        animateButtonBottomInset(newInset, userInfo: userInfo)
-    }
-    
-    @objc private func keyboardWillHide(_ notification: Notification) {
-        animateButtonBottomInset(Constants.Constraint.verticalPadding, userInfo: notification.userInfo)
-    }
-    
-    private func animateButtonBottomInset(_ inset: CGFloat, userInfo: [AnyHashable: Any]?) {
-        nextButtonBottomConstraint?.update(inset: inset)
-        
-        let duration = (userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.25
-        let curveRaw = (userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UInt(UIView.AnimationCurve.easeInOut.rawValue)
-        let options = UIView.AnimationOptions(rawValue: curveRaw << 16)
-        
-        UIView.animate(withDuration: duration, delay: 0, options: options) {
-            self.view.layoutIfNeeded()
-        }
-    }
+//    private func subscribeToKeyboard() {
+//        NotificationCenter.default.addObserver(
+//            self,
+//            selector: #selector(keyboardWillChangeFrame(_:)),
+//            name: UIResponder.keyboardWillChangeFrameNotification,
+//            object: nil
+//        )
+//        NotificationCenter.default.addObserver(
+//            self,
+//            selector: #selector(keyboardWillHide(_:)),
+//            name: UIResponder.keyboardWillHideNotification,
+//            object: nil
+//        )
+//    }
+//    
+//    @objc private func keyboardWillChangeFrame(_ notification: Notification) {
+//        guard let userInfo = notification.userInfo,
+//              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+//              let window = view.window else { return }
+//        
+//        let convertedFrame = window.convert(keyboardFrame, to: view)
+//        let overlap = max(0, view.bounds.maxY - convertedFrame.minY)
+//        let extraInset = max(0, overlap - view.safeAreaInsets.bottom)
+//        let newInset = extraInset > 0 ? extraInset + Constants.Constraint.verticalPadding : Constants.Constraint.verticalPadding
+//        
+//        animateButtonBottomInset(newInset, userInfo: userInfo)
+//    }
+//    
+//    @objc private func keyboardWillHide(_ notification: Notification) {
+//        animateButtonBottomInset(Constants.Constraint.verticalPadding, userInfo: notification.userInfo)
+//    }
+//    
+//    private func animateButtonBottomInset(_ inset: CGFloat, userInfo: [AnyHashable: Any]?) {
+//        nextButtonBottomConstraint?.update(inset: inset)
+//        
+//        let duration = (userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double) ?? 0.25
+//        let curveRaw = (userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt) ?? UInt(UIView.AnimationCurve.easeInOut.rawValue)
+//        let options = UIView.AnimationOptions(rawValue: curveRaw << 16)
+//        
+//        UIView.animate(withDuration: duration, delay: 0, options: options) {
+//            self.view.layoutIfNeeded()
+//        }
+//    }
 }
 
 private extension BaseRegistrationViewController {
@@ -179,10 +180,17 @@ private extension BaseRegistrationViewController {
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
         
-        nextButton.snp.makeConstraints { make in
-            nextButtonBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).inset(heightKeyboard).constraint
-            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(Constants.Constraint.buttonHeight)
+//        nextButton.snp.makeConstraints { make in
+//            nextButtonBottomConstraint = make.bottom.equalTo(view.safeAreaLayoutGuide).inset(heightKeyboard).constraint
+//            make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+//            make.height.equalTo(Constants.Constraint.buttonHeight)
+//        }
+        
+        nextButton.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            let constraint = $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding).constraint
+            observeKeyboard(for: constraint)
+            $0.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }
 }
