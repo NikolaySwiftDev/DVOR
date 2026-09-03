@@ -20,15 +20,15 @@ final class AuthPresenter: AuthPresenterProtocol {
     }
 
     func signIn(email: String, password: String) {
-//        firebase.signIn(email: email, password: password) { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(_):
-//                router.pushTabBarVC()
-//            case .failure(let failure):
-//                router.showAlertWithTitle(failure.localizedDescription)
-//            }
-//        }
+        firebase.signIn(email: email, password: password) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                router.pushHomeVC()
+            case .failure(let failure):
+                router.showAlertWithTitle(failure.localizedDescription)
+            }
+        }
     }
     
     func popVC() {

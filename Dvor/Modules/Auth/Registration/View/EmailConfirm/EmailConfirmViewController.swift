@@ -12,29 +12,25 @@ final class EnterEmailViewController: BaseRegistrationViewController {
     // MARK: - UI
 
     private let emailTF = CustomTextFieldView(
-        placeholder: "dvor@gmail.com"
+        placeholder: EnterEmailConstants.emailTF,
+        type: .email
     )
 
     private let passwordTF = CustomTextFieldView(
-        placeholder: "Минимум 6 символов"
+        placeholder: EnterEmailConstants.passwordTF,
+        type: .password
     )
 
     private let descEmailLabel = UILabel(
-        text: "Почта",
+        text: EnterEmailConstants.descEmailLabel,
         font: .poppins(weight: .medium, size: .small)
     )
 
     private let descPasswodLabel = UILabel(
-        text: "Пароль",
+        text: EnterEmailConstants.descPasswodLabel,
         font: .poppins(weight: .medium, size: .small)
     )
     
-    private let togglePasswordButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.tintColor = .darkGray
-        button.setImage(UIImage(systemName: "eye.slash"), for: .normal)
-        return button
-    }()
 
     // MARK: - Life Cycle
 
@@ -52,44 +48,16 @@ final class EnterEmailViewController: BaseRegistrationViewController {
     }
 
     private func setupEmailTextField() {
-        let textField = emailTF.textField
-
-        textField.delegate = self
-        textField.textContentType = .emailAddress
-        textField.keyboardType = .emailAddress
-        textField.autocapitalizationType = .none
-        textField.autocorrectionType = .no
-
-        textField.addTarget(self,action: #selector(textFieldDidChange),for: .editingChanged)
+        emailTF.textField.delegate = self
+        emailTF.textField.addTarget(self,action: #selector(textFieldDidChange),for: .editingChanged)
     }
 
     private func setupPasswordTextField() {
-        let textField = passwordTF.textField
+        passwordTF.textField.delegate = self
+        passwordTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
 
-        textField.delegate = self
-        textField.textContentType = .newPassword
-        textField.isSecureTextEntry = true
-        textField.autocapitalizationType = .none
-        textField.autocorrectionType = .no
-
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-
-        togglePasswordButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
     }
     
-    @objc private func togglePasswordVisibility() {
-        let textField = passwordTF.textField
-        textField.isSecureTextEntry.toggle()
-
-        if let existingText = textField.text {
-            textField.text = nil
-            textField.text = existingText
-        }
-
-        let imageName = textField.isSecureTextEntry ? "eye.slash" : "eye"
-        togglePasswordButton.setImage(UIImage(systemName: imageName), for: .normal)
-    }
-
     // MARK: - Actions
 
     @objc private func textFieldDidChange(_ textField: UITextField) {
@@ -142,7 +110,6 @@ private extension EnterEmailViewController {
         view.addSubview(emailTF)
         view.addSubview(descPasswodLabel)
         view.addSubview(passwordTF)
-        passwordTF.addSubview(togglePasswordButton)
 
         descEmailLabel.snp.makeConstraints { make in
             make.top.equalTo(descTitleLabel.snp.bottom).offset(Constants.Constraint.verticalPadding)
@@ -166,12 +133,6 @@ private extension EnterEmailViewController {
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
         
-        togglePasswordButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
-            make.height.equalTo(22)
-            make.width.equalTo(31)
-        }
     }
 }
     
@@ -202,3 +163,12 @@ extension EnterEmailViewController: RegistProtocol {
     
     func updateAvatarImage(_ image: UIImage) {}
 }
+
+fileprivate struct EnterEmailConstants {
+    static let emailTF = "dvor@gmail.com"
+    static let passwordTF = "enter_email.password_placeholder".loc
+    static let descEmailLabel = "enter_email.email_description".loc
+    static let descPasswodLabel = "enter_email.password_description".loc
+}
+
+

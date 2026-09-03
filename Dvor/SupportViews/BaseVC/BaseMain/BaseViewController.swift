@@ -21,7 +21,7 @@ class BaseViewController: UIViewController {
 
     // MARK: - Setup
     private func setupView() {
-        view.backgroundColor = AuthConstants.backgroundColor
+        view.backgroundColor = BaseViewConstants.backgroundColor
         view.addSubview(customNavBar)
     }
 
@@ -49,7 +49,7 @@ extension BaseViewController: CustomNavigationBarDelegate {
 }
 
 // MARK: - Auth Constants
-fileprivate struct AuthConstants {
+fileprivate struct BaseViewConstants {
     static let backgroundColor = UIColor.white
     static let viewWidth: CGFloat = UIScreen.main.bounds.width
     static let cornerRadius: CGFloat = 20

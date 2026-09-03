@@ -5,7 +5,6 @@ class BaseRegistrationViewController: UIViewController {
     
     //MARK: - Properties
     var presenter: RegistPresenterProtocol?
-//    var authPresenter: SignUpPresenterProtocol?
     private var heightKeyboard: CGFloat = Constants.Constraint.verticalPadding
     private var nextButtonBottomConstraint: Constraint?
     
@@ -156,7 +155,6 @@ private extension BaseRegistrationViewController {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.Constraint.verticalPadding)
             make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
-//            make.size.equalTo(BaseConstants.backButtonSize)
         }
         
         pageLabel.snp.makeConstraints { make in

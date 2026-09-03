@@ -35,7 +35,6 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     
     // MARK: - Start
     func start() {
-//        showWelcome()
         showEmail()
     }
         

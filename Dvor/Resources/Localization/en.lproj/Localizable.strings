@@ -236,5 +236,13 @@
 "auth_error_missing_uid" = "Failed to retrieve user ID";
 "auth_error_unknown" = "Something went wrong. Please try again";
 
-""="";
-""="";
+"auth.back_button" = "Back";
+"auth.continue_button" = "Continue";
+"auth.email_placeholder" = "Email";
+"auth.password_placeholder" = "Password";
+"auth.title" = "Sign In";
+
+
+"enter_email.password_placeholder" = "Minimum 6 characters";
+"enter_email.email_description" = "Email";
+"enter_email.password_description" = "Password";
