@@ -4,6 +4,7 @@ protocol AppCoordinatorProtocol: AnyObject {
     func start()
     func showHome()
     func showOnboarding()
+    func showRegistration()
 }
 
 final class AppCoordinator: AppCoordinatorProtocol {

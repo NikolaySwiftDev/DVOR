@@ -211,15 +211,15 @@
 "network.retry" = "Retry";
 
 "common.editProfile"= "Edit profile";
-"common.delete"= "Delete profile";
+"common.delete"= "Log out";
 "alert.change"="What do you want to change?";
 "alert.nickname"="Nickname";
 "alert.avatar"="Avatar";
 "alert.geo"="Geo";
 "Update"="Update";
 
-"alert_title.delete"="Do you really want to delete your account?";
-"alert_desc.refund"="Your account will be deleted without the possibility of refund";
+"alert_title.delete"="Do you really want to log out";
+"alert_desc.refund"="You will be able to log in again";
 
 "auth_error_invalid_email_format" = "Please enter a valid email address";
 "auth_error_weak_password_format" = "Password must be at least 6 characters";

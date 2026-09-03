@@ -87,19 +87,20 @@ final class ProfilePresenter: ProfilePresenterProtocol {
 
                 switch result {
                 case .success:
-                    guard let id = self.user?.id else { return }
-                    self.network.removeUser(userID: id, completion: { [weak self] result in
-                        guard let self = self else { return }
-                        switch result {
-                        case .success():
-                            self.appCoordinator?.showOnboarding()
-                        case .failure(let error):
-                            self.router.showAlertWithTitle(error.localizedDescription)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                self.router.popVC()
-                            }
-                        }
-                    })
+                    self.appCoordinator?.showRegistration()
+//                    guard let id = self.user?.id else { return }
+//                    self.network.removeUser(userID: id, completion: { [weak self] result in
+//                        guard let self = self else { return }
+//                        switch result {
+//                        case .success():
+//                            self.appCoordinator?.showRegistration()
+//                        case .failure(let error):
+//                            self.router.showAlertWithTitle(error.localizedDescription)
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                                self.router.popVC()
+//                            }
+//                        }
+//                    })
                 case .failure(let error):
                     self.router.showAlertWithTitle(error.errorDescription ?? "auth_error_unknown".loc)
                 }

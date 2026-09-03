@@ -59,7 +59,6 @@ final class EventsPresenter: EventsPresenterProtocol {
         self.network = network
         self.firebase = firebase
         
-        print(firebase.currentCity)
     }
     
     //MARK: - General processing of results
@@ -70,7 +69,6 @@ final class EventsPresenter: EventsPresenterProtocol {
             self.filterEventsWithDate(date: lastFilterDate)
             self.sortEventsWithPredicate(predicate: personlaMode ? .personal : lastSortPredicate)
             self.fetchAvatarsForEvents(events)
-//            view?.success(date: lastFilterDate.toString())
         case .failure(let error):
             self.router?.showAlertWithTitle(error.localizedDescription)
             self.view?.error(error: error)

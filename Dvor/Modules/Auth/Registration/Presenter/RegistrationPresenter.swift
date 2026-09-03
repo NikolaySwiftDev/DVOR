@@ -61,6 +61,10 @@ final class RegistPresenter: RegistPresenterProtocol {
         self.notifManager = notifManager
         self.locationManager = locationManager
         self.appCoordinator = appCoordinator
+        
+//        firebase.signOut { result in
+//            
+//        }
     }
     
     func popVC() {

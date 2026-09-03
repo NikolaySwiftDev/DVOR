@@ -26,7 +26,6 @@ final class CityViewController: BaseRegistrationViewController {
         if isEdit {
             presenter?.updateCity(city: city)
         } else {
-            presenter?.updateCity(city: city)
             onNext?(city)
         }
     }
