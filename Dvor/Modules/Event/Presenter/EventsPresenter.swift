@@ -24,7 +24,9 @@ protocol EventsPresenterProtocol: AnyObject {
     init(view: EventsProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         firebase: FirebaseAuthManagerProtocol)
+         firebase: FirebaseAuthManagerProtocol,
+         storage: CityStorageProtocol?
+    )
 }
 
 final class EventsPresenter: EventsPresenterProtocol {
@@ -36,6 +38,7 @@ final class EventsPresenter: EventsPresenterProtocol {
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol?
     let firebase: FirebaseAuthManagerProtocol
+    let storage: CityStorageProtocol?
     
     private(set) var userAvatars: [String: Data] = [:]
     private var lastFilterDate: Date = .now
@@ -53,11 +56,13 @@ final class EventsPresenter: EventsPresenterProtocol {
     required init(view: EventsProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
-                  firebase: FirebaseAuthManagerProtocol) {
+                  firebase: FirebaseAuthManagerProtocol,
+                  storage: CityStorageProtocol?) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
+        self.storage = storage
         
     }
     
@@ -120,7 +125,7 @@ final class EventsPresenter: EventsPresenterProtocol {
             return
         }
 
-        let userCity = firebase.currentCity
+        let userCity = storage?.currentCity
         
         if personlaMode {
             let calendar = Calendar.current

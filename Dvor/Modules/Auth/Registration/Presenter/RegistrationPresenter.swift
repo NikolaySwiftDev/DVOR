@@ -32,7 +32,8 @@ protocol RegistPresenterProtocol: SignUpPresenterProtocol {
          photoManager: PhotoManagerProtocol?,
          notifManager: NotificationManagerProtocol?,
          locationManager: LocationManagerProtocol?,
-         appCoordinator: AppCoordinatorProtocol?
+         appCoordinator: AppCoordinatorProtocol?,
+         storage: CityStorageProtocol?
     )
 }
 final class RegistPresenter: RegistPresenterProtocol {
@@ -45,6 +46,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     let notifManager: NotificationManagerProtocol?
     let locationManager: LocationManagerProtocol?
     let appCoordinator: AppCoordinatorProtocol?
+    let storage: CityStorageProtocol?
     
     required init(router: RouterMainProtocol?,
                   firebase: FirebaseAuthManagerProtocol,
@@ -52,7 +54,8 @@ final class RegistPresenter: RegistPresenterProtocol {
                   photoManager: PhotoManagerProtocol? = nil,
                   notifManager: NotificationManagerProtocol? = nil,
                   locationManager: LocationManagerProtocol? = nil,
-                  appCoordinator: AppCoordinatorProtocol? = nil
+                  appCoordinator: AppCoordinatorProtocol? = nil,
+                  storage: CityStorageProtocol?
     ) {
         self.router = router
         self.firebase = firebase
@@ -61,6 +64,7 @@ final class RegistPresenter: RegistPresenterProtocol {
         self.notifManager = notifManager
         self.locationManager = locationManager
         self.appCoordinator = appCoordinator
+        self.storage = storage
         
 //        firebase.signOut { result in
 //            
@@ -141,7 +145,7 @@ final class RegistPresenter: RegistPresenterProtocol {
         
         let city = CityModel(name: model.city, countryCode: model.countryCode ?? "", administrativeArea: model.administrativeArea, latitude: model.latitude ?? 0, longitude: model.longitude ?? 0)
         
-        firebase.updateCity(city: city)
+        storage?.updateCity(city)
         
         let data = UserModel(id: userId,
                              image: model.image,
@@ -214,7 +218,7 @@ final class RegistPresenter: RegistPresenterProtocol {
                                      administrativeArea: city.administrativeArea,
                                      latitude: city.latitude,
                                      longitude: city.longitude)
-                firebase.updateCity(city: city)
+                storage?.updateCity(city)
                 router?.showAlertWithCompletion(RegistPresenterStrings.successUpdate,
                                                 completion: {  [weak self] in
                     guard let self = self else { return }

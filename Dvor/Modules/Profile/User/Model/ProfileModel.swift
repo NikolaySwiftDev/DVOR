@@ -161,7 +161,7 @@ extension UserModel {
     }
     
     func toCityModel() -> CityModel {
-        CityModel(name: self.name,
+        CityModel(name: self.city,
                   countryCode: self.countryCode,
                   administrativeArea: self.administrativeArea,
                   latitude: self.latitude ?? 0,

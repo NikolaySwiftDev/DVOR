@@ -3,13 +3,11 @@ import FirebaseAuth
 
 protocol FirebaseAuthManagerProtocol: AnyObject {
     var currentUserId: String? { get }
-    var currentCity: CityModel? { get }
     var isAuthorized: Bool { get }
     var isVerified: Bool { get }
 
     func signUp(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void)
     func signIn(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void)
-    func updateCity(city: CityModel)
     func signOut(completion: @escaping (Result<Void, AuthError>) -> Void)
     
 }
@@ -17,23 +15,8 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
 // MARK: - Реальная реализация через Firebase Auth
 final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
 
-    private enum Keys {
-        static let city = "firebase_auth_city"
-    }
-
-    private let defaults: UserDefaults
-
-    init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
-    }
-
     var currentUserId: String? {
         Auth.auth().currentUser?.uid
-    }
-
-    var currentCity: CityModel? {
-        guard let data = defaults.data(forKey: Keys.city) else { return nil }
-        return try? JSONDecoder().decode(CityModel.self, from: data)
     }
 
     var isAuthorized: Bool {
@@ -118,90 +101,14 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
         }
     }
 
-
-    func updateCity(city: CityModel) {
-        guard let data = try? JSONEncoder().encode(city) else { return }
-        defaults.set(data, forKey: Keys.city)
-    }
-
     func signOut(completion: @escaping (Result<Void, AuthError>) -> Void) {
         do {
             try Auth.auth().signOut()
-            defaults.removeObject(forKey: Keys.city)
+//            defaults.removeObject(forKey: Keys.city)
             completion(.success(()))
         } catch {
             completion(.failure(.unknown))
         }
-    }
-}
-
-// MARK: - Мок-реализация для разработки/тестов
-final class MockFirebaseAuthManager: FirebaseAuthManagerProtocol {
-
-    private enum Keys {
-        static let isAuthorized = "mock_auth_isAuthorized"
-        static let userId       = "mock_auth_userId"
-        static let city         = "mock_auth_city"
-    }
-
-    private let defaults: UserDefaults
-
-    init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
-    }
-
-    // MARK: - Протокол
-
-    var currentUserId: String? {
-        guard isAuthorized else { return nil }
-        if let saved = defaults.string(forKey: Keys.userId) { return saved }
-        let newId = UUID().uuidString
-        defaults.set(newId, forKey: Keys.userId)
-        return newId
-    }
-
-    var currentCity: CityModel? {
-        guard isAuthorized, let data = defaults.data(forKey: Keys.city) else { return nil }
-        return try? JSONDecoder().decode(CityModel.self, from: data)
-    }
-
-    var isAuthorized: Bool {
-        get { defaults.bool(forKey: Keys.isAuthorized) }
-        set { defaults.set(newValue, forKey: Keys.isAuthorized) }
-    }
-
-    var isVerified: Bool { true }
-
-    func signUp(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void) {
-        let newUserId = UUID().uuidString
-        defaults.set(newUserId, forKey: Keys.userId)
-        isAuthorized = true
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            completion(.success(newUserId))
-        }
-    }
-
-    func signIn(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void) {
-        let userId = currentUserId ?? UUID().uuidString
-        defaults.set(userId, forKey: Keys.userId)
-        isAuthorized = true
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            completion(.success(userId))
-        }
-    }
-
-    func signOut(completion: @escaping (Result<Void, AuthError>) -> Void) {
-        isAuthorized = false
-        defaults.removeObject(forKey: Keys.userId)
-        defaults.removeObject(forKey: Keys.city)
-        completion(.success(()))
-    }
-
-    func updateCity(city: CityModel) {
-        guard let data = try? JSONEncoder().encode(city) else { return }
-        defaults.set(data, forKey: Keys.city)
     }
 }
 
@@ -260,4 +167,3 @@ enum AuthError: Error, LocalizedError, Equatable {
         }
     }
 }
-

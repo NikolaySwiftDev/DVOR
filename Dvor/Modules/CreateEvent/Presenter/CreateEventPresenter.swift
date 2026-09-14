@@ -14,7 +14,9 @@ protocol CreateEventPresenterProtocol: AnyObject {
     init(view: CreateEventProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         firebase: FirebaseAuthManagerProtocol)
+         firebase: FirebaseAuthManagerProtocol,
+         storage: CityStorageProtocol?
+    )
 
     func writeEvent(players: Int, date: Date, time: String, address: String, place: String)
     
@@ -33,16 +35,20 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     let router: RouterMainProtocol?
     let network: FirebaseDataManagerProtocol
     let firebaseAuth: FirebaseAuthManagerProtocol
+    let storage: CityStorageProtocol?
     
     // MARK: - Initializers
     init(view: CreateEventProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
-         firebase: FirebaseAuthManagerProtocol) {
+         firebase: FirebaseAuthManagerProtocol,
+         storage: CityStorageProtocol?
+    ) {
         self.view = view
         self.router = router
         self.network = network
         self.firebaseAuth = firebase
+        self.storage = storage
     }
     
     private var city: CityModel?
@@ -61,7 +67,10 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             return
         }
         
-        guard let city = firebaseAuth.currentCity else { return }
+        guard let city = storage?.currentCity else {
+            router?.showAlertWithTitle("No city") //fix
+            return
+        }
         self.city = city
         view?.success(city: city.name)
     }

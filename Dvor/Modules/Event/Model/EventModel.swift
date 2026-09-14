@@ -261,7 +261,6 @@ struct EventsPresenterStrings {
     static let needToRegisterToCreate = "need_to_register_to_create".loc
     static let needToCheck = "need_to_register_to_check".loc
     static let needToRegiste = "need_to_registe".loc
-    static let signOutTitle = "sign_out_title".loc
-    static let signOutMessage = "sign_out_message".loc
+
     static let yes = "yes".loc
 }

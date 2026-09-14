@@ -106,6 +106,8 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             self?.registrationData.longitude = city.longitude
             
             self?.acceptNotification()
+            
+            print(city)
         }
         router.pushVC(vc)
     }

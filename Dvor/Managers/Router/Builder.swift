@@ -38,7 +38,8 @@ class Builder: BuilderProtocol {
             photoManager: managers.makePhotoManager(),
             notifManager: managers.makeNotificationManager(),
             locationManager: managers.makeLocationManager(),
-            appCoordinator: coordinator
+            appCoordinator: coordinator,
+            storage: managers.makeCityStorageManager()
         )
     }
     
@@ -54,13 +55,17 @@ class Builder: BuilderProtocol {
             photoManager: photoManager,
             notifManager: notifManager,
             locationManager: locationManager,
-            appCoordinator: nil
+            appCoordinator: nil,
+            storage: managers.makeCityStorageManager()
         )
     }
     
     func createAuthVC(router: any RouterMainProtocol) -> UIViewController {
         let view = AuthViewController()
-        let presenter = AuthPresenter(router: router, firebase: managers.authManager)
+        let presenter = AuthPresenter(router: router,
+                                      firebase: managers.authManager,
+                                      network: managers.dataManager,
+                                      storage: managers.makeCityStorageManager())
         view.presenter = presenter
         return view
     }
@@ -81,7 +86,8 @@ class Builder: BuilderProtocol {
         let presenter = EventsPresenter(view: view,
                                         router: router,
                                         network: managers.dataManager,
-                                        firebase: managers.authManager)
+                                        firebase: managers.authManager,
+                                        storage: managers.makeCityStorageManager())
         view.presenter = presenter
         return view
     }
@@ -94,7 +100,8 @@ class Builder: BuilderProtocol {
                                          network: managers.dataManager,
                                          firebase: managers.authManager,
                                          notification: managers.makeNotificationManager(),
-                                         appCoordinator: appCoordinator)
+                                         appCoordinator: appCoordinator,
+                                         storage: managers.makeCityStorageManager())
         view.presenter = presenter
         return view
     }
@@ -107,7 +114,8 @@ class Builder: BuilderProtocol {
                                         network: managers.dataManager,
                                         firebase: managers.authManager,
                                         notification: managers.makeNotificationManager(),
-                                        comments: managers.makeCommentsManager())
+                                        comments: managers.makeCommentsManager(),
+                                        storage: managers.makeCityStorageManager())
         view.presenter = presenter
         return view
     }
@@ -126,7 +134,8 @@ class Builder: BuilderProtocol {
         let presenter = CreateEventPresenter(view: view,
                                              router: router,
                                              network: managers.dataManager,
-                                             firebase: managers.authManager)
+                                             firebase: managers.authManager,
+                                             storage: managers.makeCityStorageManager())
         view.presenter = presenter
         return view
     }
@@ -146,7 +155,8 @@ class Builder: BuilderProtocol {
     }
     
     func createEditAvatar(router: any RouterMainProtocol, userModel: UserModel) -> UIViewController {
-        let presenter = createEditPresenter(router: router, photoManager: managers.makePhotoManager())
+        let presenter = createEditPresenter(router: router,
+                                            photoManager: managers.makePhotoManager())
         let view = CreateAvatarViewController(presenter: presenter)
         view.isEdit = true
         view.setInfoForNavigationView(model: .avatar)

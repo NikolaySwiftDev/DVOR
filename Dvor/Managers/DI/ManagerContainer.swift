@@ -9,6 +9,7 @@ protocol AppContainerProtocol {
     func makePhotoManager() -> PhotoManagerProtocol
     func makeNotificationManager() -> NotificationManagerProtocol
     func makeLocationManager() -> LocationManagerProtocol
+    func makeCityStorageManager() -> CityStorageProtocol
 }
 
 final class AppContainer: AppContainerProtocol {
@@ -36,5 +37,9 @@ final class AppContainer: AppContainerProtocol {
 
     func makeLocationManager() -> LocationManagerProtocol {
         LocationManager()
+    }
+    
+    func makeCityStorageManager() -> CityStorageProtocol {
+        CityStorageManager()
     }
 }

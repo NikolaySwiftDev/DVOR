@@ -7,32 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0077F988-7106-4532-9454-E30F9F164AD1"
+            uuid = "6F75A954-BF22-4B33-822C-94E070C66027"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dvor/Modules/Auth/Registration/Presenter/RegistrationPresenter.swift"
+            filePath = "Dvor/SupportViews/AddressSuggestionsView/AddressService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
-            landmarkName = "updateCity(city:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "78C6BF48-3C04-4CA3-82DB-29E29DDE51D3"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Dvor/Modules/Auth/Registration/View/CreateIfno/CityViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
-            landmarkName = "nextButtonTapped()"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "addressCompleterService(_:didFailWithError:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

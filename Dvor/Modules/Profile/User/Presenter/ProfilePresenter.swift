@@ -13,7 +13,9 @@ protocol ProfilePresenterProtocol: AnyObject {
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
          notification: NotificationManagerProtocol,
-         appCoordinator: AppCoordinatorProtocol?)
+         appCoordinator: AppCoordinatorProtocol?,
+         storage: CityStorageProtocol?
+    )
     
     func getProfileInto()
     func editProfile()
@@ -31,19 +33,23 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     let firebase: FirebaseAuthManagerProtocol
     let notification: NotificationManagerProtocol
     let appCoordinator: AppCoordinatorProtocol?
+    let storage: CityStorageProtocol?
     
     init(view: ProfileProtocol,
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
          notification: NotificationManagerProtocol,
-         appCoordinator: AppCoordinatorProtocol?) {
+         appCoordinator: AppCoordinatorProtocol?,
+         storage: CityStorageProtocol?
+    ) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
         self.notification = notification
         self.appCoordinator = appCoordinator
+        self.storage = storage
     }
     
     func getProfileInto() {
@@ -80,20 +86,18 @@ final class ProfilePresenter: ProfilePresenterProtocol {
                                  titleActionButton: "Yes".loc,
                                  handelr: { [weak self] in
             guard let self = self else { return }
-            notification.cancelAllNotifications()
-
             firebase.signOut(completion: { [weak self] result in
                 guard let self = self else { return }
-
                 switch result {
                 case .success:
-                    self.appCoordinator?.showRegistration()
 //                    guard let id = self.user?.id else { return }
 //                    self.network.removeUser(userID: id, completion: { [weak self] result in
 //                        guard let self = self else { return }
 //                        switch result {
 //                        case .success():
-//                            self.appCoordinator?.showRegistration()
+                            storage?.clearCity()
+                            notification.cancelAllNotifications()
+                            self.appCoordinator?.showRegistration()
 //                        case .failure(let error):
 //                            self.router.showAlertWithTitle(error.localizedDescription)
 //                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

@@ -15,7 +15,8 @@ protocol DetailPresenterProtocol: AnyObject {
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
          notification: NotificationManagerProtocol,
-         comments: FirebaseCommentsManagerProtocol
+         comments: FirebaseCommentsManagerProtocol,
+         storage: CityStorageProtocol?
     )
     
     var users: [UserModel]? { get set }
@@ -48,13 +49,15 @@ final class DetailPresenter: DetailPresenterProtocol {
     let firebase: FirebaseAuthManagerProtocol
     let notification: NotificationManagerProtocol
     let commentsManager: FirebaseCommentsManagerProtocol
+    let storage: CityStorageProtocol?
 
     required init(view: DetailProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
                   firebase: FirebaseAuthManagerProtocol,
                   notification: NotificationManagerProtocol,
-                  comments: FirebaseCommentsManagerProtocol
+                  comments: FirebaseCommentsManagerProtocol,
+                  storage: CityStorageProtocol?
     ) {
         self.view = view
         self.router = router
@@ -62,6 +65,7 @@ final class DetailPresenter: DetailPresenterProtocol {
         self.firebase = firebase
         self.notification = notification
         self.commentsManager = comments
+        self.storage = storage
     }
     
     //MARK: - Fetch all users
@@ -88,7 +92,7 @@ final class DetailPresenter: DetailPresenterProtocol {
             return
         }
 
-        guard let idUser = firebase.currentUserId, let currentCity = firebase.currentCity else {
+        guard let idUser = firebase.currentUserId, let currentCity = storage?.currentCity else {
             router.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
         }
