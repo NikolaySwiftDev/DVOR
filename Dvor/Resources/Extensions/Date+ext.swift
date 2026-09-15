@@ -5,21 +5,21 @@ extension DateFormatter {
     static let yyyyMMdd: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.locale = .current
         formatter.timeZone = .current
         return formatter
     }()
     
     static let shortDay: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.locale = .current
         formatter.dateFormat = "EEE"
         return formatter
     }()
     
     static let dayNumber: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.locale = .current
         formatter.dateFormat = "d"
         return formatter
     }()
@@ -29,18 +29,17 @@ extension DateFormatter {
 extension Date {
     func formattedAsDayMonthYear() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "ru_RU")
+        dateFormatter.locale = .current
         dateFormatter.dateFormat = "E, d MMMM yyyy"
         return dateFormatter.string(from: self)
     }
     
-    func toString(format: String = "d MMMM, EEEE", locale: String = "ru_RU") -> String {
+    func toString(format: String = "d MMMM, EEEE", locale: Locale = .current) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        formatter.locale = Locale(identifier: locale)
+        formatter.locale = locale
         return formatter.string(from: self)
     }
-    
     
     func isAdult() -> Bool {
         let calendar = Calendar.current

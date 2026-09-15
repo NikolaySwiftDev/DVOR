@@ -133,7 +133,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     }
     
     deinit {
-        print("CreateEventPresenter deinitialized")
+//        print(#function, self)
     }
 }
 

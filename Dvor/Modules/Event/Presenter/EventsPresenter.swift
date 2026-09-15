@@ -11,6 +11,7 @@ protocol EventsPresenterProtocol: AnyObject {
     var userAvatars: [String: Data] { get }
     var filteredEvents: [EventModel]? { get set }
         
+    func getTitle() -> String
     func fetchEvents()
     func filterEventsWithDate(date: Date)
     func sortEventsWithPredicate(predicate: SortPredicate)
@@ -78,6 +79,10 @@ final class EventsPresenter: EventsPresenterProtocol {
             self.router?.showAlertWithTitle(error.localizedDescription)
             self.view?.error(error: error)
         }
+    }
+    
+    func getTitle() -> String {
+        title
     }
     
     //MARK: - General method of sending a request and monitoring the database
@@ -255,6 +260,6 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Deinit
     deinit {
-         print("Deinit EventPresenter")
+        //        print(#function, self)
     }
 }

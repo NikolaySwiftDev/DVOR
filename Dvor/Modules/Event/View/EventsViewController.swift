@@ -179,6 +179,8 @@ private extension EventsViewController {
         sortView.delegate = self
         filterView.delegate = self
         segmentView.delegate = self
+        
+        titleDate.text = presenter?.getTitle()
 
         var configurationFilter = UIButton.Configuration.plain()
         configurationFilter.image = UIImage(systemName: HomeConstants.imageFetch)

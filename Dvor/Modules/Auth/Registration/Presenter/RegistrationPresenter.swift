@@ -293,7 +293,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
     
     deinit {
-        print("Deinit RegistPresenter")
+//        print(#function, self)
     }
 }
 

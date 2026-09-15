@@ -146,7 +146,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 
     // MARK: - Deinit
     deinit {
-        print("RegistrationCoordinator deallocated")
+//        print(#function, self)
     }
 }
 

@@ -58,6 +58,6 @@ final class AuthPresenter: AuthPresenterProtocol {
     }
 
     deinit {
-        print("AuthPresenterProtocol deinit")
+//        print(#function, self)
     }
 }

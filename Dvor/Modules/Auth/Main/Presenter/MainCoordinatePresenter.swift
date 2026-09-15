@@ -27,7 +27,7 @@ final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
     }
     
     deinit {
-        print("Auth Presenter deinit")
+//        print(#function, self)
     }
 }
 

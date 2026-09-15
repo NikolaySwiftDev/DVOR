@@ -95,7 +95,7 @@ final class EnterEmailViewController: BaseRegistrationViewController {
     // MARK: - Deinit
 
     deinit {
-        print("Deinit ---- EnterEmailViewController")
+//        print(#function, self)
     }
 }
 

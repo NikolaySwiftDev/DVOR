@@ -21,7 +21,6 @@ final class CityStorageManager: CityStorageProtocol {
     var currentCity: CityModel? {
         guard let data = defaults.data(forKey: Keys.city) else { return nil }
         let model = try? JSONDecoder().decode(CityModel.self, from: data)
-        print("City init is -----", model?.name)
         return model
     }
 
