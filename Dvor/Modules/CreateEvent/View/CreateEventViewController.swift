@@ -12,6 +12,8 @@ final class CreateEventViewController: UIViewController {
         didSet { updateValidButton() }
     }
     private var place = ""
+    private var addressLatitude: Double?
+    private var addressLongitude: Double?
         
     private let navigationBar = SupportNavigationBar(state: .createEvent)
     private let subTitle = UILabel(text: CreateEventConstants.enterData)
@@ -55,7 +57,7 @@ final class CreateEventViewController: UIViewController {
     }
     
     @objc private func nextButtonTapped() {
-        presenter?.writeEvent(players: player, date: date, time: time, address: adress, place: place)
+        presenter?.writeEvent(players: player, date: date, time: time, address: adress, place: place, latitude: addressLatitude, longitude: addressLongitude)
     }
     
     private func updateValidButton() {
@@ -127,6 +129,8 @@ extension CreateEventViewController: UITextFieldDelegate {
             checkTimeTFIsNotEmpty(text: formattedTime, tf: timeTF)
         case 2:
             adress = ""
+            addressLatitude = nil
+            addressLongitude = nil
             addressSuggestionsView.search(query: text)
             checkTFIsNotEmpty(text: text, tf: adressTF)
         case 3:
@@ -189,17 +193,21 @@ extension CreateEventViewController {
         placeTF.textField.returnKeyType = .default
         placeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
-        addressSuggestionsView.onAddressSelected = { [weak self] resolved in
+        addressSuggestionsView.onAddressSelected = { [weak self] resolved, latitude, longitude in
             guard let self else { return }
             self.adressTF.textField.text = resolved
             self.adress = resolved
+            self.addressLatitude = latitude
+            self.addressLongitude = longitude
             self.adressTF.textField.resignFirstResponder()
         }
-        
+
         addressSuggestionsView.onInvalidSelection = { [weak self] in
             self?.adress = ""
+            self?.addressLatitude = nil
+            self?.addressLongitude = nil
         }
-        
+                
         addressSuggestionsView.onNeedsHouseNumber = { [weak self] streetText in
             self?.adressTF.textField.text = streetText + " "
             if let textField = self?.adressTF.textField {

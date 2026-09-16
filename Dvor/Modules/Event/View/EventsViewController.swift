@@ -15,6 +15,7 @@ final class EventsViewController: BaseViewController {
     //Buttons
     private let sortButton = UIButton.createStandartButton(title: HomeConstants.titleSort, titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(sortButtonTapped))
     private let fetchButton = UIButton.createStandartButton(title: HomeConstants.titleFetch, titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(fetchButtonTapped))
+    private let mapButton = UIButton.createStandartButton(title: HomeConstants.titleMap, titleColor: Constants.Colors.buttonActiveColor, backgroundColor: .clear, target: self, action: #selector(mapButtonTapped))
     
     //Collections
     private let calendarView = CustomCalendarView()
@@ -61,6 +62,10 @@ final class EventsViewController: BaseViewController {
         sortView.showViewWithAnimation(isHidden: false)
     }
     
+    @objc private func mapButtonTapped() {
+        sortView.selectedIndex = nil
+        presenter?.pushEventsMapVC()
+    }
     
     deinit {
         // print("deinit HomeVC")
@@ -75,10 +80,12 @@ extension EventsViewController: EventsProtocol {
         guard  let model = presenter?.filteredEvents, model.count > 0 else {
             eventsTableView.events = []
             fetchButton.isHidden = false
+            mapButton.isHidden = true
             return
         }
         
         fetchButton.isHidden = true
+        mapButton.isHidden = false
         eventsTableView.events = model
     }
     
@@ -170,6 +177,7 @@ private extension EventsViewController {
         view.addSubview(eventsTableView)
         view.addSubview(filterView)
         view.addSubview(sortView)
+        view.addSubview(mapButton)
     }
     
     private func configure() {
@@ -193,6 +201,12 @@ private extension EventsViewController {
         configurationSort.imagePadding = 8
         sortButton.configuration = configurationSort
         sortButton.tintColor = .black
+        
+        var configurationMap = UIButton.Configuration.plain()
+        configurationMap.image = UIImage(systemName: HomeConstants.imageMap)
+        configurationMap.imagePadding = 8
+        mapButton.configuration = configurationMap
+        mapButton.tintColor = .black
         
         sortView.isHidden = true
         filterView.isHidden = true
@@ -243,6 +257,12 @@ private extension EventsViewController {
             make.top.equalToSuperview()
             make.leading.trailing.bottom.equalToSuperview()
         }
+        
+        mapButton.snp.makeConstraints { make in
+            make.top.equalTo(calendarView.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
+            make.trailing.equalToSuperview()
+            make.height.equalTo(HomeConstants.filterHeight)
+        }
     }
 }
 
@@ -254,9 +274,11 @@ fileprivate struct HomeConstants {
     
     static let imageSort = "sortEvent"
     static let imageFetch = "arrow.triangle.2.circlepath"
+    static let imageMap = "map"
     
     static let titleSort = "matches.title_sort".loc
     static let titleFetch = "matches.title_refresh".loc
     static let titleMatch = "matches.title".loc
+    static let titleMap = "matches.title_map".loc
 }
 

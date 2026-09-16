@@ -21,6 +21,7 @@ protocol EventsPresenterProtocol: AnyObject {
     func pushDetailVC(model: EventModel)
     func pushProfileVC()
     func pushCreateEvent()
+    func pushEventsMapVC()
         
     init(view: EventsProtocol,
          router: RouterMainProtocol,
@@ -179,12 +180,10 @@ final class EventsPresenter: EventsPresenterProtocol {
             filteredEvents = sortEvents
             view?.success(date: title)
         case .personal:
-//            guard let myID = firebase.currentUser?.uid else { return }
             guard let myID = firebase.currentUserId else { return }
             personlaMode = true
             filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
             view?.success(date: title)
-            
         case .none:
             personlaMode = false
             filterEventsWithDate(date: lastFilterDate)
@@ -256,6 +255,15 @@ final class EventsPresenter: EventsPresenterProtocol {
             return
         }
         router?.pushCreateEvent(date: lastFilterDate)
+    }
+    
+    //MARK: - Push to the map screen
+    func pushEventsMapVC() {
+        guard let events = filteredEvents, !events.isEmpty else {
+            router?.showAlertWithTitle("Error - no events")
+            return
+        }
+        router?.pushEventsMapVC(events: events)
     }
 
     //MARK: - Deinit

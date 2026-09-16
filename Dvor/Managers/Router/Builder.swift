@@ -6,10 +6,7 @@ protocol BuilderProtocol: AnyObject {
     func createRegistrationPresenter(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol?) -> RegistPresenter
     func createAuthVC(router: RouterMainProtocol) -> UIViewController
     func createRegistration(router: RouterMainProtocol) -> UIViewController
-    func createEditPresenter(router: RouterMainProtocol,
-                              photoManager: PhotoManagerProtocol?,
-                              notifManager: NotificationManagerProtocol?,
-                              locationManager: LocationManagerProtocol?) -> RegistPresenter
+    func createEditPresenter(router: RouterMainProtocol, photoManager: PhotoManagerProtocol?, notifManager: NotificationManagerProtocol?, locationManager: LocationManagerProtocol?) -> RegistPresenter
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController
@@ -18,6 +15,7 @@ protocol BuilderProtocol: AnyObject {
     func createEditAvatar(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createEditGeo(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createProfileVC(router: RouterMainProtocol, model: UserModel?, appCoordinator: AppCoordinatorProtocol?) -> UIViewController
+    func createEventsMapVC(router: RouterMainProtocol, events: [EventModel]) -> UIViewController
 }
 
 class Builder: BuilderProtocol {
@@ -179,6 +177,13 @@ class Builder: BuilderProtocol {
         view.hidePageControllView()
         view.updateButtonTitle("Update".loc)
 
+        return view
+    }
+    
+    func createEventsMapVC(router: RouterMainProtocol, events: [EventModel]) -> UIViewController {
+        let view = EventsMapViewController()
+        let presenter = EventsMapPresenter(view: view, router: router, events: events)
+        view.presenter = presenter
         return view
     }
     

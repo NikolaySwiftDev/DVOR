@@ -18,7 +18,7 @@ protocol CreateEventPresenterProtocol: AnyObject {
          storage: CityStorageProtocol?
     )
 
-    func writeEvent(players: Int, date: Date, time: String, address: String, place: String)
+    func writeEvent(players: Int, date: Date, time: String, address: String, place: String, latitude: Double?, longitude: Double?)
     
     func getCityForSearchAdress()
     
@@ -52,7 +52,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     }
     
     private var city: CityModel?
-    private let maxEventsPerDay = 2
+    private let maxEventsPerDay = 5 // fix
     
     // MARK: - Methods
     func popVC() {
@@ -68,7 +68,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         }
         
         guard let city = storage?.currentCity else {
-            router?.showAlertWithTitle("No city") //fix
+            router?.showAlertWithTitle("No city") // fix
             return
         }
         self.city = city
@@ -76,7 +76,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     }
     
     //MARK: - Record events in the database
-    func writeEvent(players: Int, date: Date, time: String, address: String, place: String) {
+    func writeEvent(players: Int, date: Date, time: String, address: String, place: String, latitude: Double?, longitude: Double?) {
         guard let orgID = firebaseAuth.currentUserId else {
             router?.showAlertWithTitle(CreateEventPresenterStrings.signUp)
             return
@@ -91,15 +91,15 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
                     self.router?.showAlertWithTitle(CreateEventPresenterStrings.dailyLimitReached)
                     return
                 }
-                self.createEvent(orgID: orgID, players: players, date: date, time: time, address: address, place: place)
+                self.createEvent(orgID: orgID, players: players, date: date, time: time, address: address, place: place, latitude: latitude, longitude: longitude)
             case .failure(let error):
                 self.router?.showAlertWithTitle(CreateEventPresenterStrings.saveError)
                 self.view?.error(error: error)
             }
         }
     }
-    
-    private func createEvent(orgID: String, players: Int, date: Date, time: String, address: String, place: String) {
+
+    private func createEvent(orgID: String, players: Int, date: Date, time: String, address: String, place: String, latitude: Double?, longitude: Double?) {
         let model = EventModel(date: date,
                                time: time,
                                name: "",
@@ -107,8 +107,8 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
                                city: city?.name ?? "Emtpy",
                                countryCode: city?.countryCode ?? "",
                                administrativeArea: city?.administrativeArea ?? "",
-                               latitude: city?.latitude ?? 0,
-                               longitude: city?.longitude ?? 0,
+                               latitude: latitude ?? city?.latitude ?? 0,
+                               longitude: longitude ?? city?.longitude ?? 0,
                                address: address,
                                namePlace: place,
                                price: 0,

@@ -106,7 +106,7 @@ extension UIViewController {
 
 extension UIViewController {
     
-    //FIX ARC
+    // FIX ARC
     func observeKeyboard(for constraint: Constraint, additionalInset: CGFloat = Constants.Constraint.verticalPadding) {
         let center = NotificationCenter.default
 

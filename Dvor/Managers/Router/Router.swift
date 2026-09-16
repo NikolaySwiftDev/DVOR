@@ -25,6 +25,7 @@ protocol RouterMainProtocol: RouterMain {
     func pushDetailVC(model: DetailModel)
     func pushDetailOrgInfo(model: OrganizatorModel)
     func pushCreateEvent(date: Date)
+    func pushEventsMapVC(events: [EventModel])
 
     // Alerts
     func showAlertWithTitle(_ title: String)
@@ -110,6 +111,11 @@ final class Router: RouterMainProtocol {
         let vc = builder.createDetailOrgInfo(router: self, model: model)
         vc.modalPresentationStyle = .popover
         presentVC(vc)
+    }
+    
+    func pushEventsMapVC(events: [EventModel]) {
+        let vc = builder.createEventsMapVC(router: self, events: events)
+        pushVC(vc)
     }
 
     // MARK: - Alerts

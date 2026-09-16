@@ -7,7 +7,7 @@ final class AddressSuggestionsView: UIView {
         set { addressService.expectedCity = newValue }
     }
     
-    var onAddressSelected: ((String) -> Void)?
+    var onAddressSelected: ((String, Double, Double) -> Void)?
     var onNeedsHouseNumber: ((String) -> Void)?
     var onInvalidSelection: (() -> Void)?
     
@@ -91,9 +91,9 @@ extension AddressSuggestionsView: UITableViewDataSource, UITableViewDelegate {
             guard let self else { return }
 
             switch result {
-            case .completed(let address):
+            case .completed(let address, let latitude, let longitude):
                 self.clear()
-                self.onAddressSelected?(address)
+                self.onAddressSelected?(address, latitude, longitude)
 
             case .needsHouseNumber(let textToFill):
                 self.onNeedsHouseNumber?(textToFill)

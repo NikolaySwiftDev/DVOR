@@ -6,7 +6,7 @@ protocol AddressCompleterServiceDelegate: AnyObject {
 }
 
 enum AddressSelectionResult {
-    case completed(address: String)
+    case completed(address: String, latitude: Double, longitude: Double)
     case needsHouseNumber(textToFill: String)
     case invalid
 }
@@ -58,14 +58,17 @@ final class AddressCompleterService: NSObject, AddressCompleterServiceProtocol {
             guard let placemark = response?.mapItems.first?.placemark,
                   let locality = placemark.locality,
                   locality.caseInsensitiveCompare(self.expectedCity) == .orderedSame,
-                  let street = placemark.thoroughfare else {
+                  let street = placemark.thoroughfare,
+                  let coordinate = placemark.location?.coordinate else {
                 DispatchQueue.main.async { completionHandler(.invalid) }
                 return
             }
 
             if let number = placemark.subThoroughfare {
                 let fullAddress = "\(street), \(number)"
-                DispatchQueue.main.async { completionHandler(.completed(address: fullAddress)) }
+                DispatchQueue.main.async {
+                    completionHandler(.completed(address: fullAddress, latitude: coordinate.latitude, longitude: coordinate.longitude))
+                }
             } else {
                 DispatchQueue.main.async { completionHandler(.needsHouseNumber(textToFill: street)) }
             }

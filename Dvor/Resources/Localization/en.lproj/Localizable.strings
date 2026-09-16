@@ -45,6 +45,7 @@
 "matches.title_sort" = "Sort";
 "matches.title_refresh" = "Refresh";
 "matches.title" = "Matches";
+"matches.title_map" = "Map";
 
 "your_events_on" = "Your events on ";
 "please_select_event" = "Please select an event";
