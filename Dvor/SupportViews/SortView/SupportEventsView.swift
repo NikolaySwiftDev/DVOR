@@ -4,7 +4,6 @@ import UIKit
 protocol SupportEventsViewDelegate: AnyObject {
     func closeView(type: TypeView)
     func sortEvents(predicate: SortPredicate)
-    func filterEvents()
 }
 
 

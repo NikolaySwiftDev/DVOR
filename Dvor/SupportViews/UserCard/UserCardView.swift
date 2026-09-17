@@ -66,16 +66,86 @@ final class UserCardView: UIView {
         view.backgroundColor = UserCardViewConstan.secondTextColor
         return view
     }()
+
+    // MARK: - Loading State (Skeleton)
+    private let skeletonContainer = UIView()
+    
+    private let skeletonAvatar = ShimmerPlaceholderView()
+    private let skeletonName = ShimmerPlaceholderView()
+    private let skeletonPosition = ShimmerPlaceholderView()
+    private let skeletonStat = ShimmerPlaceholderView()
+    private let skeletonSeparator1 = ShimmerPlaceholderView()
+    private let skeletonInfoTitle = ShimmerPlaceholderView()
+    private let skeletonCityRow = ShimmerPlaceholderView()
+    private let skeletonExperienceRow = ShimmerPlaceholderView()
+    private let skeletonSeparator2 = ShimmerPlaceholderView()
+    
+    private lazy var shimmerViews: [ShimmerPlaceholderView] = [
+        skeletonAvatar, skeletonName, skeletonPosition, skeletonStat,
+        skeletonSeparator1, skeletonInfoTitle, skeletonCityRow,
+        skeletonExperienceRow, skeletonSeparator2
+    ]
+    
+    private var isConfigured = false
         
     // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
         setupConstraints()
+        setupSkeletonConstraints()
+        startLoading()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Loading
+    func startLoading() {
+        isConfigured = false
+        scrollView.alpha = 0
+        scrollView.isHidden = true
+        skeletonContainer.isHidden = false
+        skeletonContainer.alpha = 1
+        shimmerViews.forEach { $0.startShimmer() }
+        startBackgroundPulse()
+    }
+    
+    private func stopLoading() {
+        guard !isConfigured else { return }
+        isConfigured = true
+        stopBackgroundPulse()
+        
+        scrollView.isHidden = false
+        UIView.animate(withDuration: 0.3, animations: {
+            self.scrollView.alpha = 1
+            self.skeletonContainer.alpha = 0
+        }, completion: { _ in
+            self.skeletonContainer.isHidden = true
+            self.shimmerViews.forEach { $0.stopShimmer() }
+        })
+    }
+    
+    private func startBackgroundPulse() {
+        let animation = CABasicAnimation(keyPath: "backgroundColor")
+        animation.fromValue = UserCardViewConstan.cardColor.cgColor
+        animation.toValue = UserCardViewConstan.cardColor.adjusted(brightnessBy: 0.06).cgColor
+        animation.duration = 1.1
+        animation.autoreverses = true
+        animation.repeatCount = .infinity
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        layer.add(animation, forKey: "bgPulse")
+    }
+    
+    private func stopBackgroundPulse() {
+        let fadeBack = CABasicAnimation(keyPath: "backgroundColor")
+        fadeBack.toValue = UserCardViewConstan.cardColor.cgColor
+        fadeBack.duration = 0.3
+        fadeBack.fillMode = .forwards
+        fadeBack.isRemovedOnCompletion = false
+        layer.removeAnimation(forKey: "bgPulse")
+        layer.add(fadeBack, forKey: "bgPulseFadeOut")
     }
     
     // MARK: - Configuration
@@ -97,6 +167,10 @@ final class UserCardView: UIView {
         // Personal info
         cityInfoView.setValue(model.city)
         experienceInfoView.setValue(model.experience)
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.stopLoading()
+//        }
     }
     
     // MARK: - Private Methods
@@ -110,10 +184,13 @@ final class UserCardView: UIView {
         
         addSubview(scrollView)
         scrollView.addSubview(contentView)
+        addSubview(skeletonContainer)
         
         [avatarImageView, fullNameLabel, positionLabel, statsStackView, separatorView1, infoTitleLabel, cityInfoView, experienceInfoView, separatorView2].forEach {
             contentView.addSubview($0)
         }
+        
+        shimmerViews.forEach { skeletonContainer.addSubview($0) }
     }
     
     private func setupConstraints() {
@@ -172,6 +249,71 @@ final class UserCardView: UIView {
         
         separatorView2.snp.makeConstraints { make in
             make.top.equalTo(experienceInfoView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.height.equalTo(1)
+        }
+    }
+    
+    private func setupSkeletonConstraints() {
+        skeletonContainer.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        skeletonAvatar.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(UserCardViewConstan.topPadding)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(UserCardViewConstan.avatarHeight)
+            make.width.equalTo(UserCardViewConstan.avatarHeight / 1.2)
+        }
+        
+        skeletonName.snp.makeConstraints { make in
+            make.top.equalTo(skeletonAvatar.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(160)
+            make.height.equalTo(20)
+        }
+        
+        skeletonPosition.snp.makeConstraints { make in
+            make.top.equalTo(skeletonName.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(110)
+            make.height.equalTo(14)
+        }
+        
+        skeletonStat.snp.makeConstraints { make in
+            make.top.equalTo(skeletonPosition.snp.bottom).offset(24)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(70)
+            make.height.equalTo(34)
+        }
+        
+        skeletonSeparator1.snp.makeConstraints { make in
+            make.top.equalTo(skeletonStat.snp.bottom).offset(24)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.height.equalTo(1)
+        }
+        
+        skeletonInfoTitle.snp.makeConstraints { make in
+            make.top.equalTo(skeletonSeparator1.snp.bottom).offset(20)
+            make.leading.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.width.equalTo(140)
+            make.height.equalTo(16)
+        }
+        
+        skeletonCityRow.snp.makeConstraints { make in
+            make.top.equalTo(skeletonInfoTitle.snp.bottom).offset(14)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.height.equalTo(18)
+        }
+        
+        skeletonExperienceRow.snp.makeConstraints { make in
+            make.top.equalTo(skeletonCityRow.snp.bottom).offset(14)
+            make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
+            make.height.equalTo(18)
+        }
+        
+        skeletonSeparator2.snp.makeConstraints { make in
+            make.top.equalTo(skeletonExperienceRow.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(UserCardViewConstan.padding)
             make.height.equalTo(1)
         }
@@ -279,6 +421,51 @@ final class InfoRowView: UIView {
             make.leading.equalTo(titleLabel.snp.trailing).offset(12)
             make.trailing.centerY.equalToSuperview()
         }
+    }
+}
+
+// MARK: - Shimmer Placeholder View
+final class ShimmerPlaceholderView: UIView {
+    private let gradientLayer = CAGradientLayer()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = UserCardViewConstan.secondTextColor.withAlphaComponent(0.25)
+        clipsToBounds = true
+        
+        gradientLayer.colors = [
+            UIColor.clear.cgColor,
+            UIColor.white.withAlphaComponent(0.35).cgColor,
+            UIColor.clear.cgColor
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        gradientLayer.locations = [0.0, 0.5, 1.0]
+        layer.addSublayer(gradientLayer)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = bounds.height / 2
+        gradientLayer.frame = bounds.insetBy(dx: -bounds.width, dy: 0)
+    }
+    
+    func startShimmer() {
+        guard gradientLayer.animation(forKey: "shimmer") == nil else { return }
+        let animation = CABasicAnimation(keyPath: "locations")
+        animation.fromValue = [-1.0, -0.5, 0.0]
+        animation.toValue = [1.0, 1.5, 2.0]
+        animation.duration = 1.3
+        animation.repeatCount = .infinity
+        gradientLayer.add(animation, forKey: "shimmer")
+    }
+    
+    func stopShimmer() {
+        gradientLayer.removeAnimation(forKey: "shimmer")
     }
 }
 

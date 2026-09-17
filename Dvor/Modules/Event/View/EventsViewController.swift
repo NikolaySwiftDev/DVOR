@@ -154,9 +154,6 @@ extension EventsViewController: SupportEventsViewDelegate {
     func sortEvents(predicate: SortPredicate) {
         presenter?.sortEventsWithPredicate(predicate: predicate)
     }
-    
-    func filterEvents() {}
-    
 }
 
 // MARK: - UI Setup

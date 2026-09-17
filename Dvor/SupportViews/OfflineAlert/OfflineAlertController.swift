@@ -147,8 +147,8 @@ final class OfflineOverlayView: UIView {
     private let retryButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("network.retry".loc, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.backgroundColor = .systemBlue
+        button.titleLabel?.font = .poppins(weight: .semiBold, size: 16)
+        button.backgroundColor = Constants.Colors.buttonActiveColor
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false

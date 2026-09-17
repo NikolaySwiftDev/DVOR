@@ -36,6 +36,7 @@ final class ProfileViewController: UIViewController {
     
     //MARK: - Loading
     private func loadProfile() {
+        userCard.startLoading()
         if isOwnProfile {
             presenter?.getProfileInto()
         } else if let model = model {
@@ -119,7 +120,6 @@ private extension ProfileViewController {
     
     private func configureUserCard(with model: UserModel) {
         userCard.configure(with: model)
-
     }
 }
  

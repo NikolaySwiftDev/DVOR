@@ -19,13 +19,17 @@ extension UIViewController {
     func hideLoadingView(with view: UIView, tag: Int, state: LoadingState) {
         switch state {
         case .add:
+            guard view.viewWithTag(tag) == nil else { return }
+            
             let loadingView = UIView()
             loadingView.tag = tag
             loadingView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+            loadingView.alpha = 0
             
             let activityIndicator = UIActivityIndicatorView(style: .large)
             activityIndicator.color = .white
             activityIndicator.startAnimating()
+            activityIndicator.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
             
             loadingView.addSubview(activityIndicator)
             activityIndicator.snp.makeConstraints { make in
@@ -38,12 +42,32 @@ extension UIViewController {
             }
             
             view.isUserInteractionEnabled = false
+            view.layoutIfNeeded()
+            
+            UIView.animate(withDuration: 0.25,
+                            delay: 0,
+                            usingSpringWithDamping: 0.7,
+                            initialSpringVelocity: 0.5,
+                            options: .curveEaseOut) {
+                loadingView.alpha = 1
+                activityIndicator.transform = .identity
+            }
             
         case .delete:
-            view.isUserInteractionEnabled = true
-            if let loadingView = view.viewWithTag(tag) {
-                loadingView.removeFromSuperview()
+            guard let loadingView = view.viewWithTag(tag) else {
+                view.isUserInteractionEnabled = true
+                return
             }
+            
+            UIView.animate(withDuration: 0.2,
+                            delay: 0,
+                            options: .curveEaseIn,
+                            animations: {
+                loadingView.alpha = 0
+            }, completion: { _ in
+                loadingView.removeFromSuperview()
+                view.isUserInteractionEnabled = true
+            })
         }
     }
     
