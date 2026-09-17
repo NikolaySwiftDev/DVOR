@@ -159,13 +159,6 @@ extension EventsViewController: SupportEventsViewDelegate {
     
 }
 
-// MARK: - Cell Location Delegate
-extension EventsViewController: EventTableViewCellProtocol {
-    func locationButtonTapped(location: String) {
-//        presenter?.showLocationOnMap(location: location)
-    }
-}
-
 // MARK: - UI Setup
 private extension EventsViewController {
     private func setupView() {
@@ -182,7 +175,6 @@ private extension EventsViewController {
     
     private func configure() {
         eventsTableView.delegate = self
-        eventsTableView.cellDelegate = self
         calendarView.delegate = self
         sortView.delegate = self
         filterView.delegate = self

@@ -10,7 +10,6 @@ protocol EventsTableViewDelegate: AnyObject {
 final class EventsTableView: UIView {
 
     weak var delegate: EventsTableViewDelegate?
-    weak var cellDelegate: EventTableViewCellProtocol?
 
     var events: [EventModel] = [] {
         didSet {
@@ -92,7 +91,6 @@ extension EventsTableView: UITableViewDataSource, UITableViewDelegate {
         }
         let event = events[indexPath.row]
         cell.configure(with: event)
-        cell.delegate = cellDelegate
 
         let avatarImages: [UIImage?] = event.users
             .prefix(3)

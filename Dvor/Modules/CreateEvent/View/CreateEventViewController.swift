@@ -57,6 +57,7 @@ final class CreateEventViewController: UIViewController {
     }
     
     @objc private func nextButtonTapped() {
+        nextButton.isEnabled = false
         presenter?.writeEvent(players: player, date: date, time: time, address: adress, place: place, latitude: addressLatitude, longitude: addressLongitude)
     }
     

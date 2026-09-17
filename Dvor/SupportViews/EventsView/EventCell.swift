@@ -1,22 +1,14 @@
 import UIKit
 
-protocol EventTableViewCellProtocol: AnyObject {
-    func locationButtonTapped(location: String)
-}
-
 final class EventTableViewCell: UITableViewCell {
-
-    weak var delegate: EventTableViewCellProtocol?
-    
-    private var locationText: String?
-    
+        
     static let identifier = "EventTableViewCell"
 
     private let containerView = UIView()
-    private let timeLabel = UILabel()
-    private let formatLabel = UILabel()
-    private let peopleCountLabel = UILabel()
-    private let locationButton = UIButton(type: .system)
+    private let timeLabel = UILabel(font: .poppins(weight: .semiBold, size: 16))
+    private let formatLabel = UILabel(font: .poppins(weight: .regular, size: .small))
+    private let peopleCountLabel = UILabel(font: .poppins(weight: .regular, size: .small))
+    private let locationLabel = UILabel(font: .poppins(weight: .regular, size: .small))
 
     private let avatarsStackView: UIStackView = {
         let stack = UIStackView()
@@ -48,31 +40,10 @@ final class EventTableViewCell: UITableViewCell {
         containerView.layer.cornerRadius = Constants.Constraint.cornerRadius
         selectionStyle = .none
 
-        timeLabel.font = .poppins(weight: .semiBold, size: 16)
-        timeLabel.textColor = .black
-        timeLabel.textAlignment = .left
-
-        formatLabel.font = .poppins(weight: .regular, size: .small)
-        formatLabel.textColor = .black
-        formatLabel.textAlignment = .left
-
-        peopleCountLabel.font = .poppins(weight: .regular, size: .small)
-        peopleCountLabel.textColor = .black
-        peopleCountLabel.textAlignment = .left
-
-        locationButton.titleLabel?.textAlignment = .left
-        locationButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        locationButton.titleLabel?.font = .poppins(weight: .regular, size: .small)
-        locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
-
         contentView.addSubview(containerView)
-        [timeLabel, formatLabel, peopleCountLabel, locationButton, avatarsStackView].forEach { view in
+        [timeLabel, formatLabel, peopleCountLabel, locationLabel, avatarsStackView].forEach { view in
             containerView.addSubview(view)
         }
-    }
-    
-    @objc private func locationButtonTapped() {
-        delegate?.locationButtonTapped(location: locationText ?? "No location")
     }
 
     private func setupConstraints() {
@@ -88,7 +59,7 @@ final class EventTableViewCell: UITableViewCell {
             $0.leading.equalToSuperview().offset(20)
         }
 
-        locationButton.snp.makeConstraints {
+        locationLabel.snp.makeConstraints {
             $0.leading.equalTo(timeLabel.snp.trailing).offset(10)
             $0.centerY.equalTo(timeLabel)
             $0.trailing.lessThanOrEqualToSuperview().offset(-10)
@@ -102,7 +73,7 @@ final class EventTableViewCell: UITableViewCell {
 
         peopleCountLabel.snp.makeConstraints {
             $0.centerY.equalTo(formatLabel)
-            $0.leading.equalTo(locationButton.snp.leading)
+            $0.leading.equalTo(locationLabel.snp.leading)
         }
 
         avatarsStackView.snp.makeConstraints {
@@ -112,7 +83,7 @@ final class EventTableViewCell: UITableViewCell {
         
         formatLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         timeLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
-        locationButton.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        locationLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         peopleCountLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
     }
 
@@ -120,7 +91,6 @@ final class EventTableViewCell: UITableViewCell {
         timeLabel.text = model.time
         formatLabel.text = model.formatString
         peopleCountLabel.text = model.peopleAllCount
-        locationText = model.address
         
         let attributedString = NSAttributedString(
             string: model.address,
@@ -130,7 +100,8 @@ final class EventTableViewCell: UITableViewCell {
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ]
         )
-        locationButton.setAttributedTitle(attributedString, for: .normal)
+        
+        locationLabel.attributedText = attributedString
         
         switch model.peopleAllCountInt {
         case 0: peopleCountLabel.textColor = UIColor(hexString: "#10B228")
