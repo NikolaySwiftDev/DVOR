@@ -122,8 +122,8 @@ extension DetailViewController: DetailProtocol {
 
 //MARK: - Comments Protocol
 extension DetailViewController: CommentsViewDelegate {
-    func deleteComment(commentId: CommentModel) {
-        presenter?.removeComment(idEvent: detail.id, comment: commentId)
+    func deleteComment(_ comment: CommentModel) {
+        presenter?.removeComment(idEvent: detail.id, comment: comment)
     }
     
     func didSendComment(text: String) {
@@ -171,6 +171,10 @@ private extension DetailViewController {
         segmentView.commentsView.delegate = self
         mapView.delegate = self
         mapView.configure(with: detail.fullAdress)
+        segmentView.commentsView.canDelete = { [weak self] comment in
+            guard let self = self else { return false }
+            return self.presenter?.canDeleteComment(comment) ?? false
+        }
     }
     
     private func setupContraints() {

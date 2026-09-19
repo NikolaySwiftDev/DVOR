@@ -3,13 +3,14 @@ import SnapKit
 
 protocol CommentsViewDelegate: AnyObject {
     func didSendComment(text: String)
-    func deleteComment(commentId: CommentModel)
+    func deleteComment(_ comment: CommentModel)
 }
 
 final class CommentsView: UIView {
 
     weak var delegate: CommentsViewDelegate?
-
+    var canDelete: ((CommentModel) -> Bool)?
+    
     // MARK: - UI Elements
     private let tableView = UITableView()
     private let emptyLabel = UILabel(text: CommentsViewStrings.empty,
@@ -207,16 +208,18 @@ extension CommentsView: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView,
-                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard comments.indices.contains(indexPath.row) else { return nil }
         let comment = comments[indexPath.row]
 
+        // если удалять нельзя, свайп вообще не показываем
+        guard canDelete?(comment) == true else { return nil }
+
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
-            self?.delegate?.deleteComment(commentId: comment)
+            self?.delegate?.deleteComment(comment)
             completion(true)
         }
-        deleteAction.image = UIImage(systemName: CommentsViewStrings.deleteImege)
+        deleteAction.image = UIImage(systemName: "trash")
 
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }

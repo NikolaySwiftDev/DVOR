@@ -30,6 +30,7 @@ protocol DetailPresenterProtocol: AnyObject {
     func fetchComments(idEvent: String)
     func addComment(idEvent: String, text: String)
     func removeComment(idEvent: String, comment: CommentModel)
+    func canDeleteComment(_ comment: CommentModel) -> Bool
     
     func popVC()
     func shareEvent(eventID: String)
@@ -39,7 +40,7 @@ protocol DetailPresenterProtocol: AnyObject {
 }
 
 final class DetailPresenter: DetailPresenterProtocol {
-
+    
     weak var view: DetailProtocol?
     var users: [UserModel]?
     var org: OrganizatorModel?
@@ -50,7 +51,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     let notification: NotificationManagerProtocol
     let commentsManager: FirebaseCommentsManagerProtocol
     let storage: CityStorageProtocol?
-
+    
     required init(view: DetailProtocol,
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
@@ -91,22 +92,22 @@ final class DetailPresenter: DetailPresenterProtocol {
             router.showAlertWithTitle(DetailPresenterConstants.selectEvent)
             return
         }
-
+        
         guard let idUser = firebase.currentUserId, let currentCity = storage?.currentCity else {
             router.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
         }
-
+        
         guard currentCity == city else {
             router.showAlertWithTitle(DetailPresenterConstants.differentCity)
             return
         }
-
+        
         if let users = users, users.contains(where: { $0.id == idUser }) {
             router.showAlertWithTitle(DetailPresenterConstants.alreadyParticipating)
             return
         }
-
+        
         network.hasEventOnSameDay(userId: idUser, date: date, excludingEventId: idEvent) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -121,7 +122,7 @@ final class DetailPresenter: DetailPresenterProtocol {
             }
         }
     }
-
+    
     private func proceedWithJoining(idEvent: String, idUser: String, date: Date, time: String, isComplete: Bool) {
         network.writeUserToEvent(idEvent: idEvent, idUser: idUser) { [weak self] result in
             guard let self = self else { return }
@@ -173,7 +174,7 @@ final class DetailPresenter: DetailPresenterProtocol {
             }
         })
     }
-
+    
     //MARK: - Fetch comments
     func fetchComments(idEvent: String) {
         view?.load()
@@ -189,17 +190,17 @@ final class DetailPresenter: DetailPresenterProtocol {
             }
         }
     }
-
+    
     //MARK: - Add comment
     func addComment(idEvent: String, text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-
+        
         guard let idUser = firebase.currentUserId else {
             router.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
         }
-
+        
         network.fetchUser(idUser: idUser) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -229,24 +230,21 @@ final class DetailPresenter: DetailPresenterProtocol {
             }
         }
     }
-
+    
     //MARK: - Remove comment
     func removeComment(idEvent: String, comment: CommentModel) {
-        guard let currentUserId = firebase.currentUserId else {
+        guard firebase.currentUserId != nil else {
             router.showAlertWithTitle(EventsPresenterStrings.needToLogIn)
             return
         }
-
-        let commentId = comment.id
-
-        let isOrganizer = org?.id == currentUserId
-        let isCommentAuthor = comment.userId == currentUserId
-
-        guard isOrganizer || isCommentAuthor else {
+        
+        guard canDeleteComment(comment) else {
             router.showAlertWithTitle(EventsPresenterStrings.cannotDeleteNotOwned)
             return
         }
-
+        
+        let commentId = comment.id
+        
         commentsManager.deleteComment(idEvent: idEvent, commentId: commentId) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -259,7 +257,14 @@ final class DetailPresenter: DetailPresenterProtocol {
             }
         }
     }
-
+    
+    func canDeleteComment(_ comment: CommentModel) -> Bool {
+        guard let currentUserId = firebase.currentUserId else { return false }
+        let isOrganizer = org?.id == currentUserId
+        let isCommentAuthor = comment.userId == currentUserId
+        return isOrganizer || isCommentAuthor
+    }
+    
     func shareEvent(eventID: String) {
         let shareURL = "dvor://openScreen?screen=detail&eventId="
         let fullURL = shareURL + eventID
@@ -287,6 +292,6 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
     
     deinit {
-        //        print(#function, self)
+        print(#function, self)
     }
 }
