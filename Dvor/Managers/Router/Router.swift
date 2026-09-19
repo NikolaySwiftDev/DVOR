@@ -19,7 +19,7 @@ protocol RouterMainProtocol: RouterMain {
 
     // Screens
     func pushHomeVC()
-    func pushRegistVC()
+    func pushRegistVC(isNewAcc: Bool)
     func pushAuthVC()
     func pushProfileVC(model: UserModel?)
     func pushDetailVC(model: DetailModel)
@@ -88,8 +88,8 @@ final class Router: RouterMainProtocol {
         pushVC(vc)
     }
     
-    func pushRegistVC() {
-        appCoordinator?.showOnboarding()
+    func pushRegistVC(isNewAcc: Bool) {
+        appCoordinator?.showOnboarding(isNewAccount: isNewAcc)
     }
 
     func pushDetailVC(model: DetailModel) {

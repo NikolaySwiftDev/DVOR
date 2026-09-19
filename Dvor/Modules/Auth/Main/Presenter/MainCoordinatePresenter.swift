@@ -19,7 +19,7 @@ final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
     }
     
     func pushRegistVC() {
-        router?.pushRegistVC()
+        router?.pushRegistVC(isNewAcc: true)
     }
     
     func pushAuthVC() {

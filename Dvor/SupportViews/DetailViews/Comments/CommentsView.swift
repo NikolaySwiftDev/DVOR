@@ -3,6 +3,7 @@ import SnapKit
 
 protocol CommentsViewDelegate: AnyObject {
     func didSendComment(text: String)
+    func deleteComment(commentId: CommentModel)
 }
 
 final class CommentsView: UIView {
@@ -205,6 +206,20 @@ extension CommentsView: UITableViewDelegate, UITableViewDataSource {
         cell.configure(with: comments[indexPath.row])
         return cell
     }
+    
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard comments.indices.contains(indexPath.row) else { return nil }
+        let comment = comments[indexPath.row]
+
+        let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
+            self?.delegate?.deleteComment(commentId: comment)
+            completion(true)
+        }
+        deleteAction.image = UIImage(systemName: CommentsViewStrings.deleteImege)
+
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
 }
 
 // MARK: - UITextFieldDelegate
@@ -219,4 +234,5 @@ extension CommentsView: UITextFieldDelegate {
 private struct CommentsViewStrings {
     static let placeholder = "comments.placeholder".loc
     static let empty = "comments.empty".loc
+    static let deleteImege = "trash"
 }

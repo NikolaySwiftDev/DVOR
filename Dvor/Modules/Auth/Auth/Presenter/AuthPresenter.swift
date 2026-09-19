@@ -43,8 +43,8 @@ final class AuthPresenter: AuthPresenterProtocol {
                         let city = success.toCityModel()
                         storage.updateCity(city)
                         router.pushHomeVC()
-                    case .failure(let failure):
-                        router.showAlertWithTitle(failure.localizedDescription)
+                    case .failure(_):
+                        router.pushRegistVC(isNewAcc: false)
                     }
                 }
             case .failure(let failure):

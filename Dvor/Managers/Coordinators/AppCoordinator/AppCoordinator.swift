@@ -3,7 +3,7 @@ import UIKit
 protocol AppCoordinatorProtocol: AnyObject {
     func start()
     func showHome()
-    func showOnboarding()
+    func showOnboarding(isNewAccount: Bool)
     func showRegistration()
 }
 
@@ -69,7 +69,7 @@ final class AppCoordinator: AppCoordinatorProtocol {
         setRoot(vc)
     }
 
-    func showOnboarding() {
+    func showOnboarding(isNewAccount: Bool) {
         let presenter = builder.createRegistrationPresenter(router: router, coordinator: self)
         registrationCoordinator = RegistrationCoordinator(presenter: presenter, rootController: rootController, router: router)
         registrationCoordinator?.onRegistrationComplete = { [weak self] in
@@ -77,7 +77,11 @@ final class AppCoordinator: AppCoordinatorProtocol {
             registrationCoordinator = nil
             showHome()
         }
-        registrationCoordinator?.start()
+        if isNewAccount{
+            registrationCoordinator?.start()
+        } else {
+            registrationCoordinator?.next()
+        }
     }
     // MARK: - Private
 

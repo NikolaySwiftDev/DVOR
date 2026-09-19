@@ -29,7 +29,7 @@ protocol DetailPresenterProtocol: AnyObject {
     
     func fetchComments(idEvent: String)
     func addComment(idEvent: String, text: String)
-    func removeComment(idEvent: String, commentId: String)
+    func removeComment(idEvent: String, comment: CommentModel)
     
     func popVC()
     func shareEvent(eventID: String)
@@ -231,7 +231,22 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
 
     //MARK: - Remove comment
-    func removeComment(idEvent: String, commentId: String) {
+    func removeComment(idEvent: String, comment: CommentModel) {
+        guard let currentUserId = firebase.currentUserId else {
+            router.showAlertWithTitle(EventsPresenterStrings.needToLogIn)
+            return
+        }
+
+        let commentId = comment.id
+
+        let isOrganizer = org?.id == currentUserId
+        let isCommentAuthor = comment.userId == currentUserId
+
+        guard isOrganizer || isCommentAuthor else {
+            router.showAlertWithTitle(EventsPresenterStrings.cannotDeleteNotOwned)
+            return
+        }
+
         commentsManager.deleteComment(idEvent: idEvent, commentId: commentId) { [weak self] result in
             guard let self = self else { return }
             switch result {

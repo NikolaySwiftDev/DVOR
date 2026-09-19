@@ -65,7 +65,6 @@ final class EventsPresenter: EventsPresenterProtocol {
         self.network = network
         self.firebase = firebase
         self.storage = storage
-        
     }
     
     //MARK: - General processing of results
@@ -241,10 +240,9 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Push to the profile screen
     func pushProfileVC() {
-        guard firebase.currentUserId != nil else {
-            router?.showAlertWithTitle(EventsPresenterStrings.needToCheck)
-            return
-        }
+//        if firebase.currentUserId != nil {
+//            router?.showAlertWithTitle(EventsPresenterStrings.needToCheck)
+//        }
         router?.pushProfileVC(model: nil)
     }
     

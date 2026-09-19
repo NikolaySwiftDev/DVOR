@@ -199,7 +199,8 @@ private extension EventsViewController {
         
         sortView.isHidden = true
         filterView.isHidden = true
-
+        fetchButton.isHidden = true
+        mapButton.isHidden = true
     }
     
     private func setupConstraints() {

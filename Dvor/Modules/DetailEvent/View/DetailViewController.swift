@@ -122,6 +122,10 @@ extension DetailViewController: DetailProtocol {
 
 //MARK: - Comments Protocol
 extension DetailViewController: CommentsViewDelegate {
+    func deleteComment(commentId: CommentModel) {
+        presenter?.removeComment(idEvent: detail.id, comment: commentId)
+    }
+    
     func didSendComment(text: String) {
         presenter?.addComment(idEvent: detail.id, text: text)
     }

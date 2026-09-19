@@ -73,7 +73,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     func editProfile() {
         guard let model = user else {
-            router.showAlertWithTitle("User is empty".loc)
+            router.showAlertWithTitle("auth.no_user".loc)
             return
         }
         

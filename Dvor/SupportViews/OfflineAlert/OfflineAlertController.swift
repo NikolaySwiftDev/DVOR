@@ -241,9 +241,6 @@ final class OfflineOverlayView: UIView {
     }
 
     // MARK: - Touch blocking
-
-    // Any touch inside the overlay (outside the retry button) is swallowed here,
-    // so the app underneath can never be interacted with while offline.
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let view = super.hitTest(point, with: event)
         return view ?? self

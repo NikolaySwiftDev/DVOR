@@ -70,7 +70,7 @@ final class UserCardView: UIView {
     // MARK: - Loading State (Skeleton)
     private let skeletonContainer = UIView()
     
-    private let skeletonAvatar = ShimmerPlaceholderView()
+    private let skeletonAvatar = ShimmerPlaceholderView(isAvatar: true)
     private let skeletonName = ShimmerPlaceholderView()
     private let skeletonPosition = ShimmerPlaceholderView()
     private let skeletonStat = ShimmerPlaceholderView()
@@ -427,8 +427,10 @@ final class InfoRowView: UIView {
 // MARK: - Shimmer Placeholder View
 final class ShimmerPlaceholderView: UIView {
     private let gradientLayer = CAGradientLayer()
+    var isAvatar = false
     
-    override init(frame: CGRect) {
+    init(frame: CGRect = .zero, isAvatar: Bool = false) {
+        self.isAvatar = isAvatar
         super.init(frame: frame)
         backgroundColor = UserCardViewConstan.secondTextColor.withAlphaComponent(0.25)
         clipsToBounds = true
@@ -442,6 +444,7 @@ final class ShimmerPlaceholderView: UIView {
         gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
         gradientLayer.locations = [0.0, 0.5, 1.0]
         layer.addSublayer(gradientLayer)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -450,7 +453,7 @@ final class ShimmerPlaceholderView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        layer.cornerRadius = bounds.height / 2
+        layer.cornerRadius = isAvatar ? 25 : bounds.height / 2
         gradientLayer.frame = bounds.insetBy(dx: -bounds.width, dy: 0)
     }
     

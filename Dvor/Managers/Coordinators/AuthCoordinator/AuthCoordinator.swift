@@ -3,6 +3,7 @@ import UIKit
 protocol Coordinator: AnyObject {
     init(presenter: RegistPresenterProtocol?, rootController: RootController, router: RouterMainProtocol)
     func start()
+    func next()
 }
 
 protocol RegistrationCoordinatorProtocol: Coordinator {
@@ -36,6 +37,10 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
     // MARK: - Start
     func start() {
         showEmail()
+    }
+    
+    func next() {
+        showInfoInput()
     }
         
     func showEmail() {
