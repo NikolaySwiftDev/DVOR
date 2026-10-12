@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - View Protocol
 protocol CreateEventProtocol: AnyObject {
-    func success(city: String)
+    func success(city: CityModel)
     func error(error: Error)
 }
 
@@ -72,7 +72,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             return
         }
         self.city = city
-        view?.success(city: city.name)
+        view?.success(city: city)
     }
     
     //MARK: - Record events in the database

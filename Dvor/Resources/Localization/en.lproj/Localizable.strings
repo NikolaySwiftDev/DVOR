@@ -141,7 +141,7 @@
 "photo_picker.size_exceeded" = "Photo size exceeds %d MB";
 
 "create_event.sign_up" = "Sign up";
-"create_event.info_alert" = "You can create your own event for a match or tournament.";
+"create_event.info_alert" = "You can create your own event for a match or tournament for the next 2 weeks.";
 
 "common.save_error" = "Save error";
 "common.profile" = "Profile";

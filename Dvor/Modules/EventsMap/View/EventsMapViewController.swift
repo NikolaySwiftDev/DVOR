@@ -6,7 +6,6 @@ final class EventsMapViewController: UIViewController {
     // MARK: - Properties
     var presenter: EventsMapPresenterProtocol?
 
-    private let titleLabel = UILabel.init(text: EventsMapConstants.title, font: .poppins(weight: .bold, size: .big), textColor: .black, textAlignment: .center)
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
     private let mapView = EventsMapView()
 
@@ -40,10 +39,9 @@ extension EventsMapViewController: EventsMapViewDelegate {
 private extension EventsMapViewController {
     func setupView() {
         view.backgroundColor = .white
-        view.addSubview(backButton)
-        view.addSubview(titleLabel)
         view.addSubview(mapView)
-        
+        view.addSubview(backButton)
+
         mapView.delegate = self
     }
 
@@ -53,21 +51,11 @@ private extension EventsMapViewController {
             make.leading.equalToSuperview().inset(Constants.Constraint.horizPadding)
         }
 
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(backButton)
-            make.centerX.equalToSuperview()
-        }
-
         mapView.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.edges.equalToSuperview()
         }
     }
 }
 
 extension EventsMapViewController: EventsMapProtocol {}
 
-// MARK: - Constants
-fileprivate struct EventsMapConstants {
-    static let title = "matches.title_map".loc
-}

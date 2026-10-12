@@ -14,6 +14,7 @@ final class CreateEventViewController: UIViewController {
     private var place = ""
     private var addressLatitude: Double?
     private var addressLongitude: Double?
+    private var selectedCity: CityModel?
         
     private let navigationBar = SupportNavigationBar(state: .createEvent)
     private let subTitle = UILabel(text: CreateEventConstants.enterData)
@@ -24,7 +25,7 @@ final class CreateEventViewController: UIViewController {
     private let placeTF = CustomTextFieldView(placeholder: CreateEventConstants.placePlaceholder)
     private let nextButton = UIButton.createStandartButton(title: CreateEventConstants.createButton, target: self, action: #selector(nextButtonTapped))
     
-    private lazy var addressSuggestionsView = AddressSuggestionsView()
+//    private lazy var addressSuggestionsView = AddressSuggestionsView()
     
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -66,6 +67,30 @@ final class CreateEventViewController: UIViewController {
         nextButton.isEnabled = checkValidButton()
     }
     
+    private func openMapLocationPicker() {
+        guard let city = selectedCity else {
+            presenter?.getCityForSearchAdress()
+            return
+        }
+
+        let picker = MapLocationPickerViewController(city: city)
+
+        picker.onLocationSelected = { [weak self] address, latitude, longitude in
+            guard let self else { return }
+
+            self.adress = address
+            self.addressLatitude = latitude
+            self.addressLongitude = longitude
+            self.adressTF.textField.text = address
+
+            self.updateValidButton()
+            checkTFIsNotEmpty(text: address, tf: adressTF)
+        }
+
+        picker.modalPresentationStyle = .fullScreen
+        present(picker, animated: true)
+    }
+    
     deinit {
         // print("deinit CreateEventViewController")
     }
@@ -73,9 +98,10 @@ final class CreateEventViewController: UIViewController {
 
 //MARK: - Create Event Protocol
 extension CreateEventViewController: CreateEventProtocol {
-    func success(city: String) {
-        addressSuggestionsView.expectedCity = city
+    func success(city: CityModel) {
+        selectedCity = city
     }
+
     func error(error: Error) {}
 }
 
@@ -92,6 +118,12 @@ extension CreateEventViewController: SupportNavigationBarDelegate {
 
 //MARK: - UITextFieldDelegate
 extension CreateEventViewController: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        guard textField === adressTF.textField else { return true }
+        openMapLocationPicker()
+        return false
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -128,12 +160,6 @@ extension CreateEventViewController: UITextFieldDelegate {
             timeTF.textField.text = formattedTime
             time = formattedTime.toTimeFormat() ?? ""
             checkTimeTFIsNotEmpty(text: formattedTime, tf: timeTF)
-        case 2:
-            adress = ""
-            addressLatitude = nil
-            addressLongitude = nil
-            addressSuggestionsView.search(query: text)
-            checkTFIsNotEmpty(text: text, tf: adressTF)
         case 3:
             place = text
             checkCountTFIsNotEmpty(text: text, tf: placeTF)
@@ -185,37 +211,11 @@ extension CreateEventViewController {
         timeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         adressTF.textField.delegate = self
-        adressTF.textField.tag = 2
-        adressTF.textField.returnKeyType = .default
-        adressTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         placeTF.textField.delegate = self
         placeTF.textField.tag = 3
         placeTF.textField.returnKeyType = .default
         placeTF.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        
-        addressSuggestionsView.onAddressSelected = { [weak self] resolved, latitude, longitude in
-            guard let self else { return }
-            self.adressTF.textField.text = resolved
-            self.adress = resolved
-            self.addressLatitude = latitude
-            self.addressLongitude = longitude
-            self.adressTF.textField.resignFirstResponder()
-        }
-
-        addressSuggestionsView.onInvalidSelection = { [weak self] in
-            self?.adress = ""
-            self?.addressLatitude = nil
-            self?.addressLongitude = nil
-        }
-                
-        addressSuggestionsView.onNeedsHouseNumber = { [weak self] streetText in
-            self?.adressTF.textField.text = streetText + " "
-            if let textField = self?.adressTF.textField {
-                let endPosition = textField.endOfDocument
-                textField.selectedTextRange = textField.textRange(from: endPosition, to: endPosition)
-            }
-        }
     }
     
     @objc private func titleDateTapped() {
@@ -309,13 +309,6 @@ extension CreateEventViewController {
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
-        }
-        
-        view.addSubview(addressSuggestionsView)
-        addressSuggestionsView.snp.makeConstraints { make in
-            make.top.equalTo(adressView.snp.bottom).offset(4)
-            make.leading.trailing.equalTo(adressView)
-            make.height.equalTo(280)
         }
     }
 }
