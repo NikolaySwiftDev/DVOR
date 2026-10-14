@@ -26,6 +26,7 @@ struct EventModel: Codable {
     var users: [String] = []
     let orgId: String
     
+    
     init(id: String = UUID().uuidString,
          date: Date,
          time: String,
@@ -223,7 +224,8 @@ extension EventModel {
             "ownerName": ownerName,
             "timeGame": timeGame,
             "users": users,
-            "orgId": orgId
+            "orgId": orgId,
+            "countryDay": countryDayKey
         ]
     }
     
@@ -250,6 +252,25 @@ extension EventModel {
     }
 }
 
+extension EventModel {
+
+    private static let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+
+    static func countryDayKey(countryCode: String, date: Date) -> String {
+        "\(countryCode)|\(dayFormatter.string(from: date))"
+    }
+
+    var countryDayKey: String {
+        EventModel.countryDayKey(countryCode: countryCode, date: date)
+    }
+}
 
 struct EventsPresenterStrings {
     static let yourEventsOn = "your_events_on".loc

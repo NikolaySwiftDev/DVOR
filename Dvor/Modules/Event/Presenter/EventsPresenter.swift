@@ -68,11 +68,14 @@ final class EventsPresenter: EventsPresenterProtocol {
     }
     
     //MARK: - General processing of results
-    private func handleEventsResult(_ result: Result<[EventModel], Error>) {
+    private func handleEventsResult(_ result: Result<[EventModel], Error>, requestedDate: Date) {
+        // Ignore a stale response if the user has already switched to another day
+        guard Calendar.current.isDate(requestedDate, inSameDayAs: lastFilterDate) else { return }
+
         switch result {
         case .success(let events):
             self.events = events
-            self.filterEventsWithDate(date: lastFilterDate)
+            self.applyDayFilter(date: lastFilterDate)
             self.sortEventsWithPredicate(predicate: personlaMode ? .personal : lastSortPredicate)
             self.fetchAvatarsForEvents(events)
         case .failure(let error):
@@ -85,11 +88,19 @@ final class EventsPresenter: EventsPresenterProtocol {
         title
     }
     
-    //MARK: - General method of sending a request and monitoring the database
+    //MARK: - Request events for the current country and the selected day
     func fetchEvents() {
-        network?.fetchEvents(completion: { [weak self] result in
+        guard let city = storage?.currentCity else {
+            events = []
+            filteredEvents = []
+            view?.success(date: title)
+            return
+        }
+
+        let requestedDate = lastFilterDate
+        network?.fetchEvents(countryCode: city.countryCode, date: requestedDate, completion: { [weak self] result in
             guard let self = self else { return }
-            self.handleEventsResult(result)
+            self.handleEventsResult(result, requestedDate: requestedDate)
         })
     }
     
@@ -121,33 +132,34 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     //MARK: - Filtering Events by Date
     func filterEventsWithDate(date: Date) {
+        let isAnotherDay = !Calendar.current.isDate(date, inSameDayAs: lastFilterDate)
         lastFilterDate = date
-        
+
+        if isAnotherDay {
+            fetchEvents()
+        } else {
+            applyDayFilter(date: date)
+        }
+    }
+    
+    private func applyDayFilter(date: Date) {
         guard let events = events else { return }
-        guard let myID = firebase.currentUserId/*, let userCity = firebase.currentCity*/ else {
+        guard let myID = firebase.currentUserId else {
             view?.success(date: lastFilterDate.toString())
             router?.showAlertWithTitle(EventsPresenterStrings.needToRegiste)
             return
         }
 
-        let userCity = storage?.currentCity
-        
+        let calendar = Calendar.current
+        let dayEvents = events.filter { calendar.isDate($0.date, inSameDayAs: date) }
+
         if personlaMode {
-            let calendar = Calendar.current
-            filteredEvents = events.filter {
-                calendar.isDate($0.date, inSameDayAs: date)
-            }
-            
-            filteredEvents = filteredEvents?.filter { $0.users.contains(myID) }
-            lastFilterDate = date
+            filteredEvents = dayEvents.filter { $0.users.contains(myID) }
             view?.success(date: title)
         } else {
-            let calendar = Calendar.current
-            filteredEvents = events.filter {
-                calendar.isDate($0.date, inSameDayAs: date)
-            }
+            let userCity = storage?.currentCity
 
-            filteredEvents = filteredEvents?.filter { event in
+            filteredEvents = dayEvents.filter { event in
                 let eventCity = CityModel(
                     name: event.city,
                     countryCode: event.countryCode,
@@ -157,7 +169,6 @@ final class EventsPresenter: EventsPresenterProtocol {
                 )
                 return eventCity == userCity
             }
-            
             view?.success(date: lastFilterDate.toString())
         }
     }

@@ -4,7 +4,7 @@ import FirebaseDatabase
 
 protocol FirebaseDataManagerProtocol: AnyObject {
     //Fetch
-    func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void)
+    func fetchEvents(countryCode: String, date: Date, completion: @escaping (Result<[EventModel], Error>) -> Void)
     func fetchEvent(idEvent: String, completion: @escaping (Result<EventModel, Error>) -> Void)
     func fetchUser(idUser: String, completion: @escaping (Result<UserModel, Error>) -> Void)
     func fetchAllUsersFromEvent(usersID: [String], orgId: String, completion: @escaping (Result<([UserModel], OrganizatorModel?), Error>) -> Void)
@@ -38,19 +38,25 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     init() {
         Database.database().isPersistenceEnabled = true
         database = Database.database(url: FirebaseDataManagerConstants.databaseURL).reference()
-//        print("Init FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
     }
 
     deinit {
 //        print("Deinit FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
     }
     
-    //MARK: - Fetch Events
-    func fetchEvents(completion: @escaping (Result<[EventModel], Error>) -> Void) {
-        database.child(eventsPath).observeSingleEvent(of: .value) { [weak self] snapshot in
-            guard let self = self else { return }
-            self.processSnapshot(snapshot, completion: completion)
-        }
+    //MARK: - Fetch Events (only the selected country and day)
+    func fetchEvents(countryCode: String, date: Date, completion: @escaping (Result<[EventModel], Error>) -> Void) {
+        let key = EventModel.countryDayKey(countryCode: countryCode, date: date)
+
+        database.child(eventsPath)
+            .queryOrdered(byChild: "countryDay")
+            .queryEqual(toValue: key)
+            .observeSingleEvent(of: .value, with: { [weak self] snapshot in
+                guard let self = self else { return }
+                self.processSnapshot(snapshot, completion: completion)
+            }, withCancel: { error in
+                completion(.failure(error))
+            })
     }
     
     //MARK: - Fetch Event from ID

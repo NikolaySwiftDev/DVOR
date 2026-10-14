@@ -2,14 +2,6 @@
 import Foundation
 
 extension DateFormatter {
-    static let yyyyMMdd: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.locale = .current
-        formatter.timeZone = .current
-        return formatter
-    }()
-    
     static let shortDay: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = .current
@@ -24,6 +16,18 @@ extension DateFormatter {
         return formatter
     }()
     
+    static let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+    
+    static func countryDayKey(countryCode: String, date: Date) -> String {
+        "\(countryCode)|\(dayFormatter.string(from: date))"
+    }
 }
 
 extension Date {
@@ -39,17 +43,6 @@ extension Date {
         formatter.dateFormat = format
         formatter.locale = locale
         return formatter.string(from: self)
-    }
-    
-    func isAdult() -> Bool {
-        let calendar = Calendar.current
-        let currentDate = Date()
-        
-        guard let age = calendar.dateComponents([.year], from: self, to: currentDate).year else {
-            return false
-        }
-        
-        return age >= 3 && age <= 100
     }
     
     var shortDay: String {
