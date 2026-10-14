@@ -68,36 +68,26 @@ final class CreateEventViewController: UIViewController {
     }
     
     private func openMapLocationPicker() {
-        guard let city = selectedCity else {
-            presenter?.getCityForSearchAdress()
-            return
-        }
-
-        let picker = MapLocationPickerViewController(city: city)
-
-        picker.onLocationSelected = { [weak self] address, latitude, longitude in
-            guard let self else { return }
-
-            self.adress = address
-            self.addressLatitude = latitude
-            self.addressLongitude = longitude
-            self.adressTF.textField.text = address
-
-            self.updateValidButton()
-            checkTFIsNotEmpty(text: address, tf: adressTF)
-        }
-
-        picker.modalPresentationStyle = .fullScreen
-        present(picker, animated: true)
+        presenter?.showMapPickerView()
     }
     
     deinit {
-        // print("deinit CreateEventViewController")
+         print("deinit CreateEventViewController")
     }
 }
 
 //MARK: - Create Event Protocol
 extension CreateEventViewController: CreateEventProtocol {
+    func updateAddress(address: String, latitude: Double, longitude: Double) {
+        self.adress = address
+        self.addressLatitude = latitude
+        self.addressLongitude = longitude
+        self.adressTF.textField.text = address
+
+        self.updateValidButton()
+        checkTFIsNotEmpty(text: address, tf: adressTF)
+    }
+    
     func success(city: CityModel) {
         selectedCity = city
     }

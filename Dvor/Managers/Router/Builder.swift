@@ -16,6 +16,7 @@ protocol BuilderProtocol: AnyObject {
     func createEditGeo(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createProfileVC(router: RouterMainProtocol, model: UserModel?, appCoordinator: AppCoordinatorProtocol?) -> UIViewController
     func createEventsMapVC(router: RouterMainProtocol, events: [EventModel]) -> UIViewController
+    func createMapLocationPickerVC(router: RouterMainProtocol, city: CityModel) -> MapLocationPickerViewController
 }
 
 class Builder: BuilderProtocol {
@@ -187,5 +188,11 @@ class Builder: BuilderProtocol {
         return view
     }
     
+    func createMapLocationPickerVC(router: RouterMainProtocol, city: CityModel) -> MapLocationPickerViewController {
+        let view = MapLocationPickerViewController()
+        let presenter = MapLocationPickerPresenter(city: city, geocoder: managers.makeGeocoderManager(), router: router)
+        view.presenter = presenter
+        return view
+    }
 
 }

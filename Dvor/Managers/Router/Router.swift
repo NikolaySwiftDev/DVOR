@@ -26,7 +26,8 @@ protocol RouterMainProtocol: RouterMain {
     func pushDetailOrgInfo(model: OrganizatorModel)
     func pushCreateEvent(date: Date)
     func pushEventsMapVC(events: [EventModel])
-
+    func pushMapLocationPickerVC(city: CityModel, onLocationSelected: @escaping (String, Double, Double) -> Void)
+    
     // Alerts
     func showAlertWithTitle(_ title: String)
     func showAlertWithCompletion(_ title: String, completion: (()->())?)
@@ -115,6 +116,13 @@ final class Router: RouterMainProtocol {
     
     func pushEventsMapVC(events: [EventModel]) {
         let vc = builder.createEventsMapVC(router: self, events: events)
+        pushVC(vc)
+    }
+    
+    func pushMapLocationPickerVC(city: CityModel, onLocationSelected: @escaping (String, Double, Double) -> Void) {
+
+        let vc = builder.createMapLocationPickerVC(router: self, city: city)
+        vc.onLocationSelected = onLocationSelected
         pushVC(vc)
     }
 

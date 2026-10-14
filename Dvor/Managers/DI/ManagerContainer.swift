@@ -10,6 +10,7 @@ protocol AppContainerProtocol {
     func makeNotificationManager() -> NotificationManagerProtocol
     func makeLocationManager() -> LocationManagerProtocol
     func makeCityStorageManager() -> CityStorageProtocol
+    func makeGeocoderManager() -> ReverseGeocoding
 }
 
 final class AppContainer: AppContainerProtocol {
@@ -41,5 +42,9 @@ final class AppContainer: AppContainerProtocol {
     
     func makeCityStorageManager() -> CityStorageProtocol {
         CityStorageManager()
+    }
+    
+    func makeGeocoderManager() -> ReverseGeocoding {
+        CLReverseGeocoder()
     }
 }

@@ -4,6 +4,7 @@ import Foundation
 protocol CreateEventProtocol: AnyObject {
     func success(city: CityModel)
     func error(error: Error)
+    func updateAddress(address: String, latitude: Double, longitude: Double)
 }
 
 // MARK: - Presenter Protocol
@@ -22,6 +23,7 @@ protocol CreateEventPresenterProtocol: AnyObject {
     
     func getCityForSearchAdress()
     
+    func showMapPickerView()
     func popVC()
     func showInfoAlert()
 
@@ -128,12 +130,29 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
         })
     }
     
+    func showMapPickerView() {
+        guard let city = storage?.currentCity else {
+            router?.showAlertWithTitle("No city")
+            return
+        }
+
+        router?.pushMapLocationPickerVC(city: city) { [weak self] address, latitude, longitude in
+            guard let self else { return }
+
+            view?.updateAddress(
+                address: address,
+                latitude: latitude,
+                longitude: longitude
+            )
+        }
+    }
+    
     func showInfoAlert() {
         router?.showAlertWithTitle(CreateEventPresenterStrings.infoAlert)
     }
     
     deinit {
-//        print(#function, self)
+        print(#function, self)
     }
 }
 
