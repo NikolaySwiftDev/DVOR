@@ -1,6 +1,8 @@
 import Foundation
 
 protocol EventsProtocol: AnyObject {
+    func load()
+    func didLoad()
     func success(date: String)
     func error(error: Error)
     func updateAvatars(_ avatars: [String: Data]) 
@@ -94,6 +96,7 @@ final class EventsPresenter: EventsPresenterProtocol {
             events = []
             filteredEvents = []
             view?.success(date: title)
+            view?.didLoad()
             return
         }
 
@@ -153,9 +156,11 @@ final class EventsPresenter: EventsPresenterProtocol {
         let calendar = Calendar.current
         let dayEvents = events.filter { calendar.isDate($0.date, inSameDayAs: date) }
 
+        view?.load()
         if personlaMode {
             filteredEvents = dayEvents.filter { $0.users.contains(myID) }
             view?.success(date: title)
+            view?.didLoad()
         } else {
             let userCity = storage?.currentCity
 
@@ -170,6 +175,7 @@ final class EventsPresenter: EventsPresenterProtocol {
                 return eventCity == userCity
             }
             view?.success(date: lastFilterDate.toString())
+            view?.didLoad()
         }
     }
     

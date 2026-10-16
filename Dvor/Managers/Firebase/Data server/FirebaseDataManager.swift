@@ -25,6 +25,12 @@ protocol FirebaseDataManagerProtocol: AnyObject {
     //Check
     func hasEventOnSameDay(userId: String, date: Date, excludingEventId: String, completion: @escaping (Result<Bool, Error>) -> Void)
     func countEvents(forOrganizer orgId: String, on date: Date, completion: @escaping (Result<Int, Error>) -> Void)
+    
+    //Attendance & ratings
+    func fetchAttendance(idEvent: String, completion: @escaping (Result<[String: Bool], Error>) -> Void)
+    func fetchRatings(idEvent: String, completion: @escaping (Result<[String: Int], Error>) -> Void)
+    func setAttendance(idEvent: String, idUser: String, attended: Bool, completion: @escaping (Result<Void, Error>) -> Void)
+    func submitRating(idEvent: String, orgId: String, idUser: String, value: Int, completion: @escaping (Result<Void, Error>) -> Void)
 
 
 }
@@ -434,6 +440,156 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                 
                 completion(.success(count))
             }
+    }
+    
+    //MARK: - Attendance (set by the organizer)
+    func fetchAttendance(idEvent: String, completion: @escaping (Result<[String: Bool], Error>) -> Void) {
+        guard !idEvent.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidEventID))
+            return
+        }
+
+        database.child(eventsPath).child(idEvent).child("attendance")
+            .observeSingleEvent(of: .value, with: { snapshot in
+                let raw = snapshot.value as? [String: Any] ?? [:]
+                completion(.success(raw.compactMapValues { $0 as? Bool }))
+            }, withCancel: { error in
+                completion(.failure(error))
+            })
+    }
+
+    func setAttendance(idEvent: String, idUser: String, attended: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard !idEvent.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidEventID))
+            return
+        }
+        guard !idUser.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+
+        let attendanceRef = database.child(eventsPath).child(idEvent).child("attendance").child(idUser)
+        var previous: Bool?
+
+        attendanceRef.runTransactionBlock({ currentData in
+            previous = currentData.value as? Bool
+            currentData.value = attended
+            return TransactionResult.success(withValue: currentData)
+        }, andCompletionBlock: { [weak self] error, committed, _ in
+            guard let self = self else { return }
+
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard committed else {
+                completion(.success(()))
+                return
+            }
+
+            // Counters follow the change of the mark, so re-marking never double counts
+            var delta: [String: Any] = [:]
+            switch (previous, attended) {
+            case (nil, true):
+                delta["attended"] = ServerValue.increment(1)
+            case (nil, false):
+                delta["noShows"] = ServerValue.increment(1)
+            case (true?, false):
+                delta["attended"] = ServerValue.increment(-1)
+                delta["noShows"] = ServerValue.increment(1)
+            case (false?, true):
+                delta["noShows"] = ServerValue.increment(-1)
+                delta["attended"] = ServerValue.increment(1)
+            default:
+                break
+            }
+
+            guard !delta.isEmpty else {
+                completion(.success(()))
+                return
+            }
+
+            self.database.child(self.usersPath).child(idUser).updateChildValues(delta) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        })
+    }
+
+    //MARK: - Ratings (set once by each participant who attended)
+    func fetchRatings(idEvent: String, completion: @escaping (Result<[String: Int], Error>) -> Void) {
+        guard !idEvent.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidEventID))
+            return
+        }
+
+        database.child(eventsPath).child(idEvent).child("ratings")
+            .observeSingleEvent(of: .value, with: { snapshot in
+                let raw = snapshot.value as? [String: Any] ?? [:]
+                completion(.success(raw.compactMapValues { $0 as? Int }))
+            }, withCancel: { error in
+                completion(.failure(error))
+            })
+    }
+
+    func submitRating(idEvent: String, orgId: String, idUser: String, value: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard !idEvent.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidEventID))
+            return
+        }
+        guard !orgId.isEmpty, !idUser.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+        guard (1...5).contains(value) else {
+            completion(.failure(FirebaseDataError.invalidRating))
+            return
+        }
+
+        let ratingRef = database.child(eventsPath).child(idEvent).child("ratings").child(idUser)
+        var didWrite = false
+
+        ratingRef.runTransactionBlock({ currentData in
+            didWrite = false
+
+            // One rating per participant per event
+            if let existing = currentData.value, !(existing is NSNull) {
+                return TransactionResult.abort()
+            }
+
+            currentData.value = value
+            didWrite = true
+            return TransactionResult.success(withValue: currentData)
+        }, andCompletionBlock: { [weak self] error, committed, _ in
+            guard let self = self else { return }
+
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard committed, didWrite else {
+                completion(.failure(FirebaseDataError.alreadyRated))
+                return
+            }
+
+            let delta: [String: Any] = [
+                "ratingSum": ServerValue.increment(NSNumber(value: value)),
+                "ratingCount": ServerValue.increment(1)
+            ]
+
+            self.database.child(self.usersPath).child(orgId).updateChildValues(delta) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        })
     }
     
     //MARK: - Safe decrement (never goes below 0)

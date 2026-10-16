@@ -247,3 +247,6 @@
 "enter_email.password_placeholder" = "Minimum 6 characters";
 "enter_email.email_description" = "Email";
 "enter_email.password_description" = "Password";
+
+"firebase.invalid_rating" = "Rating must be from 1 to 5";
+"firebase.already_rated" =  "You have already rated this game";

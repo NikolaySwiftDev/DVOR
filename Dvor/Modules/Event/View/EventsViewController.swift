@@ -27,6 +27,8 @@ final class EventsViewController: BaseViewController {
     //Filter View
     private let filterView = SupportEventsView(type: .filter)
     
+    private let spiner = UIActivityIndicatorView(style: .medium)
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +76,18 @@ final class EventsViewController: BaseViewController {
 
 // MARK: - Home Protocol
 extension EventsViewController: EventsProtocol {
+    func load() {
+        spiner.isHidden = false
+        spiner.startAnimating()
+    }
+    
+    func didLoad() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.spiner.isHidden = true
+            self.spiner.stopAnimating()
+        }
+    }
+    
     func success(date: String) {
         titleDate.text = "\(date)"
         
@@ -96,6 +110,8 @@ extension EventsViewController: EventsProtocol {
     
     func error(error: Error) {
         print("Error", error.localizedDescription)
+        spiner.isHidden = true
+        spiner.stopAnimating()
     }
 }
 
@@ -165,6 +181,7 @@ private extension EventsViewController {
         view.addSubview(fetchButton)
         view.addSubview(calendarView)
         view.addSubview(eventsTableView)
+        view.addSubview(spiner)
         view.addSubview(filterView)
         view.addSubview(sortView)
         view.addSubview(mapButton)
@@ -201,6 +218,7 @@ private extension EventsViewController {
         filterView.isHidden = true
         fetchButton.isHidden = true
         mapButton.isHidden = true
+        spiner.isHidden = true
     }
     
     private func setupConstraints() {
@@ -236,6 +254,12 @@ private extension EventsViewController {
         eventsTableView.snp.makeConstraints { make in
             make.top.equalTo(fetchButton.snp.bottom).offset(Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        spiner.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(100)
+            make.size.equalTo(50)
         }
         
         filterView.snp.makeConstraints { make in

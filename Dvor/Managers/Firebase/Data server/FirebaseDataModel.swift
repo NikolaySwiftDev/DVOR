@@ -18,6 +18,9 @@ struct FirebaseDataManagerConstants {
     static let eventAdded = "firebase.event_added".loc
     static let userAdded = "firebase.user_added".loc
     static let eventDeleted = "firebase.event_deleted".loc
+    
+    static let invalidRating = "firebase.invalid_rating".loc
+    static let alreadyRated = "firebase.already_rated".loc
 }
 
 enum FirebaseDataError: LocalizedError {
@@ -29,6 +32,9 @@ enum FirebaseDataError: LocalizedError {
     case userNotFound
     case invalidUserData
     case userNotInEvent
+
+    case invalidRating
+    case alreadyRated
 
     var errorDescription: String? {
         switch self {
@@ -47,6 +53,11 @@ enum FirebaseDataError: LocalizedError {
             return FirebaseDataManagerConstants.invalidUserData
         case .userNotInEvent:
             return FirebaseDataManagerConstants.userNotFoundInEvent
+
+        case .invalidRating:
+            return FirebaseDataManagerConstants.invalidRating
+        case .alreadyRated:
+            return FirebaseDataManagerConstants.alreadyRated
         }
     }
 }

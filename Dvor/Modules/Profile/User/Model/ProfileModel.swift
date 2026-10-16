@@ -29,6 +29,12 @@ struct UserModel: Codable {
     var level: Double = 50
     var mvpCount: Int = 0
     var mvpNominations: Int = 0
+    
+    // for rating & attendance (changed only through FirebaseDataManager)
+    var attended: Int = 0
+    var noShows: Int = 0
+    var ratingSum: Int = 0
+    var ratingCount: Int = 0
 
     init(
         id: String,
@@ -52,6 +58,7 @@ struct UserModel: Codable {
         level: Double = 50,
         mvpCount: Int = 0,
         mvpNominations: Int = 0
+        
     ) {
         self.id = id
         self.image = image
@@ -139,6 +146,11 @@ struct UserModel: Codable {
         self.level = dictionary["level"] as? Double ?? 50
         self.mvpCount = dictionary["mvpCount"] as? Int ?? 0
         self.mvpNominations = dictionary["mvpNominations"] as? Int ?? 0
+        
+        self.attended = dictionary["attended"] as? Int ?? 0
+        self.noShows = dictionary["noShows"] as? Int ?? 0
+        self.ratingSum = dictionary["ratingSum"] as? Int ?? 0
+        self.ratingCount = dictionary["ratingCount"] as? Int ?? 0
     }
 }
 
@@ -166,6 +178,23 @@ extension UserModel {
                   administrativeArea: self.administrativeArea,
                   latitude: self.latitude ?? 0,
                   longitude: self.longitude ?? 0)
+    }
+}
+
+extension UserModel {
+
+    /// Stats are hidden until the user has enough games, otherwise one rating looks like "5.0"
+    static let minGamesForStats = 3
+
+    var attendanceRate: Int? {
+        let total = attended + noShows
+        guard total >= UserModel.minGamesForStats else { return nil }
+        return Int((Double(attended) / Double(total) * 100).rounded())
+    }
+
+    var averageRating: Double? {
+        guard ratingCount >= UserModel.minGamesForStats else { return nil }
+        return Double(ratingSum) / Double(ratingCount)
     }
 }
 
