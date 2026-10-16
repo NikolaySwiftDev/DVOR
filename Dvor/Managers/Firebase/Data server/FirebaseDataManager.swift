@@ -215,36 +215,59 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         
     }
     
-    //MARK: - Adding a user to an event in the database
+    //MARK: - Adding a user to an event (atomic, own key only)
     func writeUserToEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
-        let usersRef = database.child(eventsPath).child(idEvent).child(usersPath)
-        
-        usersRef.observeSingleEvent(of: .value) { [weak self] snapshot in
-            guard let self else { return }
-            var currentUsers = snapshot.value as? [String] ?? []
-            
-            if currentUsers.contains(idUser) {
-                completion(.success(currentUsers))
+        guard !idEvent.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidEventID))
+            return
+        }
+        guard !idUser.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+
+        let userRef = database.child(eventsPath).child(idEvent).child(usersPath).child(idUser)
+        var didAdd = false
+
+        userRef.runTransactionBlock({ currentData in
+            didAdd = false
+
+            // Already in the event: keep the original join time (queue order)
+            if let existing = currentData.value, !(existing is NSNull) {
+                return TransactionResult.abort()
+            }
+
+            currentData.value = ServerValue.timestamp()
+            didAdd = true
+            return TransactionResult.success(withValue: currentData)
+        }, andCompletionBlock: { [weak self] error, committed, _ in
+            guard let self = self else { return }
+
+            if let error = error {
+                completion(.failure(error))
                 return
             }
-            
-            currentUsers.append(idUser)
-            
-            usersRef.setValue(currentUsers) { [weak self] error, _ in
-                guard let self else { return }
-                if let error = error {
-                    completion(.failure(error))
-                } else {
-                    self.database.child(self.usersPath).child(idUser).child("plays")
-                        .setValue(ServerValue.increment(1))
-                    completion(.success(currentUsers))
-                }
+
+            if committed && didAdd {
+                self.database.child("userEvents").child(idUser).child(idEvent).setValue(true)
+                self.database.child(self.usersPath).child(idUser).child("plays")
+                    .setValue(ServerValue.increment(1))
             }
-        }
-        database.child("userEvents").child(idUser).child(idEvent).setValue(true)
+
+            self.fetchEventUserIDs(idEvent: idEvent, completion: completion)
+        })
+    }
+    
+    //MARK: - Current participants of an event (ordered by join time)
+    private func fetchEventUserIDs(idEvent: String, completion: @escaping (Result<[String], Error>) -> Void) {
+        database.child(eventsPath).child(idEvent).child(usersPath)
+            .observeSingleEvent(of: .value, with: { snapshot in
+                completion(.success(EventModel.parseUserIDs(snapshot.value)))
+            }, withCancel: { error in
+                completion(.failure(error))
+            })
     }
 
-    //MARK: - Updating subscribers
     // MARK: - Updating user fields
     func updateUser(userId: String, fields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
         guard !userId.isEmpty else {
@@ -267,7 +290,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         
         eventRef.observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let self else { return }
-            let userIds = (snapshot.value as? [String: Any])?[usersPath] as? [String] ?? []
+            let userIds = EventModel.parseUserIDs((snapshot.value as? [String: Any])?[usersPath])
             
             eventRef.removeValue { error, _ in
                 if let error = error {
@@ -285,32 +308,47 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         }
     }
     
-    //MARK: - Removing a user from an event
+    //MARK: - Removing a user from an event (atomic, own key only)
     func removeUserFromEvent(idEvent: String, idUser: String, completion: @escaping (Result<[String], Error>) -> Void) {
-        let usersRef = database.child(eventsPath).child(idEvent).child(usersPath)
-        
-        usersRef.observeSingleEvent(of: .value) { [weak self] snapshot in
-            guard let self else { return }
-            var currentUsers = snapshot.value as? [String] ?? []
-            
-            guard let userIndex = currentUsers.firstIndex(of: idUser) else {
+        guard !idEvent.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidEventID))
+            return
+        }
+        guard !idUser.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+
+        let userRef = database.child(eventsPath).child(idEvent).child(usersPath).child(idUser)
+        var didRemove = false
+
+        userRef.runTransactionBlock({ currentData in
+            didRemove = false
+
+            guard let existing = currentData.value, !(existing is NSNull) else {
+                return TransactionResult.success(withValue: currentData)
+            }
+
+            currentData.value = nil
+            didRemove = true
+            return TransactionResult.success(withValue: currentData)
+        }, andCompletionBlock: { [weak self] error, committed, _ in
+            guard let self = self else { return }
+
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard committed, didRemove else {
                 completion(.failure(FirebaseDataError.userNotInEvent))
                 return
             }
-            
-            currentUsers.remove(at: userIndex)
-            
-            usersRef.setValue(currentUsers) { [weak self] error, _ in
-                guard let self else { return }
-                if let error = error {
-                    completion(.failure(error))
-                } else {
-                    self.database.child("userEvents").child(idUser).child(idEvent).removeValue()
-                    self.decrementPlaysSafely(userId: idUser)
-                    completion(.success(currentUsers))
-                }
-            }
-        }
+
+            self.database.child("userEvents").child(idUser).child(idEvent).removeValue()
+            self.decrementPlaysSafely(userId: idUser)
+            self.fetchEventUserIDs(idEvent: idEvent, completion: completion)
+        })
     }
     
     func removeUser(userID: String, completion: @escaping (Result<Void, Error>) -> Void) {

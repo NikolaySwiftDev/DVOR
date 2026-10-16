@@ -160,7 +160,7 @@ struct EventModel: Codable {
         self.price = price
         self.ownerName = ownerName
         self.timeGame = timeGame
-        self.users = dictionary["users"] as? [String] ?? []
+        self.users = EventModel.parseUserIDs(dictionary["users"])
         self.orgId = orgId
     
     }
@@ -223,7 +223,7 @@ extension EventModel {
             "price": price,
             "ownerName": ownerName,
             "timeGame": timeGame,
-            "users": users,
+            "users": usersMap,
             "orgId": orgId,
             "countryDay": countryDayKey
         ]
@@ -269,6 +269,35 @@ extension EventModel {
 
     var countryDayKey: String {
         EventModel.countryDayKey(countryCode: countryCode, date: date)
+    }
+}
+
+extension EventModel {
+
+    /// Participants are stored as { uid: joinedAtTimestamp }.
+    /// Returns uids ordered by join time (this is the queue order).
+    static func parseUserIDs(_ raw: Any?) -> [String] {
+        if let map = raw as? [String: Any] {
+            return map
+                .map { (uid: $0.key, joinedAt: ($0.value as? NSNumber)?.doubleValue ?? 0) }
+                .sorted { ($0.joinedAt, $0.uid) < ($1.joinedAt, $1.uid) }
+                .map { $0.uid }
+        }
+
+        // Legacy format: array of uids (old test data)
+        if let legacy = raw as? [String] {
+            return legacy
+        }
+
+        return []
+    }
+
+    private var usersMap: [String: Any] {
+        var map: [String: Any] = [:]
+        for (index, uid) in users.enumerated() {
+            map[uid] = index
+        }
+        return map
     }
 }
 
