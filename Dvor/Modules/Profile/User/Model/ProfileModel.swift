@@ -210,4 +210,14 @@ struct ProfileViewConstants {
     
     static let alerttitledelete = "alert_title.delete".loc
     static let alertdesc = "alert_desc.refund".loc
+    
+    static let passwordTitle = "profile.delete_password_title".loc
+    static let passwordMessage = "profile.delete_password_message".loc
+    static let passwordPlaceholder = "profile.delete_password_placeholder".loc
+    
+    static let signOutButton: String = "profile.sign_out".loc
+    static let deleteAccountButton: String = "profile.delete_account".loc
+
+    static let deleteAccountAlertTitle: String = "profile.delete_account_title".loc
+    static let deleteAccountAlertMessage: String = "profile.delete_account_message".loc
 }

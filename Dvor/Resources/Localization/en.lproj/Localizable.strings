@@ -212,7 +212,7 @@
 "network.retry" = "Retry";
 
 "common.editProfile"= "Edit profile";
-"common.delete"= "Log out";
+"common.delete"= "Delete";
 "alert.change"="What do you want to change?";
 "alert.nickname"="Nickname";
 "alert.avatar"="Avatar";
@@ -250,3 +250,31 @@
 
 "firebase.invalid_rating" = "Rating must be from 1 to 5";
 "firebase.already_rated" =  "You have already rated this game";
+"firebase.already_rated" = "You have already rated this game";
+
+"profile.delete_password_title" = "Confirm deletion";
+"profile.delete_password_message" = "Enter your password. Your profile, events and participation will be permanently deleted";
+"profile.delete_password_placeholder" = "Password";
+
+"report.title" = "Report";
+"report.message" = "Choose a reason";
+"report.action" = "Report";
+"report.sent" = "Thanks, we will review your report";
+"report.reason.spam" = "Spam";
+"report.reason.abuse" = "Abuse";
+"report.reason.inappropriate" = "Inappropriate content";
+"report.reason.other" = "Other";
+
+"block.title" = "Block this user?";
+"block.message" = "Their comments and events will be hidden";
+"block.action" = "Block";
+"block.done" = "User blocked";
+
+"legal.terms" = "Terms of Use";
+"legal.privacy" = "Privacy Policy";
+"legal.consent" = "By continuing you accept the %@ and the %@";
+
+"profile.sign_out" = "Sign out";
+"profile.delete_account" = "Delete account";
+"profile.delete_account_title" = "Delete account?";
+"profile.delete_account_message" = "Your profile, events and participation will be deleted permanently. This cannot be undone";

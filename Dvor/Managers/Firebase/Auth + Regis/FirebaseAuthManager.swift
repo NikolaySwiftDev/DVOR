@@ -10,6 +10,8 @@ protocol FirebaseAuthManagerProtocol: AnyObject {
     func signIn(email: String, password: String, completion: @escaping (Result<String, AuthError>) -> Void)
     func signOut(completion: @escaping (Result<Void, AuthError>) -> Void)
     
+    func reauthenticate(password: String, completion: @escaping (Result<Void, AuthError>) -> Void)
+    func deleteAccount(completion: @escaping (Result<Void, AuthError>) -> Void)
 }
 
 // MARK: - Реальная реализация через Firebase Auth
@@ -104,10 +106,48 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
     func signOut(completion: @escaping (Result<Void, AuthError>) -> Void) {
         do {
             try Auth.auth().signOut()
-//            defaults.removeObject(forKey: Keys.city)
             completion(.success(()))
         } catch {
             completion(.failure(.unknown))
+        }
+    }
+    
+    // MARK: - Re-authentication (required before deleting the account)
+    func reauthenticate(password: String, completion: @escaping (Result<Void, AuthError>) -> Void) {
+        guard let user = Auth.auth().currentUser, let email = user.email else {
+            completion(.failure(.userNotFound))
+            return
+        }
+
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+        user.reauthenticate(with: credential) { [weak self] _, error in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(self.mapFirebaseError(error)))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+
+    // MARK: - Delete the Firebase Auth account
+    func deleteAccount(completion: @escaping (Result<Void, AuthError>) -> Void) {
+        guard let user = Auth.auth().currentUser else {
+            completion(.failure(.userNotFound))
+            return
+        }
+
+        user.delete { [weak self] error in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(self.mapFirebaseError(error)))
+                } else {
+                    completion(.success(()))
+                }
+            }
         }
     }
 }

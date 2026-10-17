@@ -11,8 +11,16 @@ final class ProfileViewController: UIViewController {
     private let userCard = UserCardView()
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
     private let editButton = UIButton.createStandartButton(title: ProfileViewConstants.editButton, backgroundColor: .black,cornerRadius: 8, target: self, action: #selector(editButtonTapped))
-    private let deleteButton = UIButton.createStandartButton(title: ProfileViewConstants.deleteButton, backgroundColor: .black, target: self, action: #selector(deleteButtonTapped))
+    
+    private let signOutButton = UIButton.createStandartButton(title: ProfileViewConstants.signOutButton,
+                                                              backgroundColor: .black,
+                                                              target: self,
+                                                              action: #selector(signOutButtonTapped))
 
+    private let deleteAccountButton = UIButton.createStandartButton(title: ProfileViewConstants.deleteAccountButton,
+                                                                    backgroundColor: .systemRed,
+                                                                    target: self,
+                                                                    action: #selector(deleteAccountButtonTapped))
     init(model: UserModel? = nil) {
         self.model = model
         self.isOwnProfile = (model == nil)
@@ -53,7 +61,12 @@ final class ProfileViewController: UIViewController {
         presenter?.editProfile()
     }
     
-    @objc private func deleteButtonTapped() {
+    @objc private func signOutButtonTapped() {
+        guard isOwnProfile else { return }
+        presenter?.signOut()
+    }
+    
+    @objc private func deleteAccountButtonTapped() {
         guard isOwnProfile else { return }
         presenter?.deleteProfile()
     }
@@ -64,24 +77,31 @@ final class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: ProfileProtocol {
+    func error(error: Error) {}
+    
     func success(model: UserModel) {
         self.model = model
         configureUserCard(with: model)
     }
-    
-    func error(error: Error) {}
+
+    func setDeleteInProgress(_ inProgress: Bool) {
+        deleteAccountButton.isEnabled = !inProgress
+        view.isUserInteractionEnabled = !inProgress
+    }
 }
 
 private extension ProfileViewController {
     private func setupView() {
         editButton.isHidden = !isOwnProfile
-        deleteButton.isHidden = !isOwnProfile
+        signOutButton.isHidden = !isOwnProfile
+        deleteAccountButton.isHidden = !isOwnProfile
         view.backgroundColor = Constants.Colors.backgroungColor
         view.addSubview(userCard)
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(editButton)
-        view.addSubview(deleteButton)
+        view.addSubview(signOutButton)
+        view.addSubview(deleteAccountButton)
     }
     
     private func setupConstraint() {
@@ -105,15 +125,21 @@ private extension ProfileViewController {
             make.top.equalTo(backButton.snp.bottom).offset(ProfileViewConstants.horizPadding)
             make.leading.trailing.equalToSuperview()
             if isOwnProfile {
-                make.bottom.equalTo(deleteButton.snp.top).offset(-Constants.Constraint.horizPadding)
+                make.bottom.equalTo(signOutButton.snp.top).offset(-Constants.Constraint.horizPadding)
             } else {
                 make.bottom.equalToSuperview()
             }
         }
-        
-        deleteButton.snp.makeConstraints { make in
+
+        deleteAccountButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().inset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding * 1.5)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
+
+        signOutButton.snp.makeConstraints { make in
+            make.bottom.equalTo(deleteAccountButton.snp.top).offset(-12)
+            make.leading.trailing.equalTo(deleteAccountButton)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
     }

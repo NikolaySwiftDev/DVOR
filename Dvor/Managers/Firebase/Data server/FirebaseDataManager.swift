@@ -357,28 +357,66 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         })
     }
     
+    //MARK: - Removing a user with everything that belongs to them
     func removeUser(userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        database.child("userEvents").child(userID).observeSingleEvent(of: .value) { [weak self] snapshot in
-            guard let self else { return }
-            let eventIds = (snapshot.value as? [String: Bool])?.keys.map { $0 } ?? []
-            
+        guard !userID.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+
+        // 1. Leave all the events the user has joined
+        database.child("userEvents").child(userID).observeSingleEvent(of: .value, with: { [weak self] snapshot in
+            guard let self = self else { return }
+
+            let joinedIDs = (snapshot.value as? [String: Any])?.keys.map { $0 } ?? []
             let group = DispatchGroup()
-            for eventId in eventIds {
+
+            for eventId in joinedIDs {
                 group.enter()
                 self.removeUserFromEvent(idEvent: eventId, idUser: userID) { _ in group.leave() }
             }
-            
+
             group.notify(queue: .main) {
-                self.database.child(self.usersPath).child(userID).removeValue { error, _ in
-                    self.database.child("userEvents").child(userID).removeValue()
-                    if let error = error {
-                        completion(.failure(error))
-                    } else {
-                        completion(.success(()))
+                // 2. Delete the events organised by this user
+                self.removeOrganizedEvents(orgId: userID) {
+                    // 3. Delete the profile and the list of joined events
+                    self.database.child(self.usersPath).child(userID).removeValue { error, _ in
+                        self.database.child("userEvents").child(userID).removeValue()
+                        if let error = error {
+                            completion(.failure(error))
+                        } else {
+                            completion(.success(()))
+                        }
                     }
                 }
             }
-        }
+        }, withCancel: { error in
+            completion(.failure(error))
+        })
+    }
+
+    private func removeOrganizedEvents(orgId: String, completion: @escaping () -> Void) {
+        database.child(eventsPath)
+            .queryOrdered(byChild: "orgId")
+            .queryEqual(toValue: orgId)
+            .observeSingleEvent(of: .value, with: { [weak self] snapshot in
+                guard let self = self else { return }
+
+                let eventIDs = snapshot.children.compactMap { ($0 as? DataSnapshot)?.key }
+                guard !eventIDs.isEmpty else {
+                    completion()
+                    return
+                }
+
+                let group = DispatchGroup()
+                for eventId in eventIDs {
+                    group.enter()
+                    self.deleteEvent(idEvent: eventId) { _ in group.leave() }
+                }
+                group.notify(queue: .main, execute: completion)
+            }, withCancel: { _ in
+                completion()
+            })
     }
     
     //MARK: - Has Event On Same Day
@@ -592,14 +630,17 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
         })
     }
     
-    //MARK: - Safe decrement (never goes below 0)
+    //MARK: - Safe decrement (never goes below 0, never recreates a deleted profile)
     private func decrementPlaysSafely(userId: String) {
         let playsRef = database.child(usersPath).child(userId).child("plays")
-        
+
         playsRef.runTransactionBlock { currentData in
-            let currentValue = currentData.value as? Int ?? 0
+            // Empty or not yet synced: leave it unchanged (Firebase re-runs with the real value)
+            guard let currentValue = currentData.value as? Int else {
+                return TransactionResult.success(withValue: currentData)
+            }
             currentData.value = max(0, currentValue - 1)
-            return .success(withValue: currentData)
+            return TransactionResult.success(withValue: currentData)
         }
     }
 }
