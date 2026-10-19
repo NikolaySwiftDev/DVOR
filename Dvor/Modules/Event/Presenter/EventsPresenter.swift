@@ -29,20 +29,23 @@ protocol EventsPresenterProtocol: AnyObject {
          router: RouterMainProtocol,
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
-         storage: CityStorageProtocol?
+         storage: CityStorageProtocol?,
+         coordinator: AppCoordinatorProtocol?
     )
 }
 
 final class EventsPresenter: EventsPresenterProtocol {
 
-    weak var view: EventsProtocol?
-    private weak var coordinator: AppCoordinatorProtocol?
     var events: [EventModel]?
     var filteredEvents: [EventModel]?
-    let router: RouterMainProtocol?
-    let network: FirebaseDataManagerProtocol?
-    let firebase: FirebaseAuthManagerProtocol
-    let storage: CityStorageProtocol?
+    
+    private weak var view: EventsProtocol?
+    private weak var coordinator: AppCoordinatorProtocol?
+
+    private let router: RouterMainProtocol?
+    private let network: FirebaseDataManagerProtocol?
+    private let firebase: FirebaseAuthManagerProtocol
+    private let storage: CityStorageProtocol?
     
     private(set) var userAvatars: [String: Data] = [:]
     private var lastFilterDate: Date = .now
@@ -61,12 +64,15 @@ final class EventsPresenter: EventsPresenterProtocol {
                   router: RouterMainProtocol,
                   network: FirebaseDataManagerProtocol,
                   firebase: FirebaseAuthManagerProtocol,
-                  storage: CityStorageProtocol?) {
+                  storage: CityStorageProtocol?,
+                  coordinator: AppCoordinatorProtocol?
+    ) {
         self.view = view
         self.router = router
         self.network = network
         self.firebase = firebase
         self.storage = storage
+        self.coordinator = coordinator
     }
     
     //MARK: - General processing of results
@@ -257,9 +263,16 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Push to the profile screen
     func pushProfileVC() {
-//        if firebase.currentUserId != nil {
-//            router?.showAlertWithTitle(EventsPresenterStrings.needToCheck)
-//        }
+        guard firebase.currentUserId != nil else {
+            router?.showAlertConfigur(title: EventsPresenterStrings.needToRegisterToCreate,
+                                      message: EventsPresenterStrings.logout,
+                                      titleActionButton: "Register".loc,
+                                      handelr: { [weak self] in
+                guard let self = self else { return }
+                coordinator?.showRegistration()
+            })
+            return
+        }
         router?.pushProfileVC(model: nil)
     }
     

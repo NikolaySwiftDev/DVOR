@@ -278,3 +278,5 @@
 "profile.delete_account" = "Delete account";
 "profile.delete_account_title" = "Delete account?";
 "profile.delete_account_message" = "Your profile, events and participation will be deleted permanently. This cannot be undone";
+"logout"="You need to register in the app";
+"Register"="Register";

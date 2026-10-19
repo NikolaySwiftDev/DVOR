@@ -10,7 +10,7 @@ protocol BuilderProtocol: AnyObject {
     func createDetailVC(router: RouterMainProtocol, model: DetailModel) -> UIViewController
     func createDetailOrgInfo(router: RouterMainProtocol, model: OrganizatorModel) -> UIViewController
     func createCreateEventVC(router: RouterMainProtocol, date: Date) -> UIViewController
-    func createHomeVC(router: RouterMainProtocol) -> UIViewController
+    func createHomeVC(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol?) -> UIViewController
     func createEditNickname(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createEditAvatar(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createEditGeo(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
@@ -80,13 +80,14 @@ class Builder: BuilderProtocol {
     }
         
     //MARK: -  Home Builder
-    func createHomeVC(router: RouterMainProtocol) -> UIViewController {
+    func createHomeVC(router: RouterMainProtocol, coordinator: AppCoordinatorProtocol?) -> UIViewController {
         let view = EventsViewController()
         let presenter = EventsPresenter(view: view,
                                         router: router,
                                         network: managers.dataManager,
                                         firebase: managers.authManager,
-                                        storage: managers.makeCityStorageManager())
+                                        storage: managers.makeCityStorageManager(),
+                                        coordinator: coordinator)
         view.presenter = presenter
         return view
     }

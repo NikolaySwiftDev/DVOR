@@ -31,12 +31,12 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     var user: UserModel?
 
     weak var view: ProfileProtocol?
-    let router: RouterMainProtocol
-    let network: FirebaseDataManagerProtocol
-    let firebase: FirebaseAuthManagerProtocol
-    let notification: NotificationManagerProtocol
-    let appCoordinator: AppCoordinatorProtocol?
-    let storage: CityStorageProtocol?
+    private let router: RouterMainProtocol
+    private let network: FirebaseDataManagerProtocol
+    private let firebase: FirebaseAuthManagerProtocol
+    private let notification: NotificationManagerProtocol
+    private let appCoordinator: AppCoordinatorProtocol?
+    private let storage: CityStorageProtocol?
     
     init(view: ProfileProtocol,
          router: RouterMainProtocol,

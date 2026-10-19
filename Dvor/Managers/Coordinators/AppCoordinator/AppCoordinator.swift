@@ -60,7 +60,7 @@ final class AppCoordinator: AppCoordinatorProtocol {
     }
 
     func showHome() {
-        let vc = builder.createHomeVC(router: router)
+        let vc = builder.createHomeVC(router: router, coordinator: self)
         setRoot(vc)
     }
     

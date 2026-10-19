@@ -81,7 +81,7 @@ final class Router: RouterMainProtocol {
     }
 
     func pushHomeVC() {
-        let vc = builder.createHomeVC(router: self)
+        let vc = builder.createHomeVC(router: self, coordinator: appCoordinator)
         setVC(vc)
     }
     
