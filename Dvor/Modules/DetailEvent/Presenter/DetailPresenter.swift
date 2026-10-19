@@ -7,6 +7,7 @@ protocol DetailProtocol: AnyObject {
     func error(error: String)
     func hideLoading()
     func successComments(comments: [CommentModel])
+    func updateComments(comments: [CommentModel])
 }
 
 protocol DetailPresenterProtocol: AnyObject {
@@ -28,6 +29,7 @@ protocol DetailPresenterProtocol: AnyObject {
     func removeUserFromEvent(idEvent: String)
     
     func fetchComments(idEvent: String)
+    func updateComments(idEvent: String)
     func addComment(idEvent: String, text: String)
     func removeComment(idEvent: String, comment: CommentModel)
     func canDeleteComment(_ comment: CommentModel) -> Bool
@@ -40,7 +42,7 @@ protocol DetailPresenterProtocol: AnyObject {
 }
 
 final class DetailPresenter: DetailPresenterProtocol {
-    
+
     weak var view: DetailProtocol?
     var users: [UserModel]?
     var org: OrganizatorModel?
@@ -191,6 +193,21 @@ final class DetailPresenter: DetailPresenterProtocol {
         }
     }
     
+    //MARK: - Update comments
+    func updateComments(idEvent: String) {
+        commentsManager.fetchComments(idEvent: idEvent) { [weak self] result in
+            guard let self = self else { return }
+            self.view?.hideLoading()
+            switch result {
+            case .success(let comments):
+                self.comments = comments
+                self.view?.updateComments(comments: comments)
+            case .failure(let error):
+                self.view?.error(error: error.localizedDescription)
+            }
+        }
+    }
+
     //MARK: - Add comment
     func addComment(idEvent: String, text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -58,8 +58,9 @@ final class DetailViewController: UIViewController {
         setupView()
         configure()
         setupContraints()
-        presenter?.fetchAllUsers(usersID: detail.users, orgID: detail.orgID)
         presenter?.fetchComments(idEvent: detail.id)
+        presenter?.fetchAllUsers(usersID: detail.users, orgID: detail.orgID)
+        
     }
     
     //MARK: - Back Button Tapped
@@ -117,11 +118,22 @@ extension DetailViewController: DetailProtocol {
     
     func successComments(comments: [CommentModel]) {
         segmentView.commentsView.configure(comments: comments)
+//        segmentView.commentsView.endRefreshing()
     }
+    
+    func updateComments(comments: [CommentModel]) {
+        segmentView.commentsView.configure(comments: comments)
+        segmentView.commentsView.endRefreshing()
+    }
+    
 }
 
 //MARK: - Comments Protocol
 extension DetailViewController: CommentsViewDelegate {
+    func didRequestRefreshComments() {
+        presenter?.updateComments(idEvent: detail.id)
+    }
+    
     func deleteComment(_ comment: CommentModel) {
         presenter?.removeComment(idEvent: detail.id, comment: comment)
     }

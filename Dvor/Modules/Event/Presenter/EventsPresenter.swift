@@ -98,6 +98,7 @@ final class EventsPresenter: EventsPresenterProtocol {
     
     //MARK: - Request events for the current country and the selected day
     func fetchEvents() {
+        view?.load()
         guard let city = storage?.currentCity else {
             events = []
             filteredEvents = []
@@ -110,6 +111,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         network?.fetchEvents(countryCode: city.countryCode, date: requestedDate, completion: { [weak self] result in
             guard let self = self else { return }
             self.handleEventsResult(result, requestedDate: requestedDate)
+            view?.didLoad()
         })
     }
     

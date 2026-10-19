@@ -4,6 +4,7 @@ import SnapKit
 protocol CommentsViewDelegate: AnyObject {
     func didSendComment(text: String)
     func deleteComment(_ comment: CommentModel)
+    func didRequestRefreshComments()
 }
 
 final class CommentsView: UIView {
@@ -19,6 +20,8 @@ final class CommentsView: UIView {
                                       textAlignment: .center)
 
     private let inputContainerView = UIView()
+    private let refreshControl = UIRefreshControl()
+    
     private let textField: UITextField = {
         let tf = UITextField()
         tf.font = .poppins(weight: .medium, size: .mid)
@@ -69,6 +72,10 @@ final class CommentsView: UIView {
             tableView.scrollToRow(at: lastIndex, at: .bottom, animated: false)
         }
     }
+
+    func endRefreshing() {
+        refreshControl.endRefreshing()
+    }
 }
 
 private extension CommentsView {
@@ -99,6 +106,14 @@ private extension CommentsView {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         tableView.addGestureRecognizer(tapGesture)
+        
+        refreshControl.addTarget(
+            self,
+            action: #selector(refreshComments),
+            for: .valueChanged
+        )
+
+        tableView.refreshControl = refreshControl
     }
 
     private func setupContraints() {
@@ -129,6 +144,10 @@ private extension CommentsView {
             make.center.equalTo(tableView)
             make.leading.trailing.equalToSuperview().inset(20)
         }
+    }
+    
+    @objc private func refreshComments() {
+        delegate?.didRequestRefreshComments()
     }
 
     @objc private func sendButtonTapped() {

@@ -5,25 +5,35 @@ protocol MainCoordinatePresenterProtocol: AnyObject {
     func pushRegistVC()
     func pushMainView()
     func pushAuthVC()
+    func openPrivacyPolicy()
+    func openTermsOfUse()
 }
 
 final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
-    let router: RouterMainProtocol?
+    let router: RouterMainProtocol
 
     required init(router: RouterMainProtocol) {
         self.router = router
     }
     
     func pushMainView() {
-        router?.pushHomeVC()
+        router.pushHomeVC()
     }
     
     func pushRegistVC() {
-        router?.pushRegistVC(isNewAcc: true)
+        router.pushRegistVC(isNewAcc: true)
     }
     
     func pushAuthVC() {
-        router?.pushAuthVC()
+        router.pushAuthVC()
+    }
+    
+    func openPrivacyPolicy() {
+        router.openLink(AppLinks.privacy)
+    }
+
+    func openTermsOfUse() {
+        router.openLink(AppLinks.terms)
     }
     
     deinit {

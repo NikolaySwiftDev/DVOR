@@ -1,6 +1,7 @@
 
 import UIKit
 import MapKit
+import SafariServices
 
 protocol RouterMain: AnyObject {
     var navigationController: UINavigationController { get set }
@@ -16,6 +17,7 @@ protocol RouterMainProtocol: RouterMain {
     func popVC()
     func dismiss()
     func setVC(_ vc: UIViewController)
+    func openLink(_ url: URL)
 
     // Screens
     func pushHomeVC()
@@ -78,6 +80,11 @@ final class Router: RouterMainProtocol {
 
     func setVC(_ vc: UIViewController) {
         navigationController.setViewControllers([vc], animated: true)
+    }
+    
+    func openLink(_ url: URL) {
+        let safari = SFSafariViewController(url: url)
+        presentVC(safari)
     }
 
     func pushHomeVC() {

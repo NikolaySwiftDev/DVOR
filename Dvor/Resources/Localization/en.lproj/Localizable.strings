@@ -65,6 +65,8 @@
 
 "auth.continue" = "Continue";
 "auth.skip" = "Skip";
+"auth.terms" = "Terms of use";
+"auth.privacy" = "Privacy policy";
 "auth.enter" = "Login";
 "auth.registration" = "Registration";
 

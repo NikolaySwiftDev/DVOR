@@ -16,9 +16,27 @@ final class MainCoordinateViewController: UIViewController {
     private let skipButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitle(AuthModel.skipButtonTitle, for: .normal)
-        btn.setTitleColor(.white, for: .normal) // Временный явный цвет
+        btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
         btn.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)
+        return btn
+    }()
+    
+    private let termsButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setTitle(AuthModel.termsButtonTitle, for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
+        btn.addTarget(self, action: #selector(termsButtonTapped), for: .touchUpInside)
+        return btn
+    }()
+    
+    private let privacyButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setTitle(AuthModel.privacyButtonTitle, for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.titleLabel?.font = UIFont.poppins(weight: .semiBold, size: .small)
+        btn.addTarget(self, action: #selector(privacyButtonTapped), for: .touchUpInside)
         return btn
     }()
 
@@ -55,6 +73,16 @@ final class MainCoordinateViewController: UIViewController {
     @objc private func skipButtonTapped() {
         presenter?.pushMainView()
     }
+    
+    //MARK: - Terms Button Tapped
+    @objc private func termsButtonTapped() {
+        presenter?.openTermsOfUse()
+    }
+    
+    //MARK: - Privacy Button Tapped
+    @objc private func privacyButtonTapped() {
+        presenter?.openPrivacyPolicy()
+    }
 
     //MARK: - Enter Button Tapped
     @objc private func enterButtonTapped() {
@@ -74,6 +102,8 @@ private extension MainCoordinateViewController {
         
         view.addSubview(backgroungImage)
         view.addSubview(skipButton)
+        view.addSubview(termsButton)
+        view.addSubview(privacyButton)
         view.addSubview(enterButton)
         view.addSubview(registrButton)
     }
@@ -91,7 +121,7 @@ private extension MainCoordinateViewController {
         }
         
         registrButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.Constraint.verticalPadding)
+            make.bottom.equalTo(termsButton.snp.top).inset(-Constants.Constraint.verticalPadding / 2)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
@@ -101,11 +131,25 @@ private extension MainCoordinateViewController {
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
+        
+        termsButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.leading.equalToSuperview().offset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
+        
+        privacyButton.snp.makeConstraints { make in
+            make.centerY.equalTo(termsButton.snp.centerY)
+            make.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding)
+            make.height.equalTo(Constants.Constraint.buttonHeight)
+        }
     }
 }
 
 fileprivate struct AuthModel {
     static let skipButtonTitle = "auth.skip".loc
+    static let termsButtonTitle = "auth.terms".loc
+    static let privacyButtonTitle = "auth.privacy".loc
     static let enterButtonTitle = "auth.enter".loc
     static let registButtonTitle = "auth.registration".loc
 }

@@ -36,14 +36,9 @@ final class EventsViewController: BaseViewController {
         configure()
         setupView()
         setupConstraints()
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         presenter?.fetchEvents()
     }
-
+    
     //MARK: - Buttons Action
     override func didTapPersonButton() {
         sortView.selectedIndex = nil
