@@ -87,7 +87,8 @@ class Builder: BuilderProtocol {
                                         network: managers.dataManager,
                                         firebase: managers.authManager,
                                         storage: managers.makeCityStorageManager(),
-                                        coordinator: coordinator)
+                                        coordinator: coordinator,
+                                        moderation: managers.makeModerationManager())
         view.presenter = presenter
         return view
     }

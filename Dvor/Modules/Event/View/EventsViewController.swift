@@ -36,6 +36,10 @@ final class EventsViewController: BaseViewController {
         configure()
         setupView()
         setupConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         presenter?.fetchEvents()
     }
     
@@ -190,6 +194,10 @@ private extension EventsViewController {
         segmentView.delegate = self
         
         titleDate.text = presenter?.getTitle()
+        
+        eventsTableView.canDelete = { [weak self] event in
+            self?.presenter?.canDeleteEvent(event) ?? false
+        }
 
         var configurationFilter = UIButton.Configuration.plain()
         configurationFilter.image = UIImage(systemName: HomeConstants.imageFetch)

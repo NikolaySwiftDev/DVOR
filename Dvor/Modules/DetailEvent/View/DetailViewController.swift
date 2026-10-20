@@ -145,6 +145,10 @@ extension DetailViewController: CommentsViewDelegate {
     func reportComment(_ comment: CommentModel) {
         presenter?.reportComment(idEvent: detail.id, comment: comment)
     }
+    
+    func blockAuthor(of comment: CommentModel) {
+        presenter?.blockCommentAuthor(comment)
+    }
 }
 
 //MARK: - Detail User Protocol

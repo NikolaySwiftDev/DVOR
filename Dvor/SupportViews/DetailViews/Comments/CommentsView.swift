@@ -6,6 +6,7 @@ protocol CommentsViewDelegate: AnyObject {
     func deleteComment(_ comment: CommentModel)
     func didRequestRefreshComments()
     func reportComment(_ comment: CommentModel)
+    func blockAuthor(of comment: CommentModel)
 }
 
 final class CommentsView: UIView {
@@ -244,15 +245,22 @@ extension CommentsView: UITableViewDelegate, UITableViewDataSource {
             actions.append(deleteAction)
         }
 
-        // Someone else's comment: report
+        // Someone else's comment: block the author and report the comment
         if canReport?(comment) == true {
+            let blockAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
+                self?.delegate?.blockAuthor(of: comment)
+                completion(true)
+            }
+            blockAction.image = UIImage(systemName: "hand.raised.fill")
+
             let reportAction = UIContextualAction(style: .normal, title: nil) { [weak self] _, _, completion in
                 self?.delegate?.reportComment(comment)
                 completion(true)
             }
             reportAction.image = UIImage(systemName: "exclamationmark.bubble")
             reportAction.backgroundColor = .systemOrange
-            actions.append(reportAction)
+
+            actions.append(contentsOf: [blockAction, reportAction])
         }
 
         return actions.isEmpty ? nil : UISwipeActionsConfiguration(actions: actions)

@@ -4,12 +4,16 @@ import FirebaseDatabase
 
 protocol ModerationManagerProtocol: AnyObject {
     func report(_ report: ReportModel, completion: @escaping (Result<Void, Error>) -> Void)
+    
+    func blockUser(blockerId: String, blockedId: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchBlockedUserIDs(userId: String, completion: @escaping (Result<Set<String>, Error>) -> Void)
 }
 
 final class FirebaseModerationManager: ModerationManagerProtocol {
 
     private let database: DatabaseReference
     private let reportsPath = "reports"
+    private let blocksPath = "blocks"
 
     init() {
         database = Database.database(url: FirebaseDataManagerConstants.databaseURL).reference()
@@ -17,8 +21,7 @@ final class FirebaseModerationManager: ModerationManagerProtocol {
 
     //MARK: - Report
     func report(_ report: ReportModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        database.child(reportsPath).child(report.key).setValue(report.toDictionary()) { [weak self] error, _ in
-            guard let sefl = self else { return }
+        database.child(reportsPath).child(report.key).setValue(report.toDictionary()) { error, _ in
             DispatchQueue.main.async {
                 guard let error = error else {
                     completion(.success(()))
@@ -33,5 +36,41 @@ final class FirebaseModerationManager: ModerationManagerProtocol {
                 }
             }
         }
+    }
+    
+    //MARK: - Block
+    func blockUser(blockerId: String, blockedId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard !blockerId.isEmpty, !blockedId.isEmpty, blockerId != blockedId else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+
+        database.child(blocksPath).child(blockerId).child(blockedId).setValue(true) { error, _ in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+
+    func fetchBlockedUserIDs(userId: String, completion: @escaping (Result<Set<String>, Error>) -> Void) {
+        guard !userId.isEmpty else {
+            completion(.success([]))
+            return
+        }
+
+        database.child(blocksPath).child(userId).observeSingleEvent(of: .value, with: { snapshot in
+            let ids = (snapshot.value as? [String: Any])?.keys.map { $0 } ?? []
+            DispatchQueue.main.async {
+                completion(.success(Set(ids)))
+            }
+        }, withCancel: { error in
+            DispatchQueue.main.async {
+                completion(.failure(error))
+            }
+        })
     }
 }

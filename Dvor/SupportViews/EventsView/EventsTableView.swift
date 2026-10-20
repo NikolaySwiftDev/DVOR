@@ -10,6 +10,7 @@ protocol EventsTableViewDelegate: AnyObject {
 final class EventsTableView: UIView {
 
     weak var delegate: EventsTableViewDelegate?
+    var canDelete: ((EventModel) -> Bool)?
 
     var events: [EventModel] = [] {
         didSet {
@@ -108,6 +109,9 @@ extension EventsTableView: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
+        guard events.indices.contains(indexPath.row),
+              canDelete?(events[indexPath.row]) == true else { return nil }
+
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete".loc) { [weak self] (_, _, completion) in
             guard let self = self else { return }
             let eventId = self.events[indexPath.row].id

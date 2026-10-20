@@ -58,4 +58,7 @@ enum ModerationStrings {
     static let reportMessage = "report.message".loc
     static let reportSent = "report.sent".loc
     static let reportAlready = "report.already".loc
+    static let blockTitle = "block.title".loc
+    static let blockMessage = "block.message".loc
+    static let blockAction = "block.action".loc
 }

@@ -382,6 +382,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
                     // 3. Delete the profile and the list of joined events
                     self.database.child(self.usersPath).child(userID).removeValue { error, _ in
                         self.database.child("userEvents").child(userID).removeValue()
+                        self.database.child("blocks").child(userID).removeValue()
                         if let error = error {
                             completion(.failure(error))
                         } else {
@@ -420,37 +421,40 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
     
     //MARK: - Has Event On Same Day
-
     func hasEventOnSameDay(userId: String, date: Date, excludingEventId: String, completion: @escaping (Result<Bool, Error>) -> Void) {
-        database.child("userEvents").child(userId).observeSingleEvent(of: .value) { [weak self] snapshot in
+        database.child("userEvents").child(userId).observeSingleEvent(of: .value, with: { [weak self] snapshot in
             guard let self else { return }
-            
+
             let eventIds = (snapshot.value as? [String: Bool])?.keys.filter { $0 != excludingEventId } ?? []
-            
+
             guard !eventIds.isEmpty else {
                 completion(.success(false))
                 return
             }
-            
+
             let calendar = Calendar.current
             var foundConflict = false
             let group = DispatchGroup()
-            
+
             for eventId in eventIds {
                 group.enter()
                 self.fetchEvent(idEvent: eventId) { result in
                     defer { group.leave() }
+                    // Count only events where the user is really listed (userEvents may hold stale entries)
                     if case .success(let event) = result,
+                       event.users.contains(userId),
                        calendar.isDate(event.date, inSameDayAs: date) {
                         foundConflict = true
                     }
                 }
             }
-            
+
             group.notify(queue: .main) {
                 completion(.success(foundConflict))
             }
-        }
+        }, withCancel: { error in
+            completion(.failure(error))
+        })
     }
     
     func countEvents(forOrganizer orgId: String, on date: Date, completion: @escaping (Result<Int, Error>) -> Void) {

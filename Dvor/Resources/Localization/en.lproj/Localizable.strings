@@ -291,3 +291,7 @@
 "report.reason.abuse" = "Abuse";
 "report.reason.inappropriate" = "Inappropriate content";
 "report.reason.other" = "Other";
+
+"block.title" = "Block this user?";
+"block.message" = "Their comments and events will be hidden";
+"block.action" = "Block";

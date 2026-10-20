@@ -34,8 +34,10 @@ protocol DetailPresenterProtocol: AnyObject {
     func addComment(idEvent: String, text: String)
     func removeComment(idEvent: String, comment: CommentModel)
     func canDeleteComment(_ comment: CommentModel) -> Bool
+    
     func canReportComment(_ comment: CommentModel) -> Bool
     func reportComment(idEvent: String, comment: CommentModel)
+    func blockCommentAuthor(_ comment: CommentModel)
     
     func popVC()
     func shareEvent(eventID: String)
@@ -50,6 +52,7 @@ final class DetailPresenter: DetailPresenterProtocol {
     var users: [UserModel]?
     var org: OrganizatorModel?
     var comments: [CommentModel]?
+    private var blockedIDs: Set<String> = []
     private let router: RouterMainProtocol
     private let network: FirebaseDataManagerProtocol
     private let firebase: FirebaseAuthManagerProtocol
@@ -183,19 +186,48 @@ final class DetailPresenter: DetailPresenterProtocol {
         })
     }
     
-    //MARK: - Fetch comments
+    //MARK: - Fetch comments (without the ones from blocked users)
     func fetchComments(idEvent: String) {
         view?.load()
-        commentsManager.fetchComments(idEvent: idEvent) { [weak self] result in
-            guard let self = self else { return }
+
+        var fetched: Result<[CommentModel], Error>?
+        let group = DispatchGroup()
+
+        group.enter()
+        commentsManager.fetchComments(idEvent: idEvent) { result in
+            fetched = result
+            group.leave()
+        }
+
+        group.enter()
+        loadBlockedUserIDs { group.leave() }
+
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self, let result = fetched else { return }
             self.view?.hideLoading()
+
             switch result {
             case .success(let comments):
-                self.comments = comments
-                self.view?.successComments(comments: comments)
+                let visible = comments.filter { !self.blockedIDs.contains($0.userId) }
+                self.comments = visible
+                self.view?.successComments(comments: visible)
             case .failure(let error):
                 self.view?.error(error: error.localizedDescription)
             }
+        }
+    }
+
+    private func loadBlockedUserIDs(completion: @escaping () -> Void) {
+        guard let myID = firebase.currentUserId else {
+            completion()
+            return
+        }
+
+        moderation?.fetchBlockedUserIDs(userId: myID) { [weak self] result in
+            if case .success(let ids) = result {
+                self?.blockedIDs = ids
+            }
+            completion()
         }
     }
     
@@ -331,6 +363,35 @@ final class DetailPresenter: DetailPresenterProtocol {
                 }
             }
         }
+    }
+    
+    //MARK: - Block the author of a comment
+    func blockCommentAuthor(_ comment: CommentModel) {
+        guard let myID = firebase.currentUserId else {
+            router.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            return
+        }
+
+        router.showAlertConfigur(title: ModerationStrings.blockTitle,
+                                 message: ModerationStrings.blockMessage,
+                                 titleActionButton: ModerationStrings.blockAction,
+                                 handelr: { [weak self] in
+            guard let self = self else { return }
+
+            self.moderation?.blockUser(blockerId: myID, blockedId: comment.userId) { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case .success:
+                    self.blockedIDs.insert(comment.userId)
+                    let visible = (self.comments ?? []).filter { $0.userId != comment.userId }
+                    self.comments = visible
+                    self.view?.successComments(comments: visible)
+                case .failure(let error):
+                    self.router.showAlertWithTitle(error.localizedDescription)
+                }
+            }
+        })
     }
     
     func showBottomAlertForUser(model: UserModel) {

@@ -18,6 +18,7 @@ protocol EventsPresenterProtocol: AnyObject {
     func filterEventsWithDate(date: Date)
     func sortEventsWithPredicate(predicate: SortPredicate)
     func deleteEvent(eventId: String)
+    func canDeleteEvent(_ event: EventModel) -> Bool
     
     func showLocationOnMap(location: String)
     func pushDetailVC(model: EventModel)
@@ -30,7 +31,9 @@ protocol EventsPresenterProtocol: AnyObject {
          network: FirebaseDataManagerProtocol,
          firebase: FirebaseAuthManagerProtocol,
          storage: CityStorageProtocol?,
-         coordinator: AppCoordinatorProtocol?
+         coordinator: AppCoordinatorProtocol?,
+         moderation: ModerationManagerProtocol?
+
     )
 }
 
@@ -46,8 +49,12 @@ final class EventsPresenter: EventsPresenterProtocol {
     private let network: FirebaseDataManagerProtocol?
     private let firebase: FirebaseAuthManagerProtocol
     private let storage: CityStorageProtocol?
+    private let moderation: ModerationManagerProtocol?
     
+
     private(set) var userAvatars: [String: Data] = [:]
+    private var blockedIDs: Set<String> = []
+
     private var lastFilterDate: Date = .now
     private var lastSortPredicate: SortPredicate = .count
     private var personlaMode = false
@@ -65,7 +72,8 @@ final class EventsPresenter: EventsPresenterProtocol {
                   network: FirebaseDataManagerProtocol,
                   firebase: FirebaseAuthManagerProtocol,
                   storage: CityStorageProtocol?,
-                  coordinator: AppCoordinatorProtocol?
+                  coordinator: AppCoordinatorProtocol?,
+                  moderation: ModerationManagerProtocol?
     ) {
         self.view = view
         self.router = router
@@ -73,6 +81,7 @@ final class EventsPresenter: EventsPresenterProtocol {
         self.firebase = firebase
         self.storage = storage
         self.coordinator = coordinator
+        self.moderation = moderation
     }
     
     //MARK: - General processing of results
@@ -95,7 +104,7 @@ final class EventsPresenter: EventsPresenterProtocol {
     func getTitle() -> String {
         title
     }
-    
+        
     //MARK: - Request events for the current country and the selected day
     func fetchEvents() {
         view?.load()
@@ -108,11 +117,37 @@ final class EventsPresenter: EventsPresenterProtocol {
         }
 
         let requestedDate = lastFilterDate
-        network?.fetchEvents(countryCode: city.countryCode, date: requestedDate, completion: { [weak self] result in
-            guard let self = self else { return }
+        var fetched: Result<[EventModel], Error>?
+        let group = DispatchGroup()
+
+        group.enter()
+        network?.fetchEvents(countryCode: city.countryCode, date: requestedDate, completion: { result in
+            fetched = result
+            group.leave()
+        })
+
+        group.enter()
+        loadBlockedUserIDs { group.leave() }
+
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self, let result = fetched else { return }
             self.handleEventsResult(result, requestedDate: requestedDate)
             view?.didLoad()
-        })
+        }
+    }
+
+    private func loadBlockedUserIDs(completion: @escaping () -> Void) {
+        guard let myID = firebase.currentUserId else {
+            completion()
+            return
+        }
+
+        moderation?.fetchBlockedUserIDs(userId: myID) { [weak self] result in
+            if case .success(let ids) = result {
+                self?.blockedIDs = ids
+            }
+            completion()
+        }
     }
     
     private func fetchAvatarsForEvents(_ events: [EventModel]) {
@@ -162,7 +197,12 @@ final class EventsPresenter: EventsPresenterProtocol {
         }
 
         let calendar = Calendar.current
-        let dayEvents = events.filter { calendar.isDate($0.date, inSameDayAs: date) }
+        let dayEvents = events.filter { event in
+            guard calendar.isDate(event.date, inSameDayAs: date) else { return false }
+            guard blockedIDs.contains(event.orgId) else { return true }
+            // The event of a blocked organizer stays visible only if I am already in it
+            return event.users.contains(myID)
+        }
 
         view?.load()
         if personlaMode {
@@ -250,6 +290,12 @@ final class EventsPresenter: EventsPresenterProtocol {
                 view?.error(error: error)
             }
         })
+    }
+    
+    //MARK: - Only the organizer can delete an event
+    func canDeleteEvent(_ event: EventModel) -> Bool {
+        guard let currentUserId = firebase.currentUserId else { return false }
+        return event.orgId == currentUserId
     }
     
     //MARK: - Display on the map
