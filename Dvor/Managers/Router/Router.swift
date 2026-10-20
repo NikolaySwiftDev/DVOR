@@ -38,6 +38,7 @@ protocol RouterMainProtocol: RouterMain {
     func showShareSheet(items: [Any], completion: @escaping (Bool) -> Void)
     func showEditAlert(model: UserModel)
     func showPasswordPrompt(title: String, message: String?, placeholder: String,confirmTitle: String, onConfirm: @escaping (String) -> Void)
+    func showReportReasons(onSelect: @escaping (ReportModel.Reason) -> Void)
 
     // Map
     func showLocationOnMap(location: String)
@@ -243,7 +244,6 @@ final class Router: RouterMainProtocol {
     }
 
     // MARK: - Map
-
     func showLocationOnMap(location: String) {
 
         let request = MKLocalSearch.Request()
@@ -258,6 +258,21 @@ final class Router: RouterMainProtocol {
             item.name = location
             item.openInMaps()
         }
+    }
+    
+    // MARK: - Report
+    func showReportReasons(onSelect: @escaping (ReportModel.Reason) -> Void) {
+        let alert = UIAlertController(title: ModerationStrings.reportTitle,
+                                      message: ModerationStrings.reportMessage,
+                                      preferredStyle: .alert)
+
+        ReportModel.Reason.allCases.forEach { reason in
+            alert.addAction(UIAlertAction(title: reason.title, style: .default) { _ in
+                onSelect(reason)
+            })
+        }
+        alert.addAction(UIAlertAction(title: "common.cancel".loc, style: .cancel))
+        presentVC(alert)
     }
 }
 

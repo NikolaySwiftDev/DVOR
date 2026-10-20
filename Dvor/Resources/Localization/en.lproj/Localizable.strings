@@ -282,3 +282,12 @@
 "profile.delete_account_message" = "Your profile, events and participation will be deleted permanently. This cannot be undone";
 "logout"="You need to register in the app";
 "Register"="Register";
+
+"report.title" = "Report";
+"report.message" = "Choose a reason";
+"report.sent" = "Thanks, we will review your report";
+"report.already" = "You have already reported this comment";
+"report.reason.spam" = "Spam";
+"report.reason.abuse" = "Abuse";
+"report.reason.inappropriate" = "Inappropriate content";
+"report.reason.other" = "Other";

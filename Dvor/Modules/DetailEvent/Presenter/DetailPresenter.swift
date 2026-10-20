@@ -17,7 +17,8 @@ protocol DetailPresenterProtocol: AnyObject {
          firebase: FirebaseAuthManagerProtocol,
          notification: NotificationManagerProtocol,
          comments: FirebaseCommentsManagerProtocol,
-         storage: CityStorageProtocol?
+         storage: CityStorageProtocol?,
+         moderation: ModerationManagerProtocol?
     )
     
     var users: [UserModel]? { get set }
@@ -33,6 +34,8 @@ protocol DetailPresenterProtocol: AnyObject {
     func addComment(idEvent: String, text: String)
     func removeComment(idEvent: String, comment: CommentModel)
     func canDeleteComment(_ comment: CommentModel) -> Bool
+    func canReportComment(_ comment: CommentModel) -> Bool
+    func reportComment(idEvent: String, comment: CommentModel)
     
     func popVC()
     func shareEvent(eventID: String)
@@ -43,16 +46,17 @@ protocol DetailPresenterProtocol: AnyObject {
 
 final class DetailPresenter: DetailPresenterProtocol {
 
-    weak var view: DetailProtocol?
+    private weak var view: DetailProtocol?
     var users: [UserModel]?
     var org: OrganizatorModel?
     var comments: [CommentModel]?
-    let router: RouterMainProtocol
-    let network: FirebaseDataManagerProtocol
-    let firebase: FirebaseAuthManagerProtocol
-    let notification: NotificationManagerProtocol
-    let commentsManager: FirebaseCommentsManagerProtocol
-    let storage: CityStorageProtocol?
+    private let router: RouterMainProtocol
+    private let network: FirebaseDataManagerProtocol
+    private let firebase: FirebaseAuthManagerProtocol
+    private let notification: NotificationManagerProtocol
+    private let commentsManager: FirebaseCommentsManagerProtocol
+    private let storage: CityStorageProtocol?
+    private let moderation: ModerationManagerProtocol?
     
     required init(view: DetailProtocol,
                   router: RouterMainProtocol,
@@ -60,7 +64,8 @@ final class DetailPresenter: DetailPresenterProtocol {
                   firebase: FirebaseAuthManagerProtocol,
                   notification: NotificationManagerProtocol,
                   comments: FirebaseCommentsManagerProtocol,
-                  storage: CityStorageProtocol?
+                  storage: CityStorageProtocol?,
+                  moderation: ModerationManagerProtocol?
     ) {
         self.view = view
         self.router = router
@@ -69,6 +74,7 @@ final class DetailPresenter: DetailPresenterProtocol {
         self.notification = notification
         self.commentsManager = comments
         self.storage = storage
+        self.moderation = moderation
     }
     
     //MARK: - Fetch all users
@@ -289,6 +295,41 @@ final class DetailPresenter: DetailPresenterProtocol {
         router.showShareSheet(items: [fullURL]) { [weak self] completed in
             guard let self = self else { return }
             self.view?.hideLoading()
+        }
+    }
+    
+    //MARK: - Report a comment
+    func canReportComment(_ comment: CommentModel) -> Bool {
+        guard let myID = firebase.currentUserId else { return false }
+        return comment.userId != myID
+    }
+
+    func reportComment(idEvent: String, comment: CommentModel) {
+        guard let myID = firebase.currentUserId else {
+            router.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            return
+        }
+
+        router.showReportReasons { [weak self] reason in
+            guard let self = self else { return }
+
+            let report = ReportModel(reporterId: myID,
+                                     targetType: .comment,
+                                     targetId: comment.id,
+                                     reportedUserId: comment.userId,
+                                     eventId: idEvent,
+                                     reason: reason,
+                                     contentText: comment.text)
+
+            self.moderation?.report(report) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    self.router.showAlertWithTitle(ModerationStrings.reportSent)
+                case .failure(let error):
+                    self.router.showAlertWithTitle(error.localizedDescription)
+                }
+            }
         }
     }
     

@@ -5,12 +5,14 @@ protocol CommentsViewDelegate: AnyObject {
     func didSendComment(text: String)
     func deleteComment(_ comment: CommentModel)
     func didRequestRefreshComments()
+    func reportComment(_ comment: CommentModel)
 }
 
 final class CommentsView: UIView {
 
     weak var delegate: CommentsViewDelegate?
     var canDelete: ((CommentModel) -> Bool)?
+    var canReport: ((CommentModel) -> Bool)?
     
     // MARK: - UI Elements
     private let tableView = UITableView()
@@ -230,17 +232,30 @@ extension CommentsView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard comments.indices.contains(indexPath.row) else { return nil }
         let comment = comments[indexPath.row]
+        var actions: [UIContextualAction] = []
 
-        // если удалять нельзя, свайп вообще не показываем
-        guard canDelete?(comment) == true else { return nil }
-
-        let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
-            self?.delegate?.deleteComment(comment)
-            completion(true)
+        // Own comment: delete
+        if canDelete?(comment) == true {
+            let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
+                self?.delegate?.deleteComment(comment)
+                completion(true)
+            }
+            deleteAction.image = UIImage(systemName: "trash")
+            actions.append(deleteAction)
         }
-        deleteAction.image = UIImage(systemName: "trash")
 
-        return UISwipeActionsConfiguration(actions: [deleteAction])
+        // Someone else's comment: report
+        if canReport?(comment) == true {
+            let reportAction = UIContextualAction(style: .normal, title: nil) { [weak self] _, _, completion in
+                self?.delegate?.reportComment(comment)
+                completion(true)
+            }
+            reportAction.image = UIImage(systemName: "exclamationmark.bubble")
+            reportAction.backgroundColor = .systemOrange
+            actions.append(reportAction)
+        }
+
+        return actions.isEmpty ? nil : UISwipeActionsConfiguration(actions: actions)
     }
 }
 

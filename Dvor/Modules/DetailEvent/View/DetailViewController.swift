@@ -141,6 +141,10 @@ extension DetailViewController: CommentsViewDelegate {
     func didSendComment(text: String) {
         presenter?.addComment(idEvent: detail.id, text: text)
     }
+    
+    func reportComment(_ comment: CommentModel) {
+        presenter?.reportComment(idEvent: detail.id, comment: comment)
+    }
 }
 
 //MARK: - Detail User Protocol
@@ -186,6 +190,9 @@ private extension DetailViewController {
         segmentView.commentsView.canDelete = { [weak self] comment in
             guard let self = self else { return false }
             return self.presenter?.canDeleteComment(comment) ?? false
+        }
+        segmentView.commentsView.canReport = { [weak self] comment in
+            self?.presenter?.canReportComment(comment) ?? false
         }
     }
     

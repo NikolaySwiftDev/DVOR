@@ -115,7 +115,8 @@ class Builder: BuilderProtocol {
                                         firebase: managers.authManager,
                                         notification: managers.makeNotificationManager(),
                                         comments: managers.makeCommentsManager(),
-                                        storage: managers.makeCityStorageManager())
+                                        storage: managers.makeCityStorageManager(),
+                                        moderation: managers.makeModerationManager())
         view.presenter = presenter
         return view
     }

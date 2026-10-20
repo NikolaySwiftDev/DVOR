@@ -11,6 +11,7 @@ protocol AppContainerProtocol {
     func makeLocationManager() -> LocationManagerProtocol
     func makeCityStorageManager() -> CityStorageProtocol
     func makeGeocoderManager() -> ReverseGeocoding
+    func makeModerationManager() -> ModerationManagerProtocol
 }
 
 final class AppContainer: AppContainerProtocol {
@@ -46,5 +47,9 @@ final class AppContainer: AppContainerProtocol {
     
     func makeGeocoderManager() -> ReverseGeocoding {
         CLReverseGeocoder()
+    }
+    
+    func makeModerationManager() -> ModerationManagerProtocol {
+        FirebaseModerationManager()
     }
 }
