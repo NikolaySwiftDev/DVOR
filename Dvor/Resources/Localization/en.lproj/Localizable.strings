@@ -295,3 +295,15 @@
 "block.title" = "Block this user?";
 "block.message" = "Their comments and events will be hidden";
 "block.action" = "Block";
+"report.action" = "Complain";
+
+"settings.title" = "Settings";
+"settings.button" = "Settings";
+"settings.section.safety" = "Safety";
+"settings.section.legal" = "Documents";
+"settings.section.account" = "Account";
+"settings.blocked_users" = "Blocked users";
+"settings.blocked_empty" = "You haven’t blocked anyone.";
+"settings.unblock" = "Unblock";
+"settings.privacy" = "Privacy Policy";
+"settings.terms" = "Terms of Use";

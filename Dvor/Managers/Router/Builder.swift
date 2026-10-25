@@ -14,9 +14,11 @@ protocol BuilderProtocol: AnyObject {
     func createEditNickname(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createEditAvatar(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
     func createEditGeo(router: RouterMainProtocol, userModel: UserModel) -> UIViewController
-    func createProfileVC(router: RouterMainProtocol, model: UserModel?, appCoordinator: AppCoordinatorProtocol?) -> UIViewController
+    func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController
     func createEventsMapVC(router: RouterMainProtocol, events: [EventModel]) -> UIViewController
     func createMapLocationPickerVC(router: RouterMainProtocol, city: CityModel) -> MapLocationPickerViewController
+    func createSettingsVC(router: RouterMainProtocol, appCoordinator: AppCoordinatorProtocol?) -> UIViewController
+    func createBlockedUsersVC(router: RouterMainProtocol) -> UIViewController
 }
 
 class Builder: BuilderProtocol {
@@ -94,14 +96,13 @@ class Builder: BuilderProtocol {
     }
     
     //MARK: -  Profile Builder
-    func createProfileVC(router: RouterMainProtocol, model: UserModel?, appCoordinator: AppCoordinatorProtocol?) -> UIViewController {
+    func createProfileVC(router: RouterMainProtocol, model: UserModel?) -> UIViewController {
         let view = ProfileViewController(model: model)
         let presenter = ProfilePresenter(view: view,
                                          router: router,
                                          network: managers.dataManager,
                                          firebase: managers.authManager,
                                          notification: managers.makeNotificationManager(),
-                                         appCoordinator: appCoordinator,
                                          storage: managers.makeCityStorageManager())
         view.presenter = presenter
         return view
@@ -194,6 +195,31 @@ class Builder: BuilderProtocol {
     func createMapLocationPickerVC(router: RouterMainProtocol, city: CityModel) -> MapLocationPickerViewController {
         let view = MapLocationPickerViewController()
         let presenter = MapLocationPickerPresenter(city: city, geocoder: managers.makeGeocoderManager(), router: router)
+        view.presenter = presenter
+        return view
+    }
+    
+    //MARK: -  Settings Builder
+    func createSettingsVC(router: RouterMainProtocol, appCoordinator: AppCoordinatorProtocol?) -> UIViewController {
+        let view = SettingsViewController()
+        let presenter = SettingsPresenter(view: view,
+                                          router: router,
+                                          network: managers.dataManager,
+                                          firebase: managers.authManager,
+                                          notification: managers.makeNotificationManager(),
+                                          appCoordinator: appCoordinator,
+                                          storage: managers.makeCityStorageManager())
+        view.presenter = presenter
+        return view
+    }
+
+    func createBlockedUsersVC(router: RouterMainProtocol) -> UIViewController {
+        let view = BlockedUsersViewController()
+        let presenter = BlockedUsersPresenter(view: view,
+                                              router: router,
+                                              network: managers.dataManager,
+                                              firebase: managers.authManager,
+                                              moderation: managers.makeModerationManager())
         view.presenter = presenter
         return view
     }

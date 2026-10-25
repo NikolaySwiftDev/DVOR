@@ -29,11 +29,13 @@ protocol RouterMainProtocol: RouterMain {
     func pushCreateEvent(date: Date)
     func pushEventsMapVC(events: [EventModel])
     func pushMapLocationPickerVC(city: CityModel, onLocationSelected: @escaping (String, Double, Double) -> Void)
+    func pushSettingsVC()
+    func pushBlockedUsersVC()
     
     // Alerts
     func showAlertWithTitle(_ title: String)
     func showAlertWithCompletion(_ title: String, completion: (()->())?)
-    func showBottomSheetAlertForUser(model: UserModel)
+    func showBottomSheetAlertForUser(model: UserModel, onReport: (() -> Void)?, onBlock: (() -> Void)?)
     func showAlertConfigur(title: String, message: String?, titleActionButton: String?, handelr: @escaping () -> Void)
     func showShareSheet(items: [Any], completion: @escaping (Bool) -> Void)
     func showEditAlert(model: UserModel)
@@ -108,7 +110,7 @@ final class Router: RouterMainProtocol {
     }
 
     func pushProfileVC(model: UserModel?) {
-        let vc = builder.createProfileVC(router: self, model: model, appCoordinator: appCoordinator)
+        let vc = builder.createProfileVC(router: self, model: model)
         pushVC(vc)
     }
 
@@ -132,6 +134,16 @@ final class Router: RouterMainProtocol {
 
         let vc = builder.createMapLocationPickerVC(router: self, city: city)
         vc.onLocationSelected = onLocationSelected
+        pushVC(vc)
+    }
+    
+    func pushSettingsVC() {
+        let vc = builder.createSettingsVC(router: self, appCoordinator: appCoordinator)
+        pushVC(vc)
+    }
+
+    func pushBlockedUsersVC() {
+        let vc = builder.createBlockedUsersVC(router: self)
         pushVC(vc)
     }
 
@@ -183,16 +195,32 @@ final class Router: RouterMainProtocol {
         presentVC(alert)
     }
 
-    func showBottomSheetAlertForUser(model: UserModel) {
+    func showBottomSheetAlertForUser(model: UserModel,
+                                     onReport: (() -> Void)?,
+                                     onBlock: (() -> Void)?) {
 
         let alert = UIAlertController(title: "common.user".loc, message: nil, preferredStyle: .actionSheet)
 
-        alert.addAction( UIAlertAction(title: "common.profile".loc,
-                                       style: .default) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: "common.profile".loc,
+                                      style: .default) { [weak self] _ in
             self?.pushProfileVC(model: model)
         })
 
-        alert.addAction(UIAlertAction( title: "common.cancel".loc,style: .destructive))
+        if let onReport = onReport {
+            alert.addAction(UIAlertAction(title: "report.action".loc,
+                                          style: .default) { _ in
+                onReport()
+            })
+        }
+
+        if let onBlock = onBlock {
+            alert.addAction(UIAlertAction(title: ModerationStrings.blockAction,
+                                          style: .destructive) { _ in
+                onBlock()
+            })
+        }
+
+        alert.addAction(UIAlertAction(title: "common.cancel".loc, style: .cancel))
 
         presentVC(alert)
     }
@@ -273,6 +301,10 @@ final class Router: RouterMainProtocol {
         }
         alert.addAction(UIAlertAction(title: "common.cancel".loc, style: .cancel))
         presentVC(alert)
+    }
+    
+    deinit {
+        print(#function, self)
     }
 }
 

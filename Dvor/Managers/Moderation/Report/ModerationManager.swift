@@ -7,6 +7,8 @@ protocol ModerationManagerProtocol: AnyObject {
     
     func blockUser(blockerId: String, blockedId: String, completion: @escaping (Result<Void, Error>) -> Void)
     func fetchBlockedUserIDs(userId: String, completion: @escaping (Result<Set<String>, Error>) -> Void)
+    
+    func unblockUser(blockerId: String, blockedId: String, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 final class FirebaseModerationManager: ModerationManagerProtocol {
@@ -56,6 +58,8 @@ final class FirebaseModerationManager: ModerationManagerProtocol {
         }
     }
 
+    //MARK: - Fetch Blocked User
+
     func fetchBlockedUserIDs(userId: String, completion: @escaping (Result<Set<String>, Error>) -> Void) {
         guard !userId.isEmpty else {
             completion(.success([]))
@@ -72,5 +76,24 @@ final class FirebaseModerationManager: ModerationManagerProtocol {
                 completion(.failure(error))
             }
         })
+    }
+    
+    //MARK: - Unblock User
+
+    func unblockUser(blockerId: String, blockedId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard !blockerId.isEmpty, !blockedId.isEmpty else {
+            completion(.failure(FirebaseDataError.invalidUserID))
+            return
+        }
+
+        database.child(blocksPath).child(blockerId).child(blockedId).removeValue { error, _ in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
     }
 }

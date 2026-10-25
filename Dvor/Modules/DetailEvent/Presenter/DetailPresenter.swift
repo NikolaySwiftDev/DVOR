@@ -6,6 +6,7 @@ protocol DetailProtocol: AnyObject {
     func updateUsers(model: [String])
     func error(error: String)
     func hideLoading()
+    
     func successComments(comments: [CommentModel])
     func updateComments(comments: [CommentModel])
 }
@@ -38,6 +39,9 @@ protocol DetailPresenterProtocol: AnyObject {
     func canReportComment(_ comment: CommentModel) -> Bool
     func reportComment(idEvent: String, comment: CommentModel)
     func blockCommentAuthor(_ comment: CommentModel)
+    
+    func canReportEvent(orgId: String) -> Bool
+    func reportEvent(eventId: String, eventName: String, orgId: String)
     
     func popVC()
     func shareEvent(eventID: String)
@@ -83,18 +87,23 @@ final class DetailPresenter: DetailPresenterProtocol {
     //MARK: - Fetch all users
     func fetchAllUsers(usersID: [String], orgID: String) {
         view?.load()
-        network.fetchAllUsersFromEvent(usersID: usersID, orgId: orgID, completion: { [weak self] result in
+        loadBlockedUserIDs { [weak self] in
             guard let self = self else { return }
-            switch result {
-            case .success((let users, let org)):
-                self.users = users
-                self.org = org
-                view?.success(users: users, org: org ?? OrganizatorModel())
-            case .failure(let failure):
-                view?.error(error: failure.localizedDescription)
-                router.showAlertWithTitle(failure.localizedDescription)
-            }
-        })
+
+            self.network.fetchAllUsersFromEvent(usersID: usersID, orgId: orgID, completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success((let users, let org)):
+                    let visibleUsers = users.filter { !self.blockedIDs.contains($0.id) }
+                    self.users = visibleUsers
+                    self.org = org
+                    self.view?.success(users: visibleUsers, org: org ?? OrganizatorModel())
+                case .failure(let failure):
+                    self.view?.error(error: failure.localizedDescription)
+                    self.router.showAlertWithTitle(failure.localizedDescription)
+                }
+            })
+        }
     }
     
     //MARK: - Add user
@@ -238,8 +247,9 @@ final class DetailPresenter: DetailPresenterProtocol {
             self.view?.hideLoading()
             switch result {
             case .success(let comments):
-                self.comments = comments
-                self.view?.updateComments(comments: comments)
+                let visible = comments.filter { !self.blockedIDs.contains($0.userId) }
+                self.comments = visible
+                self.view?.updateComments(comments: visible)
             case .failure(let error):
                 self.view?.error(error: error.localizedDescription)
             }
@@ -367,6 +377,11 @@ final class DetailPresenter: DetailPresenterProtocol {
     
     //MARK: - Block the author of a comment
     func blockCommentAuthor(_ comment: CommentModel) {
+        confirmAndBlock(userId: comment.userId)
+    }
+    
+    //MARK: - Block a user (shared by comments and the participants menu)
+    private func confirmAndBlock(userId: String) {
         guard let myID = firebase.currentUserId else {
             router.showAlertWithTitle(DetailPresenterConstants.addAccount)
             return
@@ -378,24 +393,95 @@ final class DetailPresenter: DetailPresenterProtocol {
                                  handelr: { [weak self] in
             guard let self = self else { return }
 
-            self.moderation?.blockUser(blockerId: myID, blockedId: comment.userId) { [weak self] result in
+            self.moderation?.blockUser(blockerId: myID, blockedId: userId) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
                 case .success:
-                    self.blockedIDs.insert(comment.userId)
-                    let visible = (self.comments ?? []).filter { $0.userId != comment.userId }
-                    self.comments = visible
-                    self.view?.successComments(comments: visible)
+                    self.blockedIDs.insert(userId)
+
+                    let visibleComments = (self.comments ?? []).filter { $0.userId != userId }
+                    self.comments = visibleComments
+                    self.view?.successComments(comments: visibleComments)
+
+                    let visibleUsers = (self.users ?? []).filter { $0.id != userId }
+                    self.users = visibleUsers
+                    self.view?.success(users: visibleUsers, org: self.org ?? OrganizatorModel())
                 case .failure(let error):
                     self.router.showAlertWithTitle(error.localizedDescription)
                 }
             }
         })
     }
+
+    //MARK: - Send a report
+    private func submit(_ report: ReportModel) {
+        moderation?.report(report) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.router.showAlertWithTitle(ModerationStrings.reportSent)
+            case .failure(let error):
+                self.router.showAlertWithTitle(error.localizedDescription)
+            }
+        }
+    }
+
+    //MARK: - Report a user
+    private func reportUser(_ user: UserModel) {
+        guard let myID = firebase.currentUserId else {
+            router.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            return
+        }
+
+        router.showReportReasons { [weak self] reason in
+            guard let self = self else { return }
+
+            let report = ReportModel(reporterId: myID,
+                                     targetType: .user,
+                                     targetId: user.id,
+                                     reportedUserId: user.id,
+                                     eventId: nil,
+                                     reason: reason,
+                                     contentText: user.name)
+            self.submit(report)
+        }
+    }
+
+    //MARK: - Report an event
+    func canReportEvent(orgId: String) -> Bool {
+        return orgId != firebase.currentUserId
+    }
+
+    func reportEvent(eventId: String, eventName: String, orgId: String) {
+        guard let myID = firebase.currentUserId else {
+            router.showAlertWithTitle(DetailPresenterConstants.addAccount)
+            return
+        }
+
+        router.showReportReasons { [weak self] reason in
+            guard let self = self else { return }
+
+            let report = ReportModel(reporterId: myID,
+                                     targetType: .event,
+                                     targetId: eventId,
+                                     reportedUserId: orgId,
+                                     eventId: eventId,
+                                     reason: reason,
+                                     contentText: eventName)
+            self.submit(report)
+        }
+    }
     
     func showBottomAlertForUser(model: UserModel) {
-        router.showBottomSheetAlertForUser(model: model)
+        let myID = firebase.currentUserId
+        let isAnotherUser = myID != nil && model.id != myID
+
+        router.showBottomSheetAlertForUser(
+            model: model,
+            onReport: isAnotherUser ? { [weak self] in self?.reportUser(model) } : nil,
+            onBlock: isAnotherUser ? { [weak self] in self?.confirmAndBlock(userId: model.id) } : nil
+        )
     }
     
     func showLocationOnMap(location: String) {

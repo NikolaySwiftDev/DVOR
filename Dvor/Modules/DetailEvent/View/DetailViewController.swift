@@ -32,6 +32,14 @@ final class DetailViewController: UIViewController {
         btn.addTarget(self, action: #selector(removeUserButtonTapped), for: .touchUpInside)
         return btn
     }()
+    
+    private let reportButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setBackgroundImage(UIImage(systemName: "flag"), for: .normal)
+        btn.tintColor = .black
+        btn.addTarget(self, action: #selector(reportButtonTapped), for: .touchUpInside)
+        return btn
+    }()
 
 
     private lazy var titleAdress = UILabel(text: detail.address,
@@ -71,6 +79,11 @@ final class DetailViewController: UIViewController {
     //MARK: - Share Button Tapped
     @objc private func shareButtonTapped() {
         presenter?.shareEvent(eventID: detail.id)
+    }
+    
+    //MARK: - Report Button Tapped
+    @objc private func reportButtonTapped() {
+        presenter?.reportEvent(eventId: detail.id, eventName: detail.name, orgId: detail.orgID)
     }
     
     //MARK: - Add User Button Tapped
@@ -181,11 +194,12 @@ private extension DetailViewController {
         view.addSubview(shareButton)
         view.addSubview(addUserButton)
         view.addSubview(removeUserButton)
+        view.addSubview(reportButton) // NEW
         view.addSubview(titleAdress)
         view.addSubview(mapView)
         view.addSubview(segmentView)
     }
-    
+
     private func configure() {
         segmentView.usersView.delegate = self
         segmentView.commentsView.delegate = self
@@ -198,8 +212,10 @@ private extension DetailViewController {
         segmentView.commentsView.canReport = { [weak self] comment in
             self?.presenter?.canReportComment(comment) ?? false
         }
+        // NEW: нельзя пожаловаться на своё событие
+        reportButton.isHidden = !(presenter?.canReportEvent(orgId: detail.orgID) ?? false)
     }
-    
+
     private func setupContraints() {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
@@ -221,6 +237,13 @@ private extension DetailViewController {
         removeUserButton.snp.makeConstraints { make in
             make.centerY.equalTo(backButton)
             make.trailing.equalTo(shareButton.snp.leading).offset(-10)
+            make.height.width.equalTo(DetailConstants.heightBackBtn)
+        }
+        
+        // NEW
+        reportButton.snp.makeConstraints { make in
+            make.centerY.equalTo(backButton)
+            make.trailing.equalTo(addUserButton.snp.leading).offset(-10)
             make.height.width.equalTo(DetailConstants.heightBackBtn)
         }
         

@@ -12,15 +12,21 @@ final class ProfileViewController: UIViewController {
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
     private let editButton = UIButton.createStandartButton(title: ProfileViewConstants.editButton, backgroundColor: .black,cornerRadius: 8, target: self, action: #selector(editButtonTapped))
     
-    private let signOutButton = UIButton.createStandartButton(title: ProfileViewConstants.signOutButton,
+//    private let signOutButton = UIButton.createStandartButton(title: ProfileViewConstants.signOutButton,
+//                                                              backgroundColor: .black,
+//                                                              target: self,
+//                                                              action: #selector(signOutButtonTapped))
+//
+//    private let deleteAccountButton = UIButton.createStandartButton(title: ProfileViewConstants.deleteAccountButton,
+//                                                                    backgroundColor: .systemRed,
+//                                                                    target: self,
+//                                                                    action: #selector(deleteAccountButtonTapped))
+    
+    private let settingsButton = UIButton.createStandartButton(title: ProfileViewConstants.settingsButton,
                                                               backgroundColor: .black,
                                                               target: self,
-                                                              action: #selector(signOutButtonTapped))
-
-    private let deleteAccountButton = UIButton.createStandartButton(title: ProfileViewConstants.deleteAccountButton,
-                                                                    backgroundColor: .systemRed,
-                                                                    target: self,
-                                                                    action: #selector(deleteAccountButtonTapped))
+                                                              action: #selector(settingsButtonTapped))
+    
     init(model: UserModel? = nil) {
         self.model = model
         self.isOwnProfile = (model == nil)
@@ -61,15 +67,16 @@ final class ProfileViewController: UIViewController {
         presenter?.editProfile()
     }
     
-    @objc private func signOutButtonTapped() {
+    @objc private func settingsButtonTapped() {
         guard isOwnProfile else { return }
-        presenter?.signOut()
+//        presenter?.signOut()
+        presenter?.openSettings()
     }
     
-    @objc private func deleteAccountButtonTapped() {
-        guard isOwnProfile else { return }
-        presenter?.deleteProfile()
-    }
+//    @objc private func deleteAccountButtonTapped() {
+//        guard isOwnProfile else { return }
+//        presenter?.deleteProfile()
+//    }
     
     deinit {
 //         print(#function, "ProfileViewController")
@@ -85,7 +92,7 @@ extension ProfileViewController: ProfileProtocol {
     }
 
     func setDeleteInProgress(_ inProgress: Bool) {
-        deleteAccountButton.isEnabled = !inProgress
+//        deleteAccountButton.isEnabled = !inProgress
         view.isUserInteractionEnabled = !inProgress
     }
 }
@@ -93,15 +100,15 @@ extension ProfileViewController: ProfileProtocol {
 private extension ProfileViewController {
     private func setupView() {
         editButton.isHidden = !isOwnProfile
-        signOutButton.isHidden = !isOwnProfile
-        deleteAccountButton.isHidden = !isOwnProfile
+        settingsButton.isHidden = !isOwnProfile
+//        deleteAccountButton.isHidden = !isOwnProfile
         view.backgroundColor = Constants.Colors.backgroungColor
         view.addSubview(userCard)
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(editButton)
-        view.addSubview(signOutButton)
-        view.addSubview(deleteAccountButton)
+        view.addSubview(settingsButton)
+//        view.addSubview(deleteAccountButton)
     }
     
     private func setupConstraint() {
@@ -125,23 +132,23 @@ private extension ProfileViewController {
             make.top.equalTo(backButton.snp.bottom).offset(ProfileViewConstants.horizPadding)
             make.leading.trailing.equalToSuperview()
             if isOwnProfile {
-                make.bottom.equalTo(signOutButton.snp.top).offset(-Constants.Constraint.horizPadding)
+                make.bottom.equalTo(settingsButton.snp.top).offset(-Constants.Constraint.horizPadding)
             } else {
                 make.bottom.equalToSuperview()
             }
         }
 
-        deleteAccountButton.snp.makeConstraints { make in
+        settingsButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().inset(Constants.Constraint.verticalPadding)
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding * 1.5)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
 
-        signOutButton.snp.makeConstraints { make in
-            make.bottom.equalTo(deleteAccountButton.snp.top).offset(-12)
-            make.leading.trailing.equalTo(deleteAccountButton)
-            make.height.equalTo(Constants.Constraint.buttonHeight)
-        }
+//        signOutButton.snp.makeConstraints { make in
+//            make.bottom.equalTo(deleteAccountButton.snp.top).offset(-12)
+//            make.leading.trailing.equalTo(deleteAccountButton)
+//            make.height.equalTo(Constants.Constraint.buttonHeight)
+//        }
     }
     
     private func configureUserCard(with model: UserModel) {

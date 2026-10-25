@@ -16,6 +16,7 @@ struct ReportModel {
     enum TargetType: String {
         case comment
         case user
+        case event
     }
 
     enum Reason: String, CaseIterable {
