@@ -307,3 +307,8 @@
 "settings.unblock" = "Unblock";
 "settings.privacy" = "Privacy Policy";
 "settings.terms" = "Terms of Use";
+
+"terms.consent.title" = "Terms of Use";
+"terms.consent.message" = "By creating an account, you agree to the Terms of Use and the Privacy Policy (links at the bottom of the screen). Insults, spam, and inappropriate content are not allowed in the app: you can report such materials, and we will block violators.";
+"terms.consent.accept" = "Accept and continue";
+"content.rejected" = "The text contains unacceptable expressions. Modify it and try again.";

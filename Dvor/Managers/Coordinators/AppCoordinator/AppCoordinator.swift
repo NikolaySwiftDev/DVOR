@@ -8,6 +8,7 @@ protocol AppCoordinatorProtocol: AnyObject {
 }
 
 final class AppCoordinator: AppCoordinatorProtocol {
+    private static let hasSeenWelcomeKey = "hasSeenWelcomeOnboarding"
 
     // MARK: - Properties
     private let window: UIWindow
@@ -53,10 +54,21 @@ final class AppCoordinator: AppCoordinatorProtocol {
     func start() {
         if authManager.isAuthorized {
             showHome()
+        } else if !UserDefaults.standard.bool(forKey: AppCoordinator.hasSeenWelcomeKey) {
+            showWelcome()
         } else {
             showRegistration()
         }
         offlineAlertController.start(window: window)
+    }
+
+    private func showWelcome() {
+        let vc = WelcomeOnboardingViewController()
+        vc.finish = { [weak self] in
+            UserDefaults.standard.set(true, forKey: AppCoordinator.hasSeenWelcomeKey)
+            self?.showRegistration()
+        }
+        rootController.setRoot(vc)
     }
 
     func showHome() {

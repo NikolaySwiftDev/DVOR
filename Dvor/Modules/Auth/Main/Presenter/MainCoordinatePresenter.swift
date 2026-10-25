@@ -21,7 +21,12 @@ final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
     }
     
     func pushRegistVC() {
-        router.pushRegistVC(isNewAcc: true)
+        router.showAlertConfigur(title: "terms.consent.title".loc,
+                                 message: "terms.consent.message".loc,
+                                 titleActionButton: "terms.consent.accept".loc,
+                                 handelr: { [weak self] in
+            self?.router.pushRegistVC(isNewAcc: true)
+        })
     }
     
     func pushAuthVC() {
