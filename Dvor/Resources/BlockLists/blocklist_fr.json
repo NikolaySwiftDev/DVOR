@@ -1,0 +1,31 @@
+{
+  "contained": [
+    "putain",
+    "connard",
+    "connasse",
+    "salope",
+    "encule",
+    "merde",
+    "enfoir",
+    "emmerd",
+    "chiant",
+    "bordel",
+    "enculé",
+    "enculée",
+    "enculer",
+    "putasserie"
+  ],
+  "prefix": [
+    "niquer",
+    "niqu",
+    "fout"
+  ],
+  "exact": [
+    "pute",
+    "putes",
+    "con",
+    "cons"
+  ],
+  "lookalikes": {},
+  "collapseRepeats": false
+}

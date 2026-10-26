@@ -260,6 +260,11 @@ final class DetailPresenter: DetailPresenterProtocol {
     func addComment(idEvent: String, text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
+
+        guard ContentFilter.isAllowed(trimmed) else {
+            router.showAlertWithTitle(ContentFilterStrings.rejected)
+            return
+        }
         
         guard let idUser = firebase.currentUserId else {
             router.showAlertWithTitle(DetailPresenterConstants.addAccount)

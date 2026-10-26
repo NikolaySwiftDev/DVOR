@@ -1,0 +1,33 @@
+{
+  "contained": [
+    "arschloch",
+    "wichser",
+    "hurensohn",
+    "fotze",
+    "scheiss",
+    "scheiß",
+    "arsch",
+    "fick",
+    "ficker",
+    "gefickt",
+    "schwanz",
+    "miststück",
+    "vollidiot",
+    "scheissdreck",
+    "kacke",
+    "verfickt",
+    "hurensöhne"
+  ],
+  "prefix": [
+    "wichs",
+    "fotz"
+  ],
+  "exact": [
+    "fick",
+    "ficken",
+    "ficker",
+    "arsch"
+  ],
+  "lookalikes": {},
+  "collapseRepeats": false
+}

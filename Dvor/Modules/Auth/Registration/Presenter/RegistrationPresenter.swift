@@ -25,6 +25,7 @@ protocol RegistPresenterProtocol: SignUpPresenterProtocol {
     func updateCity(city: CityModel)
     func updateAvatar(avatar: UIImage)
     func updateNickname(nickname: String)
+    func validateNickname(_ nickname: String) -> Bool
 
     init(router: RouterMainProtocol?,
          firebase: FirebaseAuthManagerProtocol,
@@ -268,13 +269,11 @@ final class RegistPresenter: RegistPresenterProtocol {
             return
         }
 
+        guard validateNickname(nickname) else { return }
+
         let trimmed = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            view?.showError(RegistPresenterStrings.emptyNicknameError)
-            return
-        }
-        
         let fields: [String: Any] = ["name": trimmed]
+
         network.updateUser(userId: userId, fields: fields) { [weak self] result in
             guard let self = self else { return }
             self.view?.hideLoading()
@@ -290,6 +289,23 @@ final class RegistPresenter: RegistPresenterProtocol {
                 self.router?.showAlertWithTitle(error.localizedDescription)
             }
         }
+    }
+    
+    //MARK: - Nickname validation (registration and editing)
+    func validateNickname(_ nickname: String) -> Bool {
+        let trimmed = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmed.isEmpty else {
+            router?.showAlertWithTitle(RegistPresenterStrings.emptyNicknameError)
+            return false
+        }
+
+        guard ContentFilter.isAllowed(trimmed) else {
+            router?.showAlertWithTitle(ContentFilterStrings.rejected)
+            return false
+        }
+
+        return true
     }
     
     deinit {

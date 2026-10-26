@@ -83,6 +83,11 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             router?.showAlertWithTitle(CreateEventPresenterStrings.signUp)
             return
         }
+
+        guard ContentFilter.isAllowed(place) else {
+            router?.showAlertWithTitle(ContentFilterStrings.rejected)
+            return
+        }
         
         network.countEvents(forOrganizer: orgID, on: date) { [weak self] result in
             guard let self else { return }

@@ -1,0 +1,56 @@
+{
+  "contained": [
+    "fuck",
+    "shit",
+    "bitch",
+    "whore",
+    "asshole",
+    "motherfuck",
+    "bastard",
+    "bullshit",
+    "arsehole",
+    "dumbass",
+    "jackass",
+    "prick",
+    "wanker",
+    "bollock",
+    "dipshit",
+    "douchebag",
+    "fucker",
+    "fucking",
+    "fuckin"
+  ],
+  "prefix": [
+    "cunt",
+    "nigg",
+    "fagg",
+    "retard"
+  ],
+  "exact": [
+    "dick",
+    "dicks",
+    "cock",
+    "cocks",
+    "pussy",
+    "slut",
+    "sluts",
+    "twat",
+    "twit"
+  ],
+  "lookalikes": {
+    "а": "a",
+    "е": "e",
+    "о": "o",
+    "р": "p",
+    "с": "c",
+    "х": "x",
+    "у": "y",
+    "і": "i",
+    "к": "k",
+    "м": "m",
+    "т": "t",
+    "в": "b",
+    "н": "h"
+  },
+  "collapseRepeats": false
+}

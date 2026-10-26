@@ -19,7 +19,8 @@ final class InfoInputViewController: BaseRegistrationViewController {
 
     //MARK: - Next Button Action
     override func nextButtonTapped() {
-        guard nickname != "" else { return }
+        guard presenter?.validateNickname(nickname) == true else { return }
+
         if isEdit {
             presenter?.updateNickname(nickname: nickname)
         } else {
