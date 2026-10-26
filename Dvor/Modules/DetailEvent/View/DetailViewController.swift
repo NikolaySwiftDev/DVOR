@@ -102,7 +102,7 @@ final class DetailViewController: UIViewController {
     }
  
     deinit {
-//         print("Deinit DetailViewController")
+        AppLogger.log(#function, self)
     }
 }
 

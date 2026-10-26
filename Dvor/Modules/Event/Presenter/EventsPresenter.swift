@@ -344,6 +344,6 @@ final class EventsPresenter: EventsPresenterProtocol {
 
     //MARK: - Deinit
     deinit {
-        //        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }

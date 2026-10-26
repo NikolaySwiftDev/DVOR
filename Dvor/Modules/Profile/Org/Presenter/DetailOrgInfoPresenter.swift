@@ -19,7 +19,7 @@ final class DetailOrgInfoPresenter: DetailOrgInfoPresenterProtocol {
     }
     
     deinit {
-        //        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

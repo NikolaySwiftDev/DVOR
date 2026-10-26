@@ -309,7 +309,7 @@ final class RegistPresenter: RegistPresenterProtocol {
     }
     
     deinit {
-//        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

@@ -127,7 +127,7 @@ final class DetailSegmentContainerView: UIView {
     }
     
     deinit {
-//        print("deinit Detail Segment view")
+        AppLogger.log(#function, self)
     }
 }
 

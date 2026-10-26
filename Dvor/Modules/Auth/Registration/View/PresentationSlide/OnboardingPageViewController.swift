@@ -229,7 +229,7 @@ final class WelcomeOnboardingViewController: UIViewController {
     }
     
     deinit {
-        // print("Deinit Welcome")
+        AppLogger.log(#function, self)
     }
 }
 

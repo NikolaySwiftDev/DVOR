@@ -63,7 +63,7 @@ final class MapLocationPickerPresenter: MapLocationPickerPresenterProtocol {
     deinit {
         geocodingWorkItem?.cancel()
         geocoder.cancel()
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 
     // MARK: - Input

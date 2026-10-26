@@ -157,7 +157,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

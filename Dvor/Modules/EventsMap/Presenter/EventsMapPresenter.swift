@@ -32,6 +32,6 @@ final class EventsMapPresenter: EventsMapPresenterProtocol {
     }
 
     deinit {
-         print(#function, self)
+         AppLogger.log(#function, self)
     }
 }

@@ -95,7 +95,7 @@ final class EnterEmailViewController: BaseRegistrationViewController {
     // MARK: - Deinit
 
     deinit {
-//        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 
@@ -146,7 +146,7 @@ extension EnterEmailViewController: UITextFieldDelegate {
 
 extension EnterEmailViewController: RegistProtocol {
     func showError(_ message: String) {
-        print(message)
+        AppLogger.log(message)
     }
     
     func showSuccess() {

@@ -50,7 +50,7 @@ final class CityViewController: BaseRegistrationViewController {
     
     deinit {
         isEdit = false
-//        print("Deinit CityViewController")
+        AppLogger.log(#function, self)
     }
     
 }

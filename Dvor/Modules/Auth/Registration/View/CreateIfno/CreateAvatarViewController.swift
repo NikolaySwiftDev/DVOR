@@ -45,7 +45,7 @@ final class CreateAvatarViewController: BaseRegistrationViewController {
     
     deinit {
         isEdit = false
-//        print("Deinit CreateAvatarViewController")
+        AppLogger.log(#function, self)
     }
 }
 

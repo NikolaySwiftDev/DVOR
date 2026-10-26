@@ -96,7 +96,7 @@ final class LocationManager: NSObject, LocationManagerProtocol {
     }
 
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

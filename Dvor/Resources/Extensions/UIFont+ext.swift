@@ -31,7 +31,7 @@ extension UIFont {
         if let font = UIFont(name: fontName, size: size.size) {
             return font
         } else {
-            print("Standart Font")
+            AppLogger.log("Standart Font")
             return UIFont.systemFont(ofSize: size.size, weight: .regular)
         }
     }
@@ -42,7 +42,7 @@ extension UIFont {
         if let font = UIFont(name: fontName, size: size) {
             return font
         } else {
-            print("Standart Font")
+            AppLogger.log("Standart Font")
             return UIFont.systemFont(ofSize: size, weight: .regular)
         }
     }

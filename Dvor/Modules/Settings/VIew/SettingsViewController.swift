@@ -32,7 +32,7 @@ final class SettingsViewController: UIViewController {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

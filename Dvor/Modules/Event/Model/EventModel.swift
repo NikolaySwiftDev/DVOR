@@ -69,79 +69,79 @@ struct EventModel: Codable {
     init?(from dictionary: [String: Any]) {
 
         guard let id = dictionary["id"] as? String else {
-            print("❌ Missing id")
+            AppLogger.log("❌ Missing id")
             return nil
         }
 
         guard let timestamp = dictionary["date"] as? TimeInterval else {
-            print("❌ Missing date")
+            AppLogger.log("❌ Missing date")
             return nil
         }
 
         guard let time = dictionary["time"] as? String else {
-            print("❌ Missing time")
+            AppLogger.log(("❌ Missing time")
             return nil
         }
 
         guard let name = dictionary["name"] as? String else {
-            print("❌ Missing name")
+            AppLogger.log("❌ Missing name")
             return nil
         }
 
         guard let format = dictionary["format"] as? Int else {
-            print("❌ Missing format")
+            AppLogger.log("❌ Missing format")
             return nil
         }
 
         guard let city = dictionary["location"] as? String else {
-            print("❌ Missing location")
+            AppLogger.log("❌ Missing location")
             return nil
         }
 
         guard let countryCode = dictionary["countryCode"] as? String else {
-            print("❌ Missing countryCode")
+            AppLogger.log("❌ Missing countryCode")
             return nil
         }
 
         let administrativeArea = dictionary["administrativeArea"] as? String
 
         guard let latitude = (dictionary["latitude"] as? NSNumber)?.doubleValue else {
-            print("❌ Missing latitude")
+            AppLogger.log("❌ Missing latitude")
             return nil
         }
 
         guard let longitude = (dictionary["longitude"] as? NSNumber)?.doubleValue else {
-            print("❌ Missing longitude")
+            AppLogger.log("❌ Missing longitude")
             return nil
         }
 
         guard let address = dictionary["address"] as? String else {
-            print("❌ Missing address")
+            AppLogger.log("❌ Missing address")
             return nil
         }
 
         guard let namePlace = dictionary["namePlace"] as? String else {
-            print("❌ Missing namePlace")
+            AppLogger.log("❌ Missing namePlace")
             return nil
         }
 
         guard let price = dictionary["price"] as? Int else {
-            print("❌ Missing price")
+            AppLogger.log("❌ Missing price")
             return nil
         }
 
         guard let ownerName = dictionary["ownerName"] as? String else {
-            print("❌ Missing ownerName")
+            AppLogger.log("❌ Missing ownerName")
             return nil
         }
 
         guard let timeGame = dictionary["timeGame"] as? Int else {
-            print("❌ Missing timeGame")
+            AppLogger.log("❌ Missing timeGame")
             return nil
         }
 
         guard let orgId = dictionary["orgId"] as? String else {
-            print("❌ Missing orgId")
+            AppLogger.log("❌ Missing orgId")
             return nil
         }
 

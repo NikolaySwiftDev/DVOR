@@ -502,6 +502,6 @@ final class DetailPresenter: DetailPresenterProtocol {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }

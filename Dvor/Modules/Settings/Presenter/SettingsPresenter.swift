@@ -162,6 +162,6 @@ final class SettingsPresenter: SettingsPresenterProtocol {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }

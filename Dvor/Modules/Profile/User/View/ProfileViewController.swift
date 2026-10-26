@@ -12,16 +12,6 @@ final class ProfileViewController: UIViewController {
     private let backButton = UIButton.createBackButton(target: self, action: #selector(backButtonTapped))
     private let editButton = UIButton.createStandartButton(title: ProfileViewConstants.editButton, backgroundColor: .black,cornerRadius: 8, target: self, action: #selector(editButtonTapped))
     
-//    private let signOutButton = UIButton.createStandartButton(title: ProfileViewConstants.signOutButton,
-//                                                              backgroundColor: .black,
-//                                                              target: self,
-//                                                              action: #selector(signOutButtonTapped))
-//
-//    private let deleteAccountButton = UIButton.createStandartButton(title: ProfileViewConstants.deleteAccountButton,
-//                                                                    backgroundColor: .systemRed,
-//                                                                    target: self,
-//                                                                    action: #selector(deleteAccountButtonTapped))
-    
     private let settingsButton = UIButton.createStandartButton(title: ProfileViewConstants.settingsButton,
                                                               backgroundColor: .black,
                                                               target: self,
@@ -69,17 +59,11 @@ final class ProfileViewController: UIViewController {
     
     @objc private func settingsButtonTapped() {
         guard isOwnProfile else { return }
-//        presenter?.signOut()
         presenter?.openSettings()
     }
     
-//    @objc private func deleteAccountButtonTapped() {
-//        guard isOwnProfile else { return }
-//        presenter?.deleteProfile()
-//    }
-    
     deinit {
-//         print(#function, "ProfileViewController")
+        AppLogger.log(#function, self)
     }
 }
 
@@ -90,25 +74,18 @@ extension ProfileViewController: ProfileProtocol {
         self.model = model
         configureUserCard(with: model)
     }
-
-    func setDeleteInProgress(_ inProgress: Bool) {
-//        deleteAccountButton.isEnabled = !inProgress
-        view.isUserInteractionEnabled = !inProgress
-    }
 }
 
 private extension ProfileViewController {
     private func setupView() {
         editButton.isHidden = !isOwnProfile
         settingsButton.isHidden = !isOwnProfile
-//        deleteAccountButton.isHidden = !isOwnProfile
         view.backgroundColor = Constants.Colors.backgroungColor
         view.addSubview(userCard)
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(editButton)
         view.addSubview(settingsButton)
-//        view.addSubview(deleteAccountButton)
     }
     
     private func setupConstraint() {
@@ -143,12 +120,6 @@ private extension ProfileViewController {
             make.leading.trailing.equalToSuperview().inset(Constants.Constraint.horizPadding * 1.5)
             make.height.equalTo(Constants.Constraint.buttonHeight)
         }
-
-//        signOutButton.snp.makeConstraints { make in
-//            make.bottom.equalTo(deleteAccountButton.snp.top).offset(-12)
-//            make.leading.trailing.equalTo(deleteAccountButton)
-//            make.height.equalTo(Constants.Constraint.buttonHeight)
-//        }
     }
     
     private func configureUserCard(with model: UserModel) {

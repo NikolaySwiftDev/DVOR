@@ -112,7 +112,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
             
             self?.acceptNotification()
             
-            print(city)
+            AppLogger.log(city)
         }
         router.pushVC(vc)
     }
@@ -151,7 +151,7 @@ final class RegistrationCoordinator: RegistrationCoordinatorProtocol {
 
     // MARK: - Deinit
     deinit {
-//        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

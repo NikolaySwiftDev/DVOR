@@ -4,7 +4,6 @@ import Foundation
 protocol ProfileProtocol: AnyObject {
     func success(model: UserModel)
     func error(error: Error)
-    func setDeleteInProgress(_ inProgress: Bool)
 }
 
 protocol ProfilePresenterProtocol: AnyObject {
@@ -87,6 +86,6 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }

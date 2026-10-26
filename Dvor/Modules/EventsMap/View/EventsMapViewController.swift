@@ -24,7 +24,7 @@ final class EventsMapViewController: UIViewController {
     }
 
     deinit {
-         print(#function, self)
+         AppLogger.log(#function, self)
     }
 }
 

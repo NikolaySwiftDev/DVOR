@@ -62,7 +62,7 @@ final class CitySuggestionsView: UIView {
     }
     
     deinit {
-        // print("Deinit City VIEw")
+        AppLogger.log(#function, self)
     }
 }
 

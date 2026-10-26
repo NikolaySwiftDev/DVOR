@@ -103,7 +103,7 @@ final class MapLocationPickerViewController: UIViewController {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

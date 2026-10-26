@@ -279,7 +279,7 @@ final class Router: RouterMainProtocol {
 
         MKLocalSearch(request: request).start { response, _ in
             guard let item = response?.mapItems.first else {
-                print("Location not found")
+                AppLogger.log("Location not found")
                 return
             }
 
@@ -304,7 +304,7 @@ final class Router: RouterMainProtocol {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

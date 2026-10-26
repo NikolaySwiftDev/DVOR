@@ -72,7 +72,7 @@ final class CreateEventViewController: UIViewController {
     }
     
     deinit {
-         print("deinit CreateEventViewController")
+        AppLogger.log(#function, self)
     }
 }
 

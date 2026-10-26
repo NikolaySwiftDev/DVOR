@@ -29,14 +29,14 @@ final class CityStorageManager: CityStorageProtocol {
             let data = try JSONEncoder().encode(city)
             defaults.set(data, forKey: Keys.city)
             defaults.synchronize()
-            print("City save ---", city.name)
+            AppLogger.log("City saved")
         } catch {
-            print("Encode error:", error)
+            AppLogger.log("Encode error:", error)
         }
     }
 
     func clearCity() {
         defaults.removeObject(forKey: Keys.city)
-        print("City delete")
+        AppLogger.log("City deleted")
     }
 }

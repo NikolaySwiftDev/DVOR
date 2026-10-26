@@ -114,6 +114,6 @@ final class AppCoordinator: AppCoordinatorProtocol {
     }
     
     deinit {
-//        print(#function + "AppCoordinator")
+        AppLogger.log(#function, self)
     }
 }

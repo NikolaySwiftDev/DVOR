@@ -34,17 +34,17 @@ class BaseViewController: UIViewController {
     }
     
     deinit {
-        // print("Deinit BaseVC")
+        AppLogger.log(#function, self)
     }
 }
 
 extension BaseViewController: CustomNavigationBarDelegate {
     @objc open func didTapPersonButton() {
-        print(#function)
+        AppLogger.log(#function)
     }
     
     @objc open func  didTapAddTapped() {
-        print(#function)
+        AppLogger.log(#function)
     }
 }
 

@@ -35,7 +35,7 @@ final class UsersView: UIView {
     }
     
     deinit {
-//        print("deinit users view")
+        AppLogger.log(#function, self)
     }
 }
 

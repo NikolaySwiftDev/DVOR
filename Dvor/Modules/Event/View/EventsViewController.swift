@@ -69,7 +69,7 @@ final class EventsViewController: BaseViewController {
     }
     
     deinit {
-        // print("deinit HomeVC")
+        AppLogger.log(#function, self)
     }
 }
 
@@ -108,7 +108,7 @@ extension EventsViewController: EventsProtocol {
     }
     
     func error(error: Error) {
-        print("Error", error.localizedDescription)
+        AppLogger.log("Error", error.localizedDescription)
         spiner.isHidden = true
         spiner.stopAnimating()
     }

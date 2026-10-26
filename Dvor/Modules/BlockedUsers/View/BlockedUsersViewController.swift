@@ -33,7 +33,7 @@ final class BlockedUsersViewController: UIViewController {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

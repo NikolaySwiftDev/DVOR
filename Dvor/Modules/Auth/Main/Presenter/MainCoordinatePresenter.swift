@@ -42,7 +42,7 @@ final class MainCoordinatePresenter: MainCoordinatePresenterProtocol {
     }
     
     deinit {
-//        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 

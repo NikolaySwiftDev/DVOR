@@ -67,7 +67,7 @@ final class InfoView: UIView {
     }
     
     deinit {
-//        print("deinit Info view")
+        AppLogger.log(#function, self)
     }
 }
 

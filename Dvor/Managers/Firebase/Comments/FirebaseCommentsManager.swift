@@ -17,12 +17,12 @@ final class FirebaseCommentsManager: FirebaseCommentsManagerProtocol {
     
     init() {
         database = Database.database(url: FirebaseDataManagerConstants.databaseURL).reference()
-//        print("Init CommentsManager", Unmanaged.passUnretained(self).toOpaque())
+        AppLogger.log("Init CommentsManager", Unmanaged.passUnretained(self).toOpaque())
     }
 
-//    deinit {
-//        print("Deinit CommentsManager", Unmanaged.passUnretained(self).toOpaque())
-//    }
+    deinit {
+        AppLogger.log("Deinit CommentsManager", Unmanaged.passUnretained(self).toOpaque())
+    }
     
     // MARK: - Fetch Comments
     func fetchComments(idEvent: String, completion: @escaping (Result<[CommentModel], Error>) -> Void) {
@@ -51,7 +51,7 @@ final class FirebaseCommentsManager: FirebaseCommentsManagerProtocol {
                 if let comment = CommentModel(from: value) {
                     comments.append(comment)
                 } else {
-                    print("❌ Failed to parse comment: \(childSnapshot.key)")
+                    AppLogger.log("❌ Failed to parse comment: \(childSnapshot.key)")
                 }
             }
             

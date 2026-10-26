@@ -35,18 +35,18 @@ final class NotificationManager: NotificationManagerProtocol {
         let content = createNotificationContent(title: title, body: body)
         
         guard !Calendar.current.isDateInToday(date) else {
-            print("Notification skipped: event is today")
+            AppLogger.log("Notification skipped: event is today")
             return
         }
         
         guard let dayBefore = Calendar.current.date(byAdding: .day, value: -1, to: date),
               let notificationDate = Calendar.current.date(bySettingHour: 12, minute: 25, second: 0, of: dayBefore) else {
-            print("Notification skipped: could not compute notification date")
+            AppLogger.log("Notification skipped: could not compute notification date")
             return
         }
         
         guard notificationDate > Date() else {
-            print("Notification skipped: notification date is in the past")
+            AppLogger.log("Notification skipped: notification date is in the past")
             return
         }
         
@@ -56,10 +56,10 @@ final class NotificationManager: NotificationManagerProtocol {
         
         center.add(request) { error in
             if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
+                AppLogger.log("Error scheduling notification: \(error.localizedDescription)")
             }
         }
-        print(notificationDate.description)
+        AppLogger.log(notificationDate.description)
     }
     
     // MARK: - Manage Notifications
@@ -100,6 +100,6 @@ final class NotificationManager: NotificationManagerProtocol {
     }
     
     deinit {
-//        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }

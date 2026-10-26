@@ -115,6 +115,6 @@ final class BlockedUsersPresenter: BlockedUsersPresenterProtocol {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }

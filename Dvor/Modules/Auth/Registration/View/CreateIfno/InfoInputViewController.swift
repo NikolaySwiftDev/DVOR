@@ -36,7 +36,7 @@ final class InfoInputViewController: BaseRegistrationViewController {
     
     deinit {
         isEdit = false
-        print("Deinit CreateAvatarViewController")
+        AppLogger.log(#function, self)
     }
 }
 

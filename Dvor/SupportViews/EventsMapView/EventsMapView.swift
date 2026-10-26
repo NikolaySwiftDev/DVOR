@@ -65,7 +65,7 @@ final class EventsMapView: UIView {
     }
 
     deinit {
-        // print(#function, self)
+        // AppLogger.log(#function, self)
     }
 }
 

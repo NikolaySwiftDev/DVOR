@@ -19,7 +19,7 @@ final class PhotoManager: NSObject {
     private var maxSize: Int?
     
     deinit {
-        //        print(#function, self)
+        AppLogger.log(#function, self)
     }
 }
 
@@ -87,7 +87,7 @@ private extension PhotoManager {
         }
         
         let imageSize = imageData.count
-        print("Image size: \(imageSize) bytes, limit: \(maxSize) bytes")
+        AppLogger.log("Image size: \(imageSize) bytes, limit: \(maxSize) bytes")
         
         return imageSize <= maxSize
     }

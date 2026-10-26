@@ -32,7 +32,7 @@ class BaseRegistrationViewController: UIViewController {
     }
     
     deinit {
-        print(#function, self)
+        AppLogger.log(#function, self)
         removeKeyboardObservers()
     }
     
@@ -86,7 +86,7 @@ class BaseRegistrationViewController: UIViewController {
     
     // MARK: - Next Button Action
     @objc open func nextButtonTapped() {
-        print(#function)
+        AppLogger.log(#function)
     }
 }
 

@@ -47,7 +47,7 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
     }
 
     deinit {
-//        print("Deinit FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
+        AppLogger.log("Deinit FirebaseDataManager", Unmanaged.passUnretained(self).toOpaque())
     }
     
     //MARK: - Fetch Events (only the selected country and day)
@@ -156,14 +156,14 @@ final class FirebaseDataManager: FirebaseDataManagerProtocol {
             }
 
             guard let value = snapshot.value as? [String: Any] else {
-                print("❌ \(snapshot.key): value is not [String: Any]")
+                AppLogger.log("❌ \(snapshot.key): value is not [String: Any]")
                 continue
             }
 
             if let event = EventModel(from: value) {
                 events.append(event)
             } else {
-                print("❌ Failed to parse event: \(snapshot.key)")
+                AppLogger.log("❌ Failed to parse event: \(snapshot.key)")
                 dump(value)
             }
         }
