@@ -105,6 +105,7 @@ final class Router: RouterMainProtocol {
     }
 
     func pushDetailVC(model: DetailModel) {
+        AppAnalytics.log(.matchDetailView)
         let vc = builder.createDetailVC(router: self, model: model)
         pushVC(vc)
     }

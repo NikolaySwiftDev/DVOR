@@ -127,6 +127,7 @@ final class CreateEventPresenter: CreateEventPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
+                AppAnalytics.log(.createMatch)
                 self.router?.popVC()
             case .failure(let error):
                 router?.showAlertWithTitle(CreateEventPresenterStrings.saveError)

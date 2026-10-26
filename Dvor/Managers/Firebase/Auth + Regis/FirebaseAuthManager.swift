@@ -44,6 +44,7 @@ final class FirebaseAuthManager: FirebaseAuthManagerProtocol {
                     return
                 }
 
+                AppAnalytics.log(.signUp)
                 completion(.success(uid))
             }
         }

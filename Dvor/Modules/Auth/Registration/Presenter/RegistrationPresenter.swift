@@ -164,6 +164,7 @@ final class RegistPresenter: RegistPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(_):
+                AppAnalytics.log(.registrationComplete)
                 appCoordinator?.showHome()
             case .failure(let error):
               router?.showAlertWithTitle(error.localizedDescription)

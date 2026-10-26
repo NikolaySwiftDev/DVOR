@@ -79,7 +79,7 @@ struct EventModel: Codable {
         }
 
         guard let time = dictionary["time"] as? String else {
-            AppLogger.log(("❌ Missing time")
+            AppLogger.log("❌ Missing time")
             return nil
         }
 

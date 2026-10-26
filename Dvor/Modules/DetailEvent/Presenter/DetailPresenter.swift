@@ -148,6 +148,7 @@ final class DetailPresenter: DetailPresenterProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let success):
+                AppAnalytics.log(.joinMatch)
                 view?.updateUsers(model: success)
                 notification.createNotification(
                     identifier: idEvent,
